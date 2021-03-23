@@ -24,3 +24,6 @@ hs_err_pid*
 
 # virtual machine env
 venv/
+
+# COVID-19 dataset archives
+data/dataset/

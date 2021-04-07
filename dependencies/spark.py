@@ -13,7 +13,7 @@ def start_spark(app_name='my_spark_app', master='local[*]', jar_packages=[],
 
     # ručno podesiti debug ukoliko je potrebno
     # eventualno .env sa 'DEBUG' in environ.keys()
-    flag_debug = false
+    flag_debug = False
 
     if not (flag_repl or flag_debug):
         spark_builder = (

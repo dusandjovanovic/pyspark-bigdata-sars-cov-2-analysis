@@ -4,27 +4,17 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+pandas = "*"
+numpy = "*"
+plotly = "*"
+openpyxl = "*"
 
 [dev-packages]
 pyspark = "==3.1.1"
 ipython = "*"
 flake8 = "*"
-numpy = "*"
-pandas = "*"
-plotly = "*"
 prophet = "*"
-openpyxl = "*"
 seaborn = "*"
-sklearn = "*"
-wordcloud = "*"
-shap = "*"
-xgboost = "*"
-folium = "*"
-gensim = "*"
-nltk = "*"
-textblob = "*"
-networkx = "*"
-requests = "*"
 
 [requires]
 python_version = "3.9"

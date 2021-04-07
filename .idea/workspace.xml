@@ -2,28 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="30c61dc1-cab1-4a43-a7ce-32c030057976" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/other.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/data/covid-19-patient-level-data/DXY.cn patient level data - Line-list.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/__init__.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/cases_clinical_analysis.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/cases_time_analysis.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/research_challenge.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/configs/cases_clinical_spectrum_config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/loaded_data/._SUCCESS.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/loaded_data/.part-00000-8d3e5314-955e-45ec-beac-aa6ef57714cd-c000.csv.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/loaded_data/_SUCCESS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/loaded_data/part-00000-8d3e5314-955e-45ec-beac-aa6ef57714cd-c000.csv" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/.part-00000-f2f773b8-380c-4823-81b8-76934228257d-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/.part-00000-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/.part-00001-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/.part-00002-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/.part-00003-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet.crc" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/part-00000-f2f773b8-380c-4823-81b8-76934228257d-c000.snappy.parquet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loaded_data/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/loaded_data/_SUCCESS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/part-00000-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/part-00001-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/part-00002-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/result_age.parquet/part-00003-645d617b-47af-4b9b-8781-4acb17a19bf4-c000.snappy.parquet" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/build_dependencies.sh" beforeDir="false" afterPath="$PROJECT_DIR$/build_dependencies.sh" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/dependencies/spark.py" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies/spark.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/test_etl_job.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -66,7 +65,7 @@
       <recent name="$PROJECT_DIR$/jobs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.research_challenge">
+  <component name="RunManager" selected="Python.cases_clinical_spectrum_analysis">
     <configuration name="cases_clinical_analysis" type="PythonConfigurationType" factoryName="Python">
       <module name="spark-bigdata-covid19-nlp-analysis" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -211,7 +210,8 @@
       <workItem from="1617219685536" duration="2096000" />
       <workItem from="1617301846422" duration="3166000" />
       <workItem from="1617540433389" duration="1330000" />
-      <workItem from="1617724428048" duration="2254000" />
+      <workItem from="1617724428048" duration="9511000" />
+      <workItem from="1617784575961" duration="3697000" />
     </task>
     <servers />
   </component>
@@ -243,8 +243,8 @@
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_time_analysis.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1617212576339" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/spark_bigdata_covid19_nlp_analysis$etl_job.coverage" NAME="etl_job Coverage Results" MODIFIED="1616976666533" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_clinical_analysis.coverage" NAME="cases_clinical_analysis Coverage Results" MODIFIED="1617212423990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
-    <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1617303801939" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$research_challenge.coverage" NAME="research_challenge Coverage Results" MODIFIED="1617541241028" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
+    <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1617811119245" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/spark_bigdata_covid19_nlp_analysis$nlp_parsing_job.coverage" NAME="nlp_parsing_job Coverage Results" MODIFIED="1616983129443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
   </component>
 </project>

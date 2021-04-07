@@ -19,7 +19,7 @@ then
     fi
 
     if [ ! -d packages ]
-    then 
+    then
         echo 'ERROR: Pip failed to import'
         exit 1
     fi

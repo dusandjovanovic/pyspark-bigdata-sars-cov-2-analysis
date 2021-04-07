@@ -1,95 +1,100 @@
-import pandas as pd
-from pyspark.sql import SparkSession
+from IPython.core.display import display
 from pyspark.sql import SQLContext
-import pyspark.sql.functions as func
-from sklearn.model_selection import train_test_split
-from sklearn.metrics import classification_report
 from pyspark.sql.types import IntegerType
-import re
+import pyspark.sql.functions as func
+import pandas as pd
+import plotly.express as px
+
+from dependencies.spark import start_spark
 
 
-def load_raw():
-    spark = SparkSession.builder \
-        .master('local') \
-        .appName('myAppName') \
-        .config('spark.executor.memory', '12gb') \
-        .config("spark.cores.max", "10") \
-        .getOrCreate()
+def main():
+    spark, log, config = start_spark(
+        app_name='cases_clinical_spectrum_analysis',
+        files=['configs/cases_clinical_spectrum_config.json'])
 
-    sc = spark.sparkContext
+    log.warn('cases_clinical_spectrum is up-and-running')
 
-    sqlContext = SQLContext(sc)
+    data = extract_data()
 
-    df = pd.read_excel('../data/covid-19-clinical-spectrum/dataset.xlsx')
+    data_transformed, sql_context = transform_data(spark, data)
 
-    df['Respiratory Syncytial Virus'] = df['Respiratory Syncytial Virus'].astype(str)
-    df['Influenza A'] = df['Influenza A'].astype(str)
-    df['Influenza B'] = df['Influenza B'].astype(str)
-    df['Parainfluenza 1'] = df['Parainfluenza 1'].astype(str)
-    df['CoronavirusNL63'] = df['CoronavirusNL63'].astype(str)
-    df['Rhinovirus/Enterovirus'] = df['Rhinovirus/Enterovirus'].astype(str)
-    df['Coronavirus HKU1'] = df['Coronavirus HKU1'].astype(str)
+    # hemoglobin values
+    data_transformed = transform_hemoglobin_values(data_transformed)
+    load_data(data_transformed, "hemoglobin_distribution")
 
-    for column in df.columns:
-        df[column] = df[column].astype(str)
+    # average age/result aggregated distribution
+    data_transformed = transform_aggregate(data_transformed, sql_context)
+    load_data(data_transformed, "age_result_distribution")
 
-    df = sqlContext.createDataFrame(df)
-
-    return df, sqlContext
+    log.warn('cases_clinical_spectrum is finished')
+    spark.stop()
+    return None
 
 
-df, sqlContext = load_raw()
+def extract_data():
+    dataframe = pd.read_excel('../data/covid-19-clinical-spectrum/dataset.xlsx')
 
-df = df.fillna(0)
-df = df.replace("nan", "0")
+    return dataframe
 
-df_hemoglobin = df.select("Hemoglobin").toPandas()
-df_hemoglobin['Hemoglobin'] = pd.to_numeric(df_hemoglobin['Hemoglobin'])
-df_hemoglobin['Hemoglobin'].hist()
 
-df.select("SARS-Cov-2 exam result").show()
+def transform_data(spark, frame):
+    sql_context = SQLContext(spark.sparkContext)
 
-df_ = df.select(func.col("SARS-Cov-2 exam result").alias("result"), func.col('Patient age quantile').alias('age'))
-df_.show()
+    dt_transformed = frame
 
-df_.select("result", "age").write.mode('overwrite').option("header", "true").save("result_age.parquet",
-                                                                                  format="parquet")
+    dt_transformed['Respiratory Syncytial Virus'] = dt_transformed['Respiratory Syncytial Virus'].astype(str)
+    dt_transformed['Influenza A'] = dt_transformed['Influenza A'].astype(str)
+    dt_transformed['Influenza B'] = dt_transformed['Influenza B'].astype(str)
+    dt_transformed['Parainfluenza 1'] = dt_transformed['Parainfluenza 1'].astype(str)
+    dt_transformed['CoronavirusNL63'] = dt_transformed['CoronavirusNL63'].astype(str)
+    dt_transformed['Rhinovirus/Enterovirus'] = dt_transformed['Rhinovirus/Enterovirus'].astype(str)
+    dt_transformed['Coronavirus HKU1'] = dt_transformed['Coronavirus HKU1'].astype(str)
 
-df_ = sqlContext.sql("SELECT * FROM parquet.`./result_age.parquet`")
+    for column in dt_transformed.columns:
+        dt_transformed[column] = dt_transformed[column].astype(str)
 
-df_pandas_age = df_.groupBy("result").agg(func.max("age"), func.avg("age")).toPandas()
-df_pandas_age.plot()
+    dataframe = sql_context.createDataFrame(dt_transformed)
 
-columns = df.schema.names
-for column in columns:
-    df = df.withColumn(column, df[column].cast(IntegerType()))
+    dataframe = dataframe.fillna(0)
+    dataframe = dataframe.replace("nan", "0")
+    dataframe = dataframe.withColumn("Hemoglobin", dataframe["Hemoglobin"].cast(IntegerType()))
 
-df_numeric_pandas = df.toPandas()
-df_class_1 = df_numeric_pandas[df_numeric_pandas['SARS-Cov-2 exam result'] != 'negative']
-df_class_0 = df_numeric_pandas[df_numeric_pandas['SARS-Cov-2 exam result'] == 'negative']
-df_class_0 = df_class_0[:len(df_class_1)]
+    return dataframe, sql_context
 
-df_numeric_concat = pd.concat([df_class_0, df_class_1], axis=0)
 
-y = df_numeric_concat['SARS-Cov-2 exam result']
+def transform_hemoglobin_values(dataframe):
+    df_hemoglobin = dataframe.select("Hemoglobin").toPandas()
+    fig = px.histogram(x=df_hemoglobin['Hemoglobin'], title="Hemoglobin distribution")
+    fig.show()
 
-y_l = [0 if r == 'negative' else 1 for r in y]
+    return dataframe
 
-columns_to_drop = ['SARS-Cov-2 exam result', 'Patient ID']
-X = df_numeric_concat.drop('SARS-Cov-2 exam result', axis=1)
 
-columns = X.columns
-X.columns = [str(re.sub(r"[^a-zA-Z0-9]+", ' ', column)) for column in columns]
-columns = X.columns
-X.columns = [column.replace("!@#$%^&*()[]{};:,./<>?\|`~-=_+", " ") for column in columns]
+def transform_aggregate(dataframe, sql_context):
+    df_age_select = dataframe.select(func.col("SARS-Cov-2 exam result").alias("result"),
+                                     func.col('Patient age quantile').alias('age'))
 
-columns = X.columns
+    df_age_select.write.mode('overwrite').option("header", "true").save("result_age.parquet",
+                                                                        format="parquet")
 
-for column in X.columns:
-    X[column] = pd.to_numeric(X[column], errors='ignore')
+    df_sql = sql_context.sql("SELECT * FROM parquet.`./result_age.parquet`")
+    df_aggregate = df_sql.groupBy("result").agg(func.max("age"), func.avg("age")).toPandas()
+    fig = px.line(df_aggregate, x="result", y="avg(age)", title="Average age/result distribution",
+                  log_y=True, color_discrete_sequence=['#F42272'])
+    display(df_aggregate)
+    fig.show()
 
-X = pd.get_dummies(X)
+    return dataframe
 
-for column in X.columns:
-    if '<' in column:
-        X = X.drop([column], axis=1)
+
+def load_data(dataframe, name):
+    (dataframe
+     .coalesce(1)
+     .write
+     .csv(name, mode='overwrite', header=True))
+    return None
+
+
+if __name__ == '__main__':
+    main()

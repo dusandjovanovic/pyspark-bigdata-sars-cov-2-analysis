@@ -16,7 +16,7 @@ def main():
 
     # extracting and transforming the dataset
     data = extract_data()
-    data_transformed, sql_context = transform_data(data, sql_context)
+    data_transformed = transform_data(data, sql_context)
 
     # hemoglobin values analysis
     data_transformed = transform_hemoglobin_values(data_transformed)

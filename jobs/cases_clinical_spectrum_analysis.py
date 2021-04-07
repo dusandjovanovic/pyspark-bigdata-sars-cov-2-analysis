@@ -1,8 +1,8 @@
 from IPython.core.display import display
 from pyspark.sql.types import IntegerType
 import pyspark.sql.functions as func
-import pandas as pd
 import plotly.express as px
+import pandas as pd
 
 from dependencies.spark import start_spark
 

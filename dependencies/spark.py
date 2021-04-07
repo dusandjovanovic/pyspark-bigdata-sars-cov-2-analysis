@@ -2,7 +2,7 @@ import __main__
 
 from os import environ, listdir, path
 import json
-from pyspark import SparkFiles
+from pyspark import SparkFiles, SQLContext
 from pyspark.sql import SparkSession
 from dependencies import logging
 
@@ -53,4 +53,6 @@ def start_spark(app_name='my_spark_app', master='local[*]', jar_packages=[],
         spark_logger.warn('Warning: No config found.')
         config_dict = None
 
-    return spark_sess, spark_logger, config_dict
+    sql_context = SQLContext(spark_sess.sparkContext)
+
+    return spark_sess, sql_context, spark_logger, config_dict

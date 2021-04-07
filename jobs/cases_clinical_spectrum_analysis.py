@@ -1,5 +1,4 @@
 from IPython.core.display import display
-from pyspark.sql import SQLContext
 from pyspark.sql.types import IntegerType
 import pyspark.sql.functions as func
 import pandas as pd
@@ -9,25 +8,26 @@ from dependencies.spark import start_spark
 
 
 def main():
-    spark, log, config = start_spark(
+    spark, sql_context, log, config = start_spark(
         app_name='cases_clinical_spectrum_analysis',
         files=['configs/cases_clinical_spectrum_config.json'])
 
-    log.warn('cases_clinical_spectrum is up-and-running')
+    log.warn('Running cases_clinical_spectrum analysis...')
 
+    # extracting and transforming the dataset
     data = extract_data()
+    data_transformed, sql_context = transform_data(data, sql_context)
 
-    data_transformed, sql_context = transform_data(spark, data)
-
-    # hemoglobin values
+    # hemoglobin values analysis
     data_transformed = transform_hemoglobin_values(data_transformed)
     load_data(data_transformed, "hemoglobin_distribution")
 
-    # average age/result aggregated distribution
+    # average age/result aggregated distribution analysis
     data_transformed = transform_aggregate(data_transformed, sql_context)
     load_data(data_transformed, "age_result_distribution")
 
-    log.warn('cases_clinical_spectrum is finished')
+    log.warn('Terminating cases_clinical_spectrum analysis...')
+
     spark.stop()
     return None
 
@@ -38,9 +38,7 @@ def extract_data():
     return dataframe
 
 
-def transform_data(spark, frame):
-    sql_context = SQLContext(spark.sparkContext)
-
+def transform_data(frame, sql_context):
     dt_transformed = frame
 
     dt_transformed['Respiratory Syncytial Virus'] = dt_transformed['Respiratory Syncytial Virus'].astype(str)
@@ -60,7 +58,7 @@ def transform_data(spark, frame):
     dataframe = dataframe.replace("nan", "0")
     dataframe = dataframe.withColumn("Hemoglobin", dataframe["Hemoglobin"].cast(IntegerType()))
 
-    return dataframe, sql_context
+    return dataframe
 
 
 def transform_hemoglobin_values(dataframe):

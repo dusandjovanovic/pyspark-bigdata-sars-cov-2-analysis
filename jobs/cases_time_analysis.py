@@ -21,25 +21,25 @@ def main():
     data = extract_data(spark)
     data_transformed = transform_data(data, sql_context)
 
-    # # confirmed cases and deaths globally
-    # data_transformed = transform_confirmed_cases_and_deaths_globally(data_transformed)
-    # load_data(data_transformed, "confirmed_cases_and_deaths_globally")
-    #
-    # # confirmed cases by countries
-    # data_transformed = transform_confirmed_cases_countries(data_transformed)
-    # load_data(data_transformed, "confirmed_cases_countries")
+    # confirmed cases and deaths globally
+    data_transformed = transform_confirmed_cases_and_deaths_globally(data_transformed)
+    load_data(data_transformed, "confirmed_cases_and_deaths_globally")
 
-    # # confirmed cases in Europe
-    # data_transformed = transform_confirmed_cases_europe(data_transformed)
-    # load_data(data_transformed, "confirmed_cases_europe")
+    # confirmed cases by countries
+    data_transformed = transform_confirmed_cases_countries(data_transformed)
+    load_data(data_transformed, "confirmed_cases_countries")
 
-    # # confirmed cases comparison
-    # data_transformed = transform_confirmed_cases_comparison(data_transformed)
-    # load_data(data_transformed, "confirmed_cases_comparison")
+    # confirmed cases in Europe
+    data_transformed = transform_confirmed_cases_europe(data_transformed)
+    load_data(data_transformed, "confirmed_cases_europe")
 
-    # # confirmed cases comparison by countries
-    # data_transformed = transform_confirmed_cases_comparison_countries(data_transformed)
-    # load_data(data_transformed, "confirmed_cases_comparison_countries")
+    # confirmed cases comparison
+    data_transformed = transform_confirmed_cases_comparison(data_transformed)
+    load_data(data_transformed, "confirmed_cases_comparison")
+
+    # confirmed cases comparison by countries
+    data_transformed = transform_confirmed_cases_comparison_countries(data_transformed)
+    load_data(data_transformed, "confirmed_cases_comparison_countries")
 
     # forecasting the future
     data_transformed = transform_future_forecasting(data_transformed)

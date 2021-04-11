@@ -2,43 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="30c61dc1-cab1-4a43-a7ce-32c030057976" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/configs/cases_time_analysis_config.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_europe/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_europe/.part-00000-dcd1f719-b667-4fec-9abe-84755b7f51bb-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_europe/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_europe/part-00000-dcd1f719-b667-4fec-9abe-84755b7f51bb-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_globally/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_globally/.part-00000-0fedd029-d4ee-4e69-9df9-1d336ed916f3-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_globally/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_and_deaths_globally/part-00000-0fedd029-d4ee-4e69-9df9-1d336ed916f3-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison/.part-00000-cb807011-6506-4fb5-b1d1-f6eb8317db9d-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison/part-00000-cb807011-6506-4fb5-b1d1-f6eb8317db9d-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison_countries/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison_countries/.part-00000-d7b27d9e-f03f-463d-bbfc-235af92b2466-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison_countries/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_comparison_countries/part-00000-d7b27d9e-f03f-463d-bbfc-235af92b2466-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_countries/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_countries/.part-00000-99a0b39f-a20d-4efd-889c-38cd0bb0fd3d-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_countries/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_countries/part-00000-99a0b39f-a20d-4efd-889c-38cd0bb0fd3d-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_europe/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_europe/.part-00000-d544eef5-4074-47b7-8be3-09cd71fde626-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_europe/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/confirmed_cases_europe/part-00000-d544eef5-4074-47b7-8be3-09cd71fde626-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/future_forecasting/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/future_forecasting/.part-00000-c06c00ae-cf0c-47dc-87f7-10c7efc8675b-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/future_forecasting/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/future_forecasting/part-00000-c06c00ae-cf0c-47dc-87f7-10c7efc8675b-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/hemoglobin_distribution/.part-00000-707d9f95-bb21-414a-8fd0-73233b587c53-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/hemoglobin_distribution/part-00000-707d9f95-bb21-414a-8fd0-73233b587c53-c000.csv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jobs/cases_time_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_time_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/hemoglobin_distribution/.part-00000-76d071b9-0d74-4ed4-92ac-ec53d33c2642-c000.csv.crc" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/hemoglobin_distribution/part-00000-76d071b9-0d74-4ed4-92ac-ec53d33c2642-c000.csv" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -229,7 +193,7 @@
       <workItem from="1617724428048" duration="9511000" />
       <workItem from="1617784575961" duration="6145000" />
       <workItem from="1617814467154" duration="7314000" />
-      <workItem from="1618141313106" duration="8470000" />
+      <workItem from="1618141313106" duration="8534000" />
     </task>
     <servers />
   </component>

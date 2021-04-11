@@ -8,12 +8,13 @@ pandas = "*"
 numpy = "*"
 plotly = "*"
 openpyxl = "*"
+pystan = "*"
+prophet = "*"
 
 [dev-packages]
 pyspark = "==3.1.1"
 ipython = "*"
 flake8 = "*"
-prophet = "*"
 seaborn = "*"
 
 [requires]

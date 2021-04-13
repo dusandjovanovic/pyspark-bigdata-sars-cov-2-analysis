@@ -2,73 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="30c61dc1-cab1-4a43-a7ce-32c030057976" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_clinical_spectrum_analysis_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_clinical_spectrum_analysis_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_clinical_spectrum_analysis_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_clinical_spectrum_analysis_04.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_clinical_spectrum_analysis_05.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_clinical_spectrum_analysis_06.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_01.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_02.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_03.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_04.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_05.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_06.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_07.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_08.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_09.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/docs/screenshots/cases_time_analysis_10.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/.part-00000-8daab697-fb97-4d2b-b83f-73223d83baa5-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/part-00000-8daab697-fb97-4d2b-b83f-73223d83baa5-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/.part-00000-b16ca32d-3039-4c38-ba53-5e835a338a88-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/part-00000-b16ca32d-3039-4c38-ba53-5e835a338a88-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/.part-00000-83e4751d-329f-456f-9c9a-2d8727293b4a-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/part-00000-83e4751d-329f-456f-9c9a-2d8727293b4a-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/.part-00000-a9abc57d-8185-46a1-bfd2-7a375395faaf-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/part-00000-a9abc57d-8185-46a1-bfd2-7a375395faaf-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/.part-00000-fd9bf474-44f0-4223-98b5-062febe2b488-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/part-00000-fd9bf474-44f0-4223-98b5-062febe2b488-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/.part-00000-a1ed9640-ff75-44fc-9614-2251e2981c7e-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/part-00000-a1ed9640-ff75-44fc-9614-2251e2981c7e-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison_countries/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison_countries/.part-00000-ccacbb88-e0da-4c7b-8467-0444b402a0ab-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison_countries/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison_countries/part-00000-ccacbb88-e0da-4c7b-8467-0444b402a0ab-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_countries/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_countries/.part-00000-c407d2b6-0302-4396-a520-b966315fd792-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_countries/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_countries/part-00000-c407d2b6-0302-4396-a520-b966315fd792-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/.part-00000-d3b41346-32b5-4cf4-9c18-672d4b7a9e53-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/part-00000-d3b41346-32b5-4cf4-9c18-672d4b7a9e53-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/future_forecasting/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/future_forecasting/.part-00000-8253e18b-6490-4efe-81a5-cf50e3e01973-c000.csv.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/future_forecasting/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/future_forecasting/part-00000-8253e18b-6490-4efe-81a5-cf50e3e01973-c000.csv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00000-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00001-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00002-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00003-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00000-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00001-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00002-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00003-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/jobs/research_challenge.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/research_challenge.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -224,11 +157,11 @@
       <method v="2" />
     </configuration>
     <list>
-      <item itemvalue="Python.etl_job" />
-      <item itemvalue="Python.cases_patient_level_analysis" />
       <item itemvalue="Python.cases_clinical_spectrum_analysis" />
-      <item itemvalue="Python.research_challenge" />
+      <item itemvalue="Python.cases_patient_level_analysis" />
       <item itemvalue="Python.cases_time_analysis" />
+      <item itemvalue="Python.etl_job" />
+      <item itemvalue="Python.research_challenge" />
     </list>
     <recent_temporary>
       <list>

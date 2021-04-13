@@ -29,15 +29,15 @@ def main():
 
     # top paper authors
     data_transformed = transform_papers_and_authors(data_transformed)
-    # load_data(data_transformed, "paper_authors")
+    load_data(data_transformed, "paper_authors")
 
     # extracting abstracts
     data_transformed = transform_papers_and_abstracts(data_transformed)
-    # load_data(data_transformed, "paper_abstracts")
+    load_data(data_transformed, "paper_abstracts")
 
     # displaying common words in abstracts
     data_transformed = transform_abstracts_words(data_transformed)
-    # load_data(data_transformed, "paper_abstracts")
+    load_data(data_transformed, "paper_abstracts")
 
     log.warn('Terminating research_challenge analysis...')
 

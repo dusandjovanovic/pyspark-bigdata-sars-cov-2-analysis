@@ -284,6 +284,7 @@ def transform_age_relations(dataframe, sql_context):
 
     df_age_positive = df_age.withColumn("positive", udf_function_positive("result"))
     df_age_negative = df_age.withColumn("negative", udf_function_negative("result"))
+    ...
 ```
 
 ![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_03.png "")
@@ -301,6 +302,7 @@ def transform_care_relations(dataframe, sql_context):
     df_transformed_numeric = dataframe.withColumn("result", udf_function_to_numeric("SARS-Cov-2 exam result"))
     df_transformed_positive = df_transformed_numeric.filter(df_transformed_numeric.result == 1)
     df_transformed_positive_display = df_transformed_positive
+    ...
 ```
 
 ![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_06.png "")

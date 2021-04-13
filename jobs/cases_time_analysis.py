@@ -6,6 +6,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import numpy as np
+import shared_modules
 
 from dependencies.spark import start_spark
 
@@ -90,12 +91,12 @@ def transform_confirmed_cases_and_deaths_globally(dataframe):
     df_globally = dataframe.groupBy("date").sum("confirmed", "deaths").orderBy("date").toPandas()
 
     fig = px.line(df_globally, x="date", y="sum(confirmed)",
-                  title="Confirmed Cases (Logarithmic Scale) Over Time",
-                  log_y=True)
+                  title="Confirmed cases over time (logarithmic)",
+                  log_y=True, color_discrete_sequence=[shared_modules.color_400])
     fig.show()
 
-    fig = px.line(df_globally, x="date", y="sum(deaths)", title="Worldwide Deaths (Logarithmic Scale) Over Time",
-                  log_y=True, color_discrete_sequence=['#F42272'])
+    fig = px.line(df_globally, x="date", y="sum(deaths)", title="Death cases over time (logarithmic)",
+                  log_y=True, color_discrete_sequence=[shared_modules.color_900])
     fig.show()
 
     return dataframe
@@ -116,28 +117,28 @@ def transform_confirmed_cases_countries(dataframe):
     fig.add_trace(go.Scatter(x=df_serbia_grouped['date'],
                              y=df_serbia_grouped['sum(confirmed)'],
                              name="Serbia",
-                             line_color="deepskyblue",
+                             line_color=shared_modules.color_500,
                              opacity=0.8
                              ))
     fig.add_trace(go.Scatter(x=df_china_grouped['date'],
                              y=df_china_grouped['sum(confirmed)'],
                              name="China",
-                             line_color="red",
+                             line_color=shared_modules.color_700,
                              opacity=0.8
                              ))
     fig.add_trace(go.Scatter(x=df_italy_grouped['date'],
                              y=df_italy_grouped['sum(confirmed)'],
                              name="Italy",
-                             line_color="green",
+                             line_color=shared_modules.color_900,
                              opacity=0.8
                              ))
     fig.add_trace(go.Scatter(x=df_norway_grouped['date'],
                              y=df_norway_grouped['sum(confirmed)'],
                              name="Norway",
-                             line_color="blue",
+                             line_color=shared_modules.color_300,
                              opacity=0.8
                              ))
-    fig.update_layout(title_text="Overview of the case growth in Serbia, China, Italy and Norway")
+    fig.update_layout(title_text="Overview of case growth in Serbia, China, Italy and Norway")
 
     fig.show()
 
@@ -156,12 +157,12 @@ def transform_confirmed_cases_europe(dataframe):
                         locationmode='country names', color="sum(confirmed)",
                         hover_name="country", range_color=[1, 1000000],
                         color_continuous_scale='portland',
-                        title='European Countries with Confirmed Cases', scope='europe', height=800)
+                        title='European countries with confirmed cases', scope='europe', height=800)
     fig.show()
 
     fig = px.bar(df_latest_grouped_europe.sort_values('sum(confirmed)', ascending=False)[:10][::-1],
-                 x='sum(confirmed)', y='country', color_discrete_sequence=['#84DCC6'],
-                 title='Confirmed Cases in Europe', text='sum(confirmed)', orientation='h')
+                 x='sum(confirmed)', y='country', color_discrete_sequence=[shared_modules.color_400],
+                 title='Confirmed cases in Europe (top-10 countries)', text='sum(confirmed)', orientation='h')
     fig.show()
 
     return dataframe
@@ -173,7 +174,9 @@ def transform_confirmed_cases_comparison(dataframe):
                                 var_name='case', value_name='count')
 
     fig = px.area(df_melted, x="date", y="count", color='case',
-                  title='Cases over time: Area Plot', color_discrete_sequence=['cyan', 'red', 'orange'])
+                  title='Cases over time',
+                  color_discrete_sequence=[shared_modules.color_200, shared_modules.color_400,
+                                           shared_modules.color_800])
     fig.show()
 
     return dataframe
@@ -194,19 +197,20 @@ def transform_confirmed_cases_comparison_countries(dataframe):
 
     fig = px.bar(df_latest_grouped_with_mortality_rate.sort_values(by="mortalityRate", ascending=False)[:10][::-1],
                  x='mortalityRate', y='country',
-                 title='Deaths per 100 Confirmed Cases', text='mortalityRate', height=800, orientation='h',
-                 color_discrete_sequence=['darkred']
+                 title='Deaths per 100 confirmed cases (top-10)', text='mortalityRate', height=800, orientation='h',
+                 color_discrete_sequence=[shared_modules.color_600]
                  )
     fig.show()
 
     fig = px.bar(df_latest_grouped_with_recovery_rate.sort_values(by="recoveryRate", ascending=False)[:10][::-1],
                  x='recoveryRate', y='country',
-                 title='Recoveries per 100 Confirmed Cases', text='recoveryRate', height=800, orientation='h',
-                 color_discrete_sequence=['#2ca02c']
+                 title='Recoveries per 100 confirmed cases (top-10)', text='recoveryRate', height=800, orientation='h',
+                 color_discrete_sequence=[shared_modules.color_500]
                  )
     fig.show()
 
     return dataframe
+
 
 def transform_future_forecasting(dataframe):
     time_series_data = dataframe.select(["date", "confirmed"]).groupby("date").sum().orderBy("date")
@@ -233,7 +237,7 @@ def transform_future_forecasting(dataframe):
         x=test_ts.index,
         y=test_ts.y,
         name="Actual Cases",
-        line_color="deepskyblue",
+        line_color=shared_modules.color_400,
         mode='lines',
         opacity=0.8))
     test_fig.add_trace(go.Scatter(
@@ -241,25 +245,25 @@ def transform_future_forecasting(dataframe):
         y=forecast.yhat,
         name="Prediction",
         mode='lines',
-        line_color='red',
+        line_color=shared_modules.color_800,
         opacity=0.8))
     test_fig.add_trace(go.Scatter(
         x=forecast.index,
         y=forecast.yhat_lower,
-        name="Prediction Lower Bound",
+        name="Prediction lower bound",
         mode='lines',
-        line=dict(color='gray', width=2, dash='dash'),
+        line=dict(color=shared_modules.color_200, width=2, dash='dash'),
         opacity=0.8))
     test_fig.add_trace(go.Scatter(
         x=forecast.index,
         y=forecast.yhat_upper,
-        name="Prediction Upper Bound",
+        name="Prediction upper bound",
         mode='lines',
-        line=dict(color='royalblue', width=2, dash='dash'),
+        line=dict(color=shared_modules.color_200, width=2, dash='dash'),
         opacity=0.8
     ))
 
-    test_fig.update_layout(title_text="Prophet Model's Test Prediction",
+    test_fig.update_layout(title_text="Model prediction",
                            xaxis_title="Date", yaxis_title="Cases", )
 
     test_fig.show()
@@ -274,15 +278,15 @@ def transform_future_forecasting(dataframe):
         x=time_series_data.ds,
         y=time_series_data.y,
         name="Actual",
-        line_color="red",
+        line_color=shared_modules.color_400,
         opacity=0.8))
     prediction_fig.add_trace(go.Scatter(
         x=forecast_full.index,
         y=forecast_full.yhat,
         name="Prediction",
-        line_color="deepskyblue",
+        line_color=shared_modules.color_600,
         opacity=0.8))
-    prediction_fig.update_layout(title_text="Prophet Model Forecasting",
+    prediction_fig.update_layout(title_text="Model forecasting",
                                  xaxis_title="Date", yaxis_title="Cases", )
 
     prediction_fig.show()
@@ -294,7 +298,7 @@ def load_data(dataframe, name):
     (dataframe
      .coalesce(1)
      .write
-     .csv(name, mode='overwrite', header=True))
+     .csv("./outputs/cases_time_analysis/" + name, mode='overwrite', header=True))
     return None
 
 

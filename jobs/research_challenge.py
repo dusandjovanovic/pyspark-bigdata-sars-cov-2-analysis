@@ -1,13 +1,17 @@
 import os
 import sys
+
 from pyspark.sql import Window
 from pyspark.sql.types import StringType, ArrayType, StructField, StructType, IntegerType, MapType, DoubleType
 from pyspark.sql.functions import udf
 import pyspark.sql.functions as func
 import plotly.express as px
+import plotly.figure_factory as ff
 from wordcloud import WordCloud, STOPWORDS
 from textblob import TextBlob
 import re
+import random
+import shared_modules
 
 from dependencies.spark import start_spark
 
@@ -84,7 +88,9 @@ def transform_data(frame, sql_context):
 def transform_papers_and_authors(dataframe):
     df_authors = dataframe.select("paper_id", func.explode("metadata.authors").alias("author")) \
         .select("paper_id", "author.*")
-    df_authors.select("first", "middle", "last", "email").where("email <> ''").show(n=10)
+    df_authors.select("first", "middle", "last", "email").where("email <> ''")
+
+    df_authors.show(n=10)
 
     return dataframe
 
@@ -114,12 +120,16 @@ def transform_abstracts_words(dataframe):
     dataframe = dataframe.withColumn("sentiment_abstract", udf_function_sentiment("clean_abstract"))
 
     dataframe_pd = dataframe.toPandas()
-    fig = px.histogram(dataframe_pd, x="words", y="sentiment_abstract", marginal="rug", hover_data=dataframe_pd.columns)
+    fig = ff.create_distplot([dataframe_pd["sentiment_abstract"]], ["sentiment_abstract"],
+                             colors=[shared_modules.color_400])
     fig.show()
 
     text = dataframe_pd["clean_abstract"].values
-    wordcloud = WordCloud(width=1000, height=500, stopwords=stopwords, background_color="white").generate(str(text))
-    fig = px.imshow(wordcloud)
+    word_cloud = WordCloud(width=1000, height=500, stopwords=stopwords, background_color="white",
+                           max_words=25).generate(
+        str(text))
+    fig = px.imshow(word_cloud.recolor(color_func=generate_custom_color, random_state=3), binary_compression_level=1,
+                    title="Most commonly used words in abstracts")
     fig.show()
 
     return dataframe
@@ -129,8 +139,16 @@ def load_data(dataframe, name):
     (dataframe
      .coalesce(1)
      .write
-     .json(name, mode='overwrite'))
+     .json("./outputs/research_challenge/" + name, mode='overwrite'))
     return None
+
+
+def generate_custom_color(word, font_size, position, orientation, random_state=None,
+                          **kwargs):
+    return random.choice(
+        [shared_modules.color_50, shared_modules.color_100, shared_modules.color_200, shared_modules.color_300,
+         shared_modules.color_400, shared_modules.color_500, shared_modules.color_600, shared_modules.color_700,
+         shared_modules.color_800, shared_modules.color_900])
 
 
 def generate_cleaned_abstracts(abstract):
@@ -145,11 +163,9 @@ def generate_cleaned_abstracts(abstract):
 def generate_sentiment(sentence):
     temp = TextBlob(sentence).sentiment[0]
     if temp == 0.0:
-        return 0.0  # Neutral
-    elif temp >= 0.0:
-        return 1.0  # Positive
+        return 0.0
     else:
-        return 2.0  # Negative
+        return round(temp, 2)
 
 
 def generate_cord19_schema():

@@ -62,7 +62,9 @@ U nastavku su ukratko opisani korišćeni izvori podataka kao i analize koje su 
 + Napomena** Nakon svake analize, podaci se prikupljaju u master čvoru i odatle vizualizuju rezultati.
 ```
 
-### COVID-19 Open Research Dataset Challenge (CORD-19) - [URL](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge/tasks)
+
+
+## COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge/tasks)
 
 Ovaj dataset sadrži više od 400,000 medicinskih članaka o virusu COVID-19, SARS-CoV-2 i relevantnim temama.
 
@@ -109,7 +111,7 @@ Oslanjajući se na prethodno dobijeni i normalizovani dataset, gradi se korpus r
 
 
 
-### COVID-19 Dataset - [URL](https://www.kaggle.com/imdevskp/corona-virus-report)
+## COVID-19 Dataset [@Kaggle](https://www.kaggle.com/imdevskp/corona-virus-report)
 
 Ovaj dataset sadrži brojeve registorvanih, oporavljenih i preminulih pacijenata od virusa COVID-19 širom sveta, podeljeno po geografskim oblastima.
 

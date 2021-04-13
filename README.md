@@ -233,3 +233,76 @@ Nakon definisanja podataka za treniranje, dobijaju se gornja i donja granica pre
 
 ![alt text](./docs/screenshots/cases_time_analysis_09.png "")
 ![alt text](./docs/screenshots/cases_time_analysis_10.png "")
+
+
+
+## Diagnosis of COVID-19 and its clinical spectrum [@Kaggle](https://www.kaggle.com/einsteindata4u/covid19)
+
+Ovaj dataset sadrži anonimne laboratorijske nalaze pacijenata bolnice iz São Paula. Laboratirijski nalazi sa veoma širokog spektra i opisuju izmerene nivoe različitih parametara u krvi. Pored laboratorijskih nalaza prisutne su i informacije o pozitivnom/negativnom rezultatu testiranja pacijenata i slično.
+
+#### 1) Analiza distribucije Hemoglobina i crvenih krvnih zrnaca pacijenata
+
+Nakon uvodnih transformacija i normalizacije dataseta, poput popunjavanja nepoznatih vrednosti, selekcijom i tranformacijom može se doći do distribucije pomenutih parametara medju pacijentima.
+
+```python
+def transform_hemoglobin_red_blood_cells_values(dataframe):
+    dataframe = dataframe.fillna(0)
+    dataframe = dataframe.replace("nan", "0")
+    dataframe = dataframe.withColumn("Hemoglobin", dataframe["Hemoglobin"].cast(IntegerType()))
+    
+    df_hemoglobin = dataframe.select("Hemoglobin")
+    df_red_bloof_cells = dataframe.select("Red blood Cells").withColumn("Red blood Cells", func.round(dataframe["Red blood Cells"], 2))
+    ...
+```
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_01.png "")
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_02.png "")
+
+#### 2) Analiza relacije izmedju uzrasta pacijenata i rezultata testa na CVOID-19
+
+Prva transformacija predstavlja odnsos srednje vrednosti starosti pacijenta i verovatnoće pozitivnog testa. Polazi se od grupacije po rezultatu testa a zatim se nalaze agregacije vrednosti uzrasta.
+
+```python
+def transform_aggregate(dataframe, sql_context):
+    df_age_select = dataframe.select(func.col("SARS-Cov-2 exam result").alias("result"), func.col('Patient age quantile').alias('age'))
+    df_age_select.write.mode('overwrite').option("header", "true").save("temporary.parquet",format="parquet")
+
+    df_sql = sql_context.sql("SELECT * FROM parquet.`./temporary.parquet`")
+    df_aggregate = df_sql.groupBy("result").agg(func.max("age"), func.avg("age"))
+    ...
+```
+
+Druga transformacija primenjuje udf funkcije za označavanje pozitvnih/negativnih pacijenata i formira dva podskupa koja sadrže kolone pozitivnosti na COVID i uzrasta.
+
+```python
+def transform_age_relations(dataframe, sql_context):
+    udf_function_positive = func.udf(is_positive, StringType())
+    udf_function_negative = func.udf(is_negative, StringType())
+
+    df_age = dataframe.select(func.col("SARS-Cov-2 exam result").alias("result"), func.col('Patient age quantile').alias('age'))
+
+    df_age_positive = df_age.withColumn("positive", udf_function_positive("result"))
+    df_age_negative = df_age.withColumn("negative", udf_function_negative("result"))
+```
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_03.png "")
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_04.png "")
+
+#### 2) Analiza pacijenata i brige koja im je pružana
+
+Primenom slične tehnike kao u prošlom primeru, udf funkcijama se označavaju pacijenti koji su pozitivni, a zatim se vrši prikaz onih pacijenata koji su zbrinuti na intenzivnoj nezi.
+
+```python
+def transform_care_relations(dataframe, sql_context):
+    udf_function_to_numeric = func.udf(negative_positive_to_numeric, IntegerType())
+
+    df_transformed_numeric = dataframe.withColumn("result", udf_function_to_numeric("SARS-Cov-2 exam result"))
+    df_transformed_positive = df_transformed_numeric.filter(df_transformed_numeric.result == 1)
+    df_transformed_positive_display = df_transformed_positive
+```
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_06.png "")
+
+Slična analiza primenjuje se i za pacijente koji su smešteni i zbrinuti na "regularnim" odeljenjima, ali zbog sličnosti nije posebno objašnjavana.

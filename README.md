@@ -86,7 +86,7 @@ def transform_papers_and_abstracts(dataframe):
     ...
 ```
 
-### 2) Sentiment analiza sažetaka
+#### 2) Sentiment analiza sažetaka
 
 Udf funkcijama paralelizovano se nalaze *sentiment vrednosti* svakog sažetka (abstract). Ove vrednosti se zatim i vizualizuju. Prethodno se sličnom analogijom vrši normalizacija svakog sažetka u vidu transformacije u mala slova i tokenizacije.
 
@@ -103,7 +103,7 @@ def transform_abstracts_words(dataframe):
 
 ![alt text](./docs/screenshots/research_challenge_01.png "")
 
-### 3) Nalaženje najčešće korišćenih reči
+#### 3) Nalaženje najčešće korišćenih reči
 
 Oslanjajući se na prethodno dobijeni i normalizovani dataset, gradi se korpus reči i prikazuje 25 najčešće korišćenih.
 

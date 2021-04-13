@@ -68,7 +68,7 @@ U nastavku su ukratko opisani korišćeni izvori podataka kao i analize koje su 
 
 Ovaj dataset sadrži više od 400,000 medicinskih članaka o virusu COVID-19, SARS-CoV-2 i relevantnim temama.
 
-#### Izvlačenje abstract zapisa svih članaka
+#### 1) Izvlačenje abstract zapisa svih članaka
 
 Polazi se od definisanja šeme (shcema) dataseta, a zatim i izvlačenja abstract zapisa svakog članka. Ovde se primenjuje par koraka normalizacije i "pročišćavanja".
 
@@ -86,7 +86,7 @@ def transform_papers_and_abstracts(dataframe):
     ...
 ```
 
-### Sentiment analiza sažetaka
+### 2) Sentiment analiza sažetaka
 
 Udf funkcijama paralelizovano se nalaze *sentiment vrednosti* svakog sažetka (abstract). Ove vrednosti se zatim i vizualizuju. Prethodno se sličnom analogijom vrši normalizacija svakog sažetka u vidu transformacije u mala slova i tokenizacije.
 
@@ -103,7 +103,7 @@ def transform_abstracts_words(dataframe):
 
 ![alt text](./docs/screenshots/research_challenge_01.png "")
 
-### Nalaženje najčešće korišćenih reči
+### 3) Nalaženje najčešće korišćenih reči
 
 Oslanjajući se na prethodno dobijeni i normalizovani dataset, gradi se korpus reči i prikazuje 25 najčešće korišćenih.
 
@@ -115,7 +115,7 @@ Oslanjajući se na prethodno dobijeni i normalizovani dataset, gradi se korpus r
 
 Ovaj dataset sadrži brojeve registorvanih, oporavljenih i preminulih pacijenata od virusa COVID-19 širom sveta, podeljeno po geografskim oblastima.
 
-#### Sumiranje registrovanih i preminulih pacijenata
+#### 1) Sumiranje registrovanih i preminulih pacijenata
 
 Nakon uvodnih transformacija i proširivanja dataseta novim kolonama, kao i preuredjivanjem početnih, vrši se sumiranje gorepomenutih klasa slučajeva. Sumirani vremenski prikaz registrovanih i preminulih pacijenata se prikazuje po logaritamskoj skali.
 
@@ -136,7 +136,7 @@ def transform_papers_and_abstracts(dataframe):
 
 ![alt text](./docs/screenshots/cases_time_analysis_02.png "")
 
-#### Analiza registrovanih slučajeva različitih zemalja
+#### 2) Analiza registrovanih slučajeva različitih zemalja
 
 Kao primer, izabrane su zemlje - Srbija, Kina, Italija i Norveška. Filtriranjem i sumiranjem dobijaju se vremenski pregledi napredovanja virusa u ocim zemljama.
 
@@ -156,7 +156,7 @@ def transform_confirmed_cases_countries(dataframe):
 
 ![alt text](./docs/screenshots/cases_time_analysis_03.png "")
 
-#### Analiza registrovanih slučajeva na nivou Evrope
+#### 3) Analiza registrovanih slučajeva na nivou Evrope
 
 Particionisanjem datafrema po zemlji, a zatim filtriranju po najsvežijim podacima i na kraju grupacijom koja uzima u obzir samo zemlje Evrope dobija se presek trenutnog stanja registrovanih pacijenata na našem kontinentu.
 
@@ -176,7 +176,7 @@ Iz istog dataframe-a se lako izvlači opadajuća lista najgore pogodjenih zemalj
 
 ![alt text](./docs/screenshots/cases_time_analysis_05.png "")
 
-#### Analiza odnosa rasta registrovanih, preminulih i aktivnih slučajeva 
+#### 4) Analiza odnosa rasta registrovanih, preminulih i aktivnih slučajeva 
 
 Prethodno obogaćeni dataframe `active` kolonom koja predstavlja razliku ostalih kolona se koristi kao osnova. Sa ovime na umu, veoma lako se vrši sumiranje traženih parametara.
 
@@ -188,7 +188,7 @@ def transform_confirmed_cases_comparison(dataframe):
 
 ![alt text](./docs/screenshots/cases_time_analysis_06.png "")
 
-#### Analiza zemalja po najboljem/najgorem odnosu oporavljenih i preminulih pacijenata
+#### 5) Analiza zemalja po najboljem/najgorem odnosu oporavljenih i preminulih pacijenata
 
 Dodavanjem novih kolona i izvlačenjem informacija o odnosima oporavljenih i preminulih pacijenata u odnosu na ukupan broj, dobija se mera kvaliteta ophodjenja država prema pandemiji. Zatim, na osnovu novododatih kolona, lako se izdvajaju zemlje se najboljim ili najgorim koeficijentima.
 
@@ -209,7 +209,7 @@ def transform_confirmed_cases_comparison_countries(dataframe):
 ![alt text](./docs/screenshots/cases_time_analysis_07.png "")
 ![alt text](./docs/screenshots/cases_time_analysis_08.png "")
 
-#### Analiza i predvidjanje budućeg napredovanja pandemije
+#### 6) Analiza i predvidjanje budućeg napredovanja pandemije
 
 Analizom serijskih vremenskih podataka mogu se utcrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da se dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predvidjanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
 

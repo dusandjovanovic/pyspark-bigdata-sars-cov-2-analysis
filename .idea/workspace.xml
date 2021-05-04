@@ -2,7 +2,44 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="30c61dc1-cab1-4a43-a7ce-32c030057976" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/jobs/research_challenge.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/research_challenge.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/.part-00000-7186166e-4e54-4f58-85e2-989383828fe6-c000.csv.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/part-00000-7186166e-4e54-4f58-85e2-989383828fe6-c000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/.part-00000-f55825cd-3e0f-4ab9-b25f-b048b02095de-c000.csv.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/part-00000-f55825cd-3e0f-4ab9-b25f-b048b02095de-c000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/.part-00000-d28dfdc8-20c3-425f-8118-6862709e1ff0-c000.csv.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/part-00000-d28dfdc8-20c3-425f-8118-6862709e1ff0-c000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/.part-00000-9d262e84-15a6-477c-9885-30295b1ac467-c000.csv.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/part-00000-9d262e84-15a6-477c-9885-30295b1ac467-c000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/._SUCCESS.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/.part-00000-404924f4-d314-4249-b230-51dbf7dba2ca-c000.csv.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/_SUCCESS" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/part-00000-404924f4-d314-4249-b230-51dbf7dba2ca-c000.csv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00000-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00001-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00002-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00003-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet.crc" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00000-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00001-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00002-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00003-012af2e7-83f6-481a-bc9c-7f4034090e9e-c000.snappy.parquet" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/.part-00000-8daab697-fb97-4d2b-b83f-73223d83baa5-c000.csv.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/part-00000-8daab697-fb97-4d2b-b83f-73223d83baa5-c000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/.part-00000-b16ca32d-3039-4c38-ba53-5e835a338a88-c000.csv.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_result_distribution/part-00000-b16ca32d-3039-4c38-ba53-5e835a338a88-c000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/.part-00000-83e4751d-329f-456f-9c9a-2d8727293b4a-c000.csv.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/part-00000-83e4751d-329f-456f-9c9a-2d8727293b4a-c000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/.part-00000-a9abc57d-8185-46a1-bfd2-7a375395faaf-c000.csv.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_red_blood_cells_values/part-00000-a9abc57d-8185-46a1-bfd2-7a375395faaf-c000.csv" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00000-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00001-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00002-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00003-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet.crc" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/part-00000-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/part-00001-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/part-00002-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/temporary.parquet/part-00003-7efbadb0-cb49-46e4-b06d-e0d0d851445b-c000.snappy.parquet" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +82,7 @@
       <recent name="$PROJECT_DIR$/jobs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.research_challenge">
+  <component name="RunManager" selected="Python.cases_clinical_spectrum_analysis">
     <configuration name="cases_clinical_spectrum_analysis" type="PythonConfigurationType" factoryName="Python">
       <module name="spark-bigdata-covid19-nlp-analysis" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -159,9 +196,9 @@
     <list>
       <item itemvalue="Python.cases_clinical_spectrum_analysis" />
       <item itemvalue="Python.cases_patient_level_analysis" />
-      <item itemvalue="Python.cases_time_analysis" />
       <item itemvalue="Python.etl_job" />
       <item itemvalue="Python.research_challenge" />
+      <item itemvalue="Python.cases_time_analysis" />
     </list>
     <recent_temporary>
       <list>
@@ -199,6 +236,10 @@
       <workItem from="1618307921614" duration="9030000" />
       <workItem from="1618320806191" duration="116000" />
       <workItem from="1618336943349" duration="731000" />
+      <workItem from="1619615264720" duration="25000" />
+      <workItem from="1619615337036" duration="284000" />
+      <workItem from="1620052749538" duration="4159000" />
+      <workItem from="1620138490499" duration="7130000" />
     </task>
     <servers />
   </component>
@@ -238,7 +279,7 @@
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/spark_bigdata_covid19_nlp_analysis$nlp_parsing_job.coverage" NAME="nlp_parsing_job Coverage Results" MODIFIED="1616983129443" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$nlp_parsing_job.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1617123381793" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
-    <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1618336953722" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
+    <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1620148614086" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_time_analysis.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1618337113179" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_clinical_analysis.coverage" NAME="cases_clinical_analysis Coverage Results" MODIFIED="1617212423990" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/00a00d0edc750db4a0c299dd1ec0c6871f5a4f24_json$cases_patient_level_analysis.coverage" NAME="cases_patient_level_analysis Coverage Results" MODIFIED="1618312493904" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />

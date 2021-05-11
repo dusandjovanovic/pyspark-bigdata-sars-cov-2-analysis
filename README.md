@@ -31,7 +31,7 @@ Ovaj paket, zajedno sa svim ostalim dependency-ma, mora biti kopiran na svaki Sp
 Pokretanje Spark klastera lokalno:
 
 ```bash
-cd $SPARK_HOME && ./spark-shell --master local
+cd $SPARK_HOME && spark-shell --master local
 ```
 
 Ukoliko `$SPARK_HOME` promenljiva okruženja ukazuje na instalaciju Spark-a, analiza (posao) pokreće se:
@@ -307,4 +307,82 @@ def transform_care_relations(dataframe, sql_context):
 
 ![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_06.png "")
 
-Slična analiza primenjuje se i za pacijente koji su smešteni i zbrinuti na "regularnim" odeljenjima, ali zbog sličnosti nije posebno objašnjavana.
+#### 3) Predikcije prisutnosti virusa kod pacijenata
+
+Potrebno je pre svega razumeti koje stavke dataseta su nepotpune i eliminisati kolone koje ne bi doprinele izgradnji kvalitetnih modela.
+
+```python
+df_transformed_null = dataframe.select(
+    [func.count(func.when(func.isnan(c) | func.isnull(c), c)).alias(c) for (c, c_type) in
+     dataframe.dtypes])
+
+```
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_07a.png "")
+
+Iz priloženih rezultata može se videti da postoji nekoliko kolona koje su zanemarive.
+
+```python
+df_transformed = df_transformed.drop("Mycoplasma pneumoniae", "Urine - Sugar",
+                                         "Prothrombin time (PT), Activity", "D-Dimer",
+                                         "Fio2 (venous blood gas analysis)", "Urine - Nitrite",
+                                         "Vitamin B12")
+```
+
+Zatim, možemo prikazati odnose izmedju svih preostalih parametara i pozitivnog/negativnog testa. Takodje, grupacijama možemo prikazati distribuciju rezultata pacijenata.
+
+```python
+udf_function_result = func.udf(transform_result, StringType())
+
+df_transformed = dataframe.withColumn("result", udf_function_result("SARS-Cov-2 exam result"))
+df_transformed_collected = df_transformed.groupBy('result').count()
+```
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_07.png "")
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_08.png "")
+
+Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredjen za testiranje. Biraju se kolone koje c2e se koristiti kao ulazne i jedna izlazna (u ovom slučaju rezultat testa).
+
+```python
+ # build the dataset to be used as a rf_model base
+    outcome_features = ["SARS-Cov-2 exam result"]
+    required_features = ['Hemoglobin', 'Hematocrit', 'Platelets', 'Eosinophils', 'Red blood Cells', 'Lymphocytes',
+                         'Leukocytes', 'Basophils', 'Monocytes']
+
+    df_transformed_model = df_transformed.select(required_features + outcome_features)
+
+    assembler = VectorAssembler(inputCols=required_features, outputCol='features')
+    model_data = assembler.transform(df_transformed_model)
+    model_data.show()
+
+    # split the dataset into train/test subgroups
+    (training_data, test_data) = model_data.randomSplit([0.8, 0.2], seed=2020)
+    print("Training Dataset Count: " + str(training_data.count()))
+    print("Test Dataset Count: " + str(test_data.count()))
+
+    # Random Forest classifier
+    rf = RandomForestClassifier(labelCol='SARS-Cov-2 exam result', featuresCol='features', maxDepth=5)
+    rf_model = rf.fit(training_data)
+    rf_predictions = rf_model.transform(test_data)
+
+    # Decision Tree Classifier
+    dt = DecisionTreeClassifier(featuresCol='features', labelCol='SARS-Cov-2 exam result', maxDepth=3)
+    dt_model = dt.fit(training_data)
+    dt_predictions = dt_model.transform(test_data)
+    dt_predictions.select(outcome_features + required_features).show(10)
+
+    # Logistic Regression Model
+    lr = LogisticRegression(featuresCol='features', labelCol='SARS-Cov-2 exam result', maxIter=10)
+    lr_model = lr.fit(training_data)
+    lr_predictions = lr_model.transform(test_data)
+
+    # Gradient-boosted Tree classifier Model
+    gb = GBTClassifier(labelCol='SARS-Cov-2 exam result', featuresCol='features')
+    gb_model = gb.fit(training_data)
+    gb_predictions = gb_model.transform(test_data)
+```
+
+Uspešnost svih modela se evaluira odvojeno.
+
+![alt text](./docs/screenshots/cases_clinical_spectrum_analysis_09.png "")

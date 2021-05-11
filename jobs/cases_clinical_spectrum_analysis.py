@@ -1,12 +1,12 @@
 from pyspark.sql.types import IntegerType, StringType, DoubleType
 import pyspark.sql.functions as func
+import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pandas as pd
-from pyspark.ml.feature import VectorAssembler
 import shared_modules
 
+from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from pyspark.ml.classification import RandomForestClassifier
 from pyspark.ml.classification import DecisionTreeClassifier

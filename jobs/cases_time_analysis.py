@@ -1,11 +1,8 @@
 from pyspark.sql import Window
 from pyspark.sql.types import IntegerType
 import pyspark.sql.functions as func
-from prophet import Prophet
 import plotly.graph_objects as go
 import plotly.express as px
-import pandas as pd
-import numpy as np
 import shared_modules
 
 from dependencies.spark import start_spark
@@ -41,10 +38,6 @@ def main():
     # confirmed cases comparison by countries
     data_transformed = transform_confirmed_cases_comparison_countries(data_transformed)
     load_data(data_transformed, "confirmed_cases_comparison_countries")
-
-    # forecasting the future
-    data_transformed = transform_future_forecasting(data_transformed)
-    load_data(data_transformed, "future_forecasting")
 
     log.warn('Terminating cases_time analysis...')
 
@@ -208,88 +201,6 @@ def transform_confirmed_cases_comparison_countries(dataframe):
                  color_discrete_sequence=[shared_modules.color_500]
                  )
     fig.show()
-
-    return dataframe
-
-
-def transform_future_forecasting(dataframe):
-    time_series_data = dataframe.select(["date", "confirmed"]).groupby("date").sum().orderBy("date")
-    time_series_data = time_series_data.withColumnRenamed("date", "ds")
-    time_series_data = time_series_data.withColumnRenamed("sum(confirmed)", "y")
-
-    time_series_data = time_series_data.toPandas()
-
-    train_range = np.random.rand(len(time_series_data)) < 0.8
-    train_ts = time_series_data[train_range]
-    test_ts = time_series_data[~train_range]
-    test_ts = test_ts.set_index('ds')
-
-    prophet_model = Prophet()
-    prophet_model.fit(train_ts)
-
-    future = pd.DataFrame(test_ts.index)
-    predict = prophet_model.predict(future)
-    forecast = predict[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
-    forecast = forecast.set_index('ds')
-
-    test_fig = go.Figure()
-    test_fig.add_trace(go.Scatter(
-        x=test_ts.index,
-        y=test_ts.y,
-        name="Actual Cases",
-        line_color=shared_modules.color_400,
-        mode='lines',
-        opacity=0.8))
-    test_fig.add_trace(go.Scatter(
-        x=forecast.index,
-        y=forecast.yhat,
-        name="Prediction",
-        mode='lines',
-        line_color=shared_modules.color_800,
-        opacity=0.8))
-    test_fig.add_trace(go.Scatter(
-        x=forecast.index,
-        y=forecast.yhat_lower,
-        name="Prediction lower bound",
-        mode='lines',
-        line=dict(color=shared_modules.color_200, width=2, dash='dash'),
-        opacity=0.8))
-    test_fig.add_trace(go.Scatter(
-        x=forecast.index,
-        y=forecast.yhat_upper,
-        name="Prediction upper bound",
-        mode='lines',
-        line=dict(color=shared_modules.color_200, width=2, dash='dash'),
-        opacity=0.8
-    ))
-
-    test_fig.update_layout(title_text="Model prediction",
-                           xaxis_title="Date", yaxis_title="Cases", )
-
-    test_fig.show()
-
-    prophet_model_full = Prophet()
-    prophet_model_full.fit(time_series_data)
-    future_full = prophet_model_full.make_future_dataframe(periods=150)
-    forecast_full = prophet_model_full.predict(future_full)
-    forecast_full = forecast_full.set_index('ds')
-    prediction_fig = go.Figure()
-    prediction_fig.add_trace(go.Scatter(
-        x=time_series_data.ds,
-        y=time_series_data.y,
-        name="Actual",
-        line_color=shared_modules.color_400,
-        opacity=0.8))
-    prediction_fig.add_trace(go.Scatter(
-        x=forecast_full.index,
-        y=forecast_full.yhat,
-        name="Prediction",
-        line_color=shared_modules.color_600,
-        opacity=0.8))
-    prediction_fig.update_layout(title_text="Model forecasting",
-                                 xaxis_title="Date", yaxis_title="Cases", )
-
-    prediction_fig.show()
 
     return dataframe
 

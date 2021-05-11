@@ -51,6 +51,47 @@ jobs/job_name.py
 - `--py-files packages.zip` - prethodno pomenuta arhiva sa dependency-ma;
 - `jobs/job_name.py` - Python modul sa kodom analize/posla.
 
+Početna točka svake Spark aplikacije je otvaranje sesije. Ovo je driver proces koji održava sve relevantne informacije o aplikaciji u toku njenog životnog ciklusa i odgovoran je za distribuiranje i zakazivanje rada nad svim executor procesima.
+
+```python
+def start_spark(app_name='my_spark_app', master='local[*]',
+jar_packages=[], files=[], spark_config={}):
+    flag_repl = not (hasattr(__main__, '__file__'))
+
+    flag_debug = False
+
+    if not (flag_repl or flag_debug):
+        spark_builder = (
+            SparkSession
+                .builder
+                .appName(app_name))
+    else:
+        spark_builder = (
+            SparkSession
+                .builder
+                .master(master)
+                .appName(app_name))
+```
+
+Pregled ETL obrade:
+
+```python
+def main():
+    spark, sql_context, log, config = start_spark(
+        app_name='cases_time_analysis',
+        files=['configs/cases_time_analysis_config.json'])
+
+    log.warn('Running cases_time analysis...')
+
+    # extracting and transforming the dataset
+    data = extract_data(spark)
+    data_transformed = transform_data(data, sql_context)
+
+    # confirmed cases and deaths globally
+    data_transformed = transform_confirmed_cases(data_transformed)
+    load_data(data_transformed, "confirmed_cases_and_deaths_globally")
+```
+
 ## Pregled dataset-ova i analiza
 
 U nastavku su ukratko opisani korišćeni izvori podataka kao i analize koje su izvršavane.

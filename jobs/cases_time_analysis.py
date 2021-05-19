@@ -3,7 +3,7 @@ from pyspark.sql.types import IntegerType
 import pyspark.sql.functions as func
 import plotly.graph_objects as go
 import plotly.express as px
-import shared_modules
+from visualisation.dependencies import color_scheme
 
 from dependencies.spark import start_spark
 
@@ -85,11 +85,11 @@ def transform_confirmed_cases_and_deaths_globally(dataframe):
 
     fig = px.line(df_globally, x="date", y="sum(confirmed)",
                   title="Confirmed cases over time (logarithmic)",
-                  log_y=True, color_discrete_sequence=[shared_modules.color_400])
+                  log_y=True, color_discrete_sequence=[color_scheme.color_400])
     fig.show()
 
     fig = px.line(df_globally, x="date", y="sum(deaths)", title="Death cases over time (logarithmic)",
-                  log_y=True, color_discrete_sequence=[shared_modules.color_900])
+                  log_y=True, color_discrete_sequence=[color_scheme.color_900])
     fig.show()
 
     return dataframe
@@ -110,25 +110,25 @@ def transform_confirmed_cases_countries(dataframe):
     fig.add_trace(go.Scatter(x=df_serbia_grouped['date'],
                              y=df_serbia_grouped['sum(confirmed)'],
                              name="Serbia",
-                             line_color=shared_modules.color_500,
+                             line_color=color_scheme.color_500,
                              opacity=0.8
                              ))
     fig.add_trace(go.Scatter(x=df_china_grouped['date'],
                              y=df_china_grouped['sum(confirmed)'],
                              name="China",
-                             line_color=shared_modules.color_700,
+                             line_color=color_scheme.color_700,
                              opacity=0.8
                              ))
     fig.add_trace(go.Scatter(x=df_italy_grouped['date'],
                              y=df_italy_grouped['sum(confirmed)'],
                              name="Italy",
-                             line_color=shared_modules.color_900,
+                             line_color=color_scheme.color_900,
                              opacity=0.8
                              ))
     fig.add_trace(go.Scatter(x=df_norway_grouped['date'],
                              y=df_norway_grouped['sum(confirmed)'],
                              name="Norway",
-                             line_color=shared_modules.color_300,
+                             line_color=color_scheme.color_300,
                              opacity=0.8
                              ))
     fig.update_layout(title_text="Overview of case growth in Serbia, China, Italy and Norway")
@@ -154,7 +154,7 @@ def transform_confirmed_cases_europe(dataframe):
     fig.show()
 
     fig = px.bar(df_latest_grouped_europe.sort_values('sum(confirmed)', ascending=False)[:10][::-1],
-                 x='sum(confirmed)', y='country', color_discrete_sequence=[shared_modules.color_400],
+                 x='sum(confirmed)', y='country', color_discrete_sequence=[color_scheme.color_400],
                  title='Confirmed cases in Europe (top-10 countries)', text='sum(confirmed)', orientation='h')
     fig.show()
 
@@ -168,8 +168,8 @@ def transform_confirmed_cases_comparison(dataframe):
 
     fig = px.area(df_melted, x="date", y="count", color='case',
                   title='Cases over time',
-                  color_discrete_sequence=[shared_modules.color_200, shared_modules.color_400,
-                                           shared_modules.color_800])
+                  color_discrete_sequence=[color_scheme.color_200, color_scheme.color_400,
+                                           color_scheme.color_800])
     fig.show()
 
     return dataframe
@@ -191,14 +191,14 @@ def transform_confirmed_cases_comparison_countries(dataframe):
     fig = px.bar(df_latest_grouped_with_mortality_rate.sort_values(by="mortalityRate", ascending=False)[:10][::-1],
                  x='mortalityRate', y='country',
                  title='Deaths per 100 confirmed cases (top-10)', text='mortalityRate', height=800, orientation='h',
-                 color_discrete_sequence=[shared_modules.color_600]
+                 color_discrete_sequence=[color_scheme.color_600]
                  )
     fig.show()
 
     fig = px.bar(df_latest_grouped_with_recovery_rate.sort_values(by="recoveryRate", ascending=False)[:10][::-1],
                  x='recoveryRate', y='country',
                  title='Recoveries per 100 confirmed cases (top-10)', text='recoveryRate', height=800, orientation='h',
-                 color_discrete_sequence=[shared_modules.color_500]
+                 color_discrete_sequence=[color_scheme.color_500]
                  )
     fig.show()
 

@@ -11,7 +11,7 @@ from wordcloud import WordCloud, STOPWORDS
 from textblob import TextBlob
 import re
 import random
-import shared_modules
+from visualisation.dependencies import color_scheme
 
 from dependencies.spark import start_spark
 
@@ -121,7 +121,7 @@ def transform_abstracts_words(dataframe):
 
     dataframe_pd = dataframe.toPandas()
     fig = ff.create_distplot([dataframe_pd["sentiment_abstract"]], ["sentiment_abstract"],
-                             colors=[shared_modules.color_400])
+                             colors=[color_scheme.color_400])
     fig.show()
 
     text = dataframe_pd["clean_abstract"].values
@@ -146,9 +146,9 @@ def load_data(dataframe, name):
 def generate_custom_color(word, font_size, position, orientation, random_state=None,
                           **kwargs):
     return random.choice(
-        [shared_modules.color_50, shared_modules.color_100, shared_modules.color_200, shared_modules.color_300,
-         shared_modules.color_400, shared_modules.color_500, shared_modules.color_600, shared_modules.color_700,
-         shared_modules.color_800, shared_modules.color_900])
+        [color_scheme.color_50, color_scheme.color_100, color_scheme.color_200, color_scheme.color_300,
+         color_scheme.color_400, color_scheme.color_500, color_scheme.color_600, color_scheme.color_700,
+         color_scheme.color_800, color_scheme.color_900])
 
 
 def generate_cleaned_abstracts(abstract):

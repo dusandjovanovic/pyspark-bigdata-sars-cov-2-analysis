@@ -1,10 +1,10 @@
 from pyspark.sql.types import IntegerType, StringType, DoubleType
 import pyspark.sql.functions as func
-import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import shared_modules
+from visualisation.dependencies import color_scheme
+import sys
 
 from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
@@ -15,7 +15,6 @@ from pyspark.ml.classification import GBTClassifier
 
 from dependencies.spark import start_spark
 
-
 def main():
     spark, sql_context, log, config = start_spark(
         app_name='cases_clinical_spectrum_analysis',
@@ -24,7 +23,7 @@ def main():
     log.warn('Running cases_clinical_spectrum analysis...')
 
     # extracting and transforming the dataset
-    data = extract_data()
+    data = extract_data(spark)
     data_transformed = transform_data(data, sql_context)
 
     # hemoglobin/eosinophils values analysis
@@ -53,8 +52,8 @@ def main():
     return None
 
 
-def extract_data():
-    dataframe = pd.read_excel('../data/covid-19-clinical-spectrum/dataset.xlsx')
+def extract_data(spark):
+    dataframe = spark.read.csv(sys.argv[1], header=True, dateFormat="yyyy-MM-dd")
 
     return dataframe
 
@@ -62,20 +61,12 @@ def extract_data():
 def transform_data(frame, sql_context):
     dt_transformed = frame
 
-    dt_transformed['Respiratory Syncytial Virus'] = dt_transformed['Respiratory Syncytial Virus'].astype(str)
-    dt_transformed['Influenza A'] = dt_transformed['Influenza A'].astype(str)
-    dt_transformed['Influenza B'] = dt_transformed['Influenza B'].astype(str)
-    dt_transformed['Parainfluenza 1'] = dt_transformed['Parainfluenza 1'].astype(str)
-    dt_transformed['CoronavirusNL63'] = dt_transformed['CoronavirusNL63'].astype(str)
-    dt_transformed['Rhinovirus/Enterovirus'] = dt_transformed['Rhinovirus/Enterovirus'].astype(str)
-    dt_transformed['Coronavirus HKU1'] = dt_transformed['Coronavirus HKU1'].astype(str)
+    columns = dt_transformed.columns
 
-    for column in dt_transformed.columns:
-        dt_transformed[column] = dt_transformed[column].astype(str)
+    for col_name in columns:
+        dt_transformed = dt_transformed.withColumn(col_name, func.col(col_name).cast('string'))
 
-    dataframe = sql_context.createDataFrame(dt_transformed)
-
-    return dataframe
+    return dt_transformed
 
 
 def transform_hemoglobin_red_blood_cells_values(dataframe):
@@ -90,11 +81,11 @@ def transform_hemoglobin_red_blood_cells_values(dataframe):
                                                                                      2)).toPandas()
 
     fig = px.histogram(df_hemoglobin, x="Hemoglobin", title="Hemoglobin distribution",
-                       color_discrete_sequence=[shared_modules.color_500], opacity=0.8, marginal="rug")
+                       color_discrete_sequence=[color_scheme.color_500], opacity=0.8, marginal="rug")
     fig.show()
 
     fig = px.histogram(df_eosinophils, x="Red blood Cells", title="Red blood Cells distribution",
-                       color_discrete_sequence=[shared_modules.color_300], opacity=0.8, marginal="rug")
+                       color_discrete_sequence=[color_scheme.color_300], opacity=0.8, marginal="rug")
     fig.show()
 
     return dataframe
@@ -113,7 +104,7 @@ def transform_aggregate(dataframe, sql_context):
     df_sql = sql_context.sql("SELECT * FROM parquet.`./temporary.parquet`")
     df_aggregate = df_sql.groupBy("result").agg(func.max("age"), func.avg("age")).toPandas()
     fig = px.line(df_aggregate, x="result", y="avg(age)", title="Average age/result distribution",
-                  log_y=True, color_discrete_sequence=[shared_modules.color_400])
+                  log_y=True, color_discrete_sequence=[color_scheme.color_400])
     fig.show()
 
     return dataframe
@@ -158,13 +149,13 @@ def transform_care_relations(dataframe, sql_context):
     df_transformed_positive_display = df_transformed_positive.toPandas()
 
     fig = px.bar(df_transformed_positive_display, y="result", x="Patient addmited to regular ward (1=yes, 0=no)",
-                 color_discrete_sequence=[shared_modules.color_400, shared_modules.color_500],
+                 color_discrete_sequence=[color_scheme.color_400, color_scheme.color_500],
                  title="Positive patients admited to regular care")
     fig.show()
 
     fig_intensive = px.bar(df_transformed_positive_display, y="result",
                            x="Patient addmited to intensive care unit (1=yes, 0=no)",
-                           color_discrete_sequence=[shared_modules.color_900, shared_modules.color_500],
+                           color_discrete_sequence=[color_scheme.color_900, color_scheme.color_500],
                            title="Positive patients admited to intensive care")
     fig_intensive.show()
 
@@ -268,7 +259,7 @@ def show_predictions_missing_values(dataframe):
     df_null = df_null.rename(index={0: 'count'}).T.sort_values("count", ascending=False)
 
     fig = px.bar(df_null, y="count",
-                 color_discrete_sequence=[shared_modules.color_400, shared_modules.color_500],
+                 color_discrete_sequence=[color_scheme.color_400, color_scheme.color_500],
                  title="Statistics of missing (null/nan) values across columns")
     fig.show()
 
@@ -294,31 +285,31 @@ def show_predictions_value_distribution(dataframe):
 
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_hemoglobin['Hemoglobin'], mode='markers',
-                   marker=dict(color=shared_modules.color_900)), row=1, col=1)
+                   marker=dict(color=color_scheme.color_900)), row=1, col=1)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_plateletst['Platelets'], mode='markers',
-                   marker=dict(color=shared_modules.color_800)), row=1, col=2)
+                   marker=dict(color=color_scheme.color_800)), row=1, col=2)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_eosinophils['Eosinophils'], mode='markers',
-                   marker=dict(color=shared_modules.color_700)), row=1, col=3)
+                   marker=dict(color=color_scheme.color_700)), row=1, col=3)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_red_blood_cells['Red blood Cells'], mode='markers',
-                   marker=dict(color=shared_modules.color_600)), row=2, col=1)
+                   marker=dict(color=color_scheme.color_600)), row=2, col=1)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_lymphocytes['Lymphocytes'], mode='markers',
-                   marker=dict(color=shared_modules.color_500)), row=2, col=2)
+                   marker=dict(color=color_scheme.color_500)), row=2, col=2)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_leukocytes['Leukocytes'], mode='markers',
-                   marker=dict(color=shared_modules.color_400)), row=2, col=3)
+                   marker=dict(color=color_scheme.color_400)), row=2, col=3)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_basophils['Basophils'], mode='markers',
-                   marker=dict(color=shared_modules.color_300)), row=3, col=1)
+                   marker=dict(color=color_scheme.color_300)), row=3, col=1)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_monocytes['Monocytes'], mode='markers',
-                   marker=dict(color=shared_modules.color_200)), row=3, col=2)
+                   marker=dict(color=color_scheme.color_200)), row=3, col=2)
     fig.add_trace(
         go.Scatter(x=df_results['SARS-Cov-2 exam result'], y=df_hematocrit['Hematocrit'], mode='markers',
-                   marker=dict(color=shared_modules.color_100)), row=3, col=3)
+                   marker=dict(color=color_scheme.color_100)), row=3, col=3)
 
     fig.show()
 
@@ -333,7 +324,7 @@ def show_predictions_test_result_distribution(dataframe):
 
     fig = px.pie(df_transformed_collected, values='count', names='result',
                  title="Statistics of test result distribution",
-                 color_discrete_sequence=[shared_modules.color_100, shared_modules.color_400])
+                 color_discrete_sequence=[color_scheme.color_100, color_scheme.color_400])
     fig.show()
 
     return None
@@ -343,7 +334,7 @@ def show_predictions_accuracy_distribution(rf_accuracy, dt_accuracy, lr_accuracy
     fig = go.Figure(data=[go.Bar(y=[rf_accuracy, dt_accuracy, lr_accuracy, gb_accuracy],
                                  x=['Random Forest classifier Accuracy', 'Decision Tree Accuracy',
                                     'Logistic Regression Accuracy', 'Gradient-boosted Trees Accuracy'])])
-    fig.update_traces(marker_color=shared_modules.color_200, marker_line_color=shared_modules.color_600,
+    fig.update_traces(marker_color=color_scheme.color_200, marker_line_color=color_scheme.color_600,
                       marker_line_width=1.5, opacity=0.6)
     fig.update_layout(title_text='Comparison of classifier accuracy reports')
     fig.show()

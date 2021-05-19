@@ -1,6 +1,6 @@
 import __main__
 
-from os import environ, listdir, path
+from os import listdir, path
 import json
 from pyspark import SparkFiles, SQLContext
 from pyspark.sql import SparkSession

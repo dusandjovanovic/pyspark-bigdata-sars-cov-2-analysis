@@ -19,19 +19,20 @@
 *.tar.gz
 *.rar
 
-dependencies/__pycache__/
+/spark/dependencies/__pycache__/
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 # virtual machine env
-venv/
+spark/venv/
+visualization/venv/
 
 # COVID-19 dataset archives
 data/
 
 # generated hdfs results (during local testing)
-jobs/outputs/
-jobs/temporary.parquet/
-jobs/spark-warehouse/
+spark/jobs/outputs/
+spark/jobs/temporary.parquet/
+spark/jobs/spark-warehouse/
 

@@ -34,7 +34,10 @@ visualization/dependencies/__pycache__/
 data/
 
 # generated hdfs results (during local testing)
+spark/outputs/
+spark/temporary.parquet/
+spark/spark-warehouse/
+
 spark/jobs/outputs/
 spark/jobs/temporary.parquet/
 spark/jobs/spark-warehouse/
-

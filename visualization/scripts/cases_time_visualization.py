@@ -112,9 +112,8 @@ def visualize_confirmed_cases_comparison():
 def visualize_confirmed_cases_mortality_rates():
     dataframe_pd = load_dataset(sys.argv[1], "confirmed_cases_mortality_rates")
 
-    fig = px.bar(dataframe_pd.sort_values(by="mortalityRate", ascending=False)[:10][::-1],
-                 x='mortalityRate', y='country',
-                 title='Deaths per 100 confirmed cases (top-10)', text='mortalityRate', height=800, orientation='h',
+    fig = px.bar(dataframe_pd, x='mortalityRate', y='country', title='Deaths per 100 confirmed cases (top-10)',
+                 text='mortalityRate', height=800, orientation='h',
                  color_discrete_sequence=[color_scheme.color_600]
                  )
     fig.show()
@@ -125,9 +124,8 @@ def visualize_confirmed_cases_mortality_rates():
 def visualize_confirmed_cases_recovery_rates():
     dataframe_pd = load_dataset(sys.argv[1], "confirmed_cases_recovery_rates")
 
-    fig = px.bar(dataframe_pd.sort_values(by="recoveryRate", ascending=False)[:10][::-1],
-                 x='recoveryRate', y='country',
-                 title='Recoveries per 100 confirmed cases (top-10)', text='recoveryRate', height=800, orientation='h',
+    fig = px.bar(dataframe_pd, x='recoveryRate', y='country', title='Recoveries per 100 confirmed cases (top-10)',
+                 text='recoveryRate', height=800, orientation='h',
                  color_discrete_sequence=[color_scheme.color_500]
                  )
     fig.show()

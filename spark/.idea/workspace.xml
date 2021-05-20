@@ -2,92 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/.part-00000-d20f2767-1560-47f6-b30a-ef9a776cb95a-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/age_relations/part-00000-d20f2767-1560-47f6-b30a-ef9a776cb95a-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/aggregate_age_result/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/aggregate_age_result/.part-00000-dd8b722e-cf9c-4e23-b0bb-3fa4a23dc610-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/aggregate_age_result/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/aggregate_age_result/part-00000-dd8b722e-cf9c-4e23-b0bb-3fa4a23dc610-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/.part-00000-75b7f886-5d13-42b8-baa7-475242f6e66a-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/care_relations/part-00000-75b7f886-5d13-42b8-baa7-475242f6e66a-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_values/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_values/.part-00000-516895b7-e9d9-448f-ac04-f3275afa3f60-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_values/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/hemoglobin_values/part-00000-516895b7-e9d9-448f-ac04-f3275afa3f60-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/.part-00000-dc285af4-bb48-4a3b-8653-56bfdb23e5e3-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions/part-00000-dc285af4-bb48-4a3b-8653-56bfdb23e5e3-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_missing_values/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_missing_values/.part-00000-a28ef074-224d-43db-902d-bbe3abebad3f-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_missing_values/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_missing_values/part-00000-a28ef074-224d-43db-902d-bbe3abebad3f-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_test_result_distribution/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_test_result_distribution/.part-00000-8a0a2500-1fab-4940-8506-351f6a2fadb1-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_test_result_distribution/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_test_result_distribution/part-00000-8a0a2500-1fab-4940-8506-351f6a2fadb1-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_value_distribution/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_value_distribution/.part-00000-7a647dfc-b026-455f-83ff-0a3835e65de5-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_value_distribution/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/predictions_value_distribution/part-00000-7a647dfc-b026-455f-83ff-0a3835e65de5-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/red_blood_cells_values/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/red_blood_cells_values/.part-00000-aa12d627-9199-4dc7-8ad7-c3ab1564141b-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/red_blood_cells_values/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_clinical_spectrum_analysis/red_blood_cells_values/part-00000-aa12d627-9199-4dc7-8ad7-c3ab1564141b-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/.part-00000-a28fa97d-180d-4a6f-8d62-9108a0a115ad-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_and_deaths_globally/part-00000-a28fa97d-180d-4a6f-8d62-9108a0a115ad-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_china/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_china/.part-00000-9f224761-0939-4e80-a41b-397b9e8b5502-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_china/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_china/part-00000-9f224761-0939-4e80-a41b-397b9e8b5502-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/.part-00000-9a82a20b-e4ca-479f-9d48-9f8b4aecd560-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_comparison/part-00000-9a82a20b-e4ca-479f-9d48-9f8b4aecd560-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/.part-00000-abeead8a-7873-4fed-aa5d-21796403f523-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_europe/part-00000-abeead8a-7873-4fed-aa5d-21796403f523-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_italy/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_italy/.part-00000-b56b4719-e15f-4273-baac-47331c0b0918-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_italy/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_italy/part-00000-b56b4719-e15f-4273-baac-47331c0b0918-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_mortality_rates/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_mortality_rates/.part-00000-23c1a03f-4ce1-4b2a-9892-86783a324e20-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_mortality_rates/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_mortality_rates/part-00000-23c1a03f-4ce1-4b2a-9892-86783a324e20-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_norway/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_norway/.part-00000-e90a5acc-3954-4c55-876f-0030f0d60644-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_norway/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_norway/part-00000-e90a5acc-3954-4c55-876f-0030f0d60644-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_recovery_rates/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_recovery_rates/.part-00000-fbd79b7b-df41-4438-8832-4233e80dfa7b-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_recovery_rates/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_recovery_rates/part-00000-fbd79b7b-df41-4438-8832-4233e80dfa7b-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_serbia/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_serbia/.part-00000-28cd9ebb-c7ae-4a75-9710-664283ad27e4-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_serbia/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/cases_time_analysis/confirmed_cases_serbia/part-00000-28cd9ebb-c7ae-4a75-9710-664283ad27e4-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_abstracts/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_abstracts/.part-00000-0b967cf0-d1f1-45f9-9935-872159e11769-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_abstracts/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_abstracts/part-00000-0b967cf0-d1f1-45f9-9935-872159e11769-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_authors/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_authors/.part-00000-b071e2d6-c233-4e88-8af6-dd2f28603f01-c000.json.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_authors/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/outputs/research_challenge_analysis/paper_authors/part-00000-b071e2d6-c233-4e88-8af6-dd2f28603f01-c000.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/._SUCCESS.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/.part-00000-78a7742f-ae66-4c4f-8866-4cf2336ce5d0-c000.snappy.parquet.crc" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/_SUCCESS" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/jobs/temporary.parquet/part-00000-78a7742f-ae66-4c4f-8866-4cf2336ce5d0-c000.snappy.parquet" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/cases_time_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_time_analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../visualization/scripts/cases_clinical_spectrum_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/cases_clinical_spectrum_visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../visualization/scripts/cases_time_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/cases_time_visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../visualization/scripts/research_challenge_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/research_challenge_visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +43,7 @@
       <recent name="$PROJECT_DIR$/jobs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.cases_research_challenge_analysis">
+  <component name="RunManager" selected="Python.cases_time_analysis">
     <configuration name="cases_clinical_spectrum_analysis" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="spark" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -208,6 +127,9 @@
       <workItem from="1621444653892" duration="13232000" />
       <workItem from="1621460080070" duration="274000" />
       <workItem from="1621460503354" duration="248000" />
+      <workItem from="1621460961988" duration="160000" />
+      <workItem from="1621521968092" duration="4000" />
+      <workItem from="1621521975659" duration="1939000" />
     </task>
     <servers />
   </component>
@@ -233,8 +155,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spark$cases_time_analysis.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1621460157787" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
+    <SUITE FILE_PATH="coverage/spark$cases_time_analysis.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1621524253324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/spark$cases_research_challenge_analysis.coverage" NAME="cases_research_challenge_analysis Coverage Results" MODIFIED="1621460177737" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
-    <SUITE FILE_PATH="coverage/spark$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1621460093320" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
+    <SUITE FILE_PATH="coverage/spark$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1621523238069" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
   </component>
 </project>

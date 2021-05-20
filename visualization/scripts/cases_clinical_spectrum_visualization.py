@@ -61,9 +61,12 @@ def visualize_age_relations():
     display_age = dataframe_pd["age"]
 
     rec_age_fig = make_subplots(rows=1, cols=2,
-                                subplot_titles=("Age and Positive/Negative correlation", "Positive/Negative"))
-    rec_age_fig.add_trace(go.Box(x=display_positive, y=display_age, name="Positive"), row=1, col=1)
-    rec_age_fig.add_trace(go.Box(x=display_negative, y=display_age, name="Negative"), row=1, col=2)
+                                subplot_titles=("Positive test/age coefficient correlation",
+                                                "Negative test/age coefficient correlation"))
+    rec_age_fig.add_trace(
+        go.Box(x=display_positive, y=display_age, name="Positive", marker_color=color_scheme.color_300), row=1, col=1)
+    rec_age_fig.add_trace(
+        go.Box(x=display_negative, y=display_age, name="Negative", marker_color=color_scheme.color_700), row=1, col=2)
     rec_age_fig.update_traces(boxpoints='all')
     rec_age_fig.update_layout(title_text="Subplots of age in relation a positive/negative test result")
     rec_age_fig.show()

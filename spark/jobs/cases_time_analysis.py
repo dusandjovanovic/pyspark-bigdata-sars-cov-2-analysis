@@ -130,10 +130,12 @@ def transform_confirmed_cases_europe(dataframe):
     w = Window.partitionBy("country")
     df_latest = df_temp.withColumn("maxDate", func.max("date").over(w)).where(
         func.col("date") == func.col("maxDate"))
-    df_latest_grouped = df_latest.groupby("country").sum("confirmed")
-    df_latest_grouped_europe = df_latest_grouped.filter(df_latest_grouped.country.isin(europe))
 
-    return df_latest_grouped_europe
+    df_grouped = df_latest.groupby("country").sum("confirmed")
+    df_grouped_europe = df_grouped.filter(df_grouped.country.isin(europe))
+    df_ordered_europe = df_grouped_europe.orderBy(func.desc("sum(confirmed)"))
+
+    return df_ordered_europe
 
 
 def transform_confirmed_cases_comparison(dataframe):
@@ -144,28 +146,28 @@ def transform_confirmed_cases_comparison(dataframe):
 
 def transform_confirmed_cases_mortality_rates(dataframe):
     mortality_window = Window.partitionBy('country')
-    df_latest = dataframe.withColumn("maxDate", func.max("date").over(mortality_window)).where(
+    df_mortality = dataframe.withColumn("maxDate", func.max("date").over(mortality_window)).where(
         func.col("date") == func.col("maxDate"))
-    df_latest_grouped = df_latest.groupby("country").sum("confirmed", "deaths", "recovered", "active")
+    df_grouped_mortality = df_mortality.groupby("country").sum("confirmed", "deaths", "recovered", "active")
 
-    df_latest_grouped_with_mortality_rate = df_latest_grouped.withColumn("mortalityRate", func.round(
-        df_latest_grouped["sum(deaths)"] / df_latest_grouped["sum(confirmed)"] * 100, 2)).orderBy(
-        "mortalityRate")
+    df_grouped_ordered = df_grouped_mortality.withColumn("mortalityRate", func.round(
+        df_grouped_mortality["sum(deaths)"] / df_grouped_mortality["sum(confirmed)"] * 100, 2)).orderBy(
+        func.desc("mortalityRate")).limit(10).orderBy(func.asc("mortalityRate"))
 
-    return df_latest_grouped_with_mortality_rate
+    return df_grouped_ordered
 
 
 def transform_confirmed_cases_recovery_rates(dataframe):
     recovery_window = Window.partitionBy('country')
-    df_latest = dataframe.withColumn("maxDate", func.max("date").over(recovery_window)).where(
+    df_recovery = dataframe.withColumn("maxDate", func.max("date").over(recovery_window)).where(
         func.col("date") == func.col("maxDate"))
-    df_latest_grouped = df_latest.groupby("country").sum("confirmed", "deaths", "recovered", "active")
+    df_grouped_recovery = df_recovery.groupby("country").sum("confirmed", "deaths", "recovered", "active")
 
-    df_latest_grouped_with_recovery_rate = df_latest_grouped.withColumn("recoveryRate", func.round(
-        df_latest_grouped["sum(recovered)"] / df_latest_grouped["sum(confirmed)"] * 100, 2)).orderBy(
-        "recoveryRate")
+    df_grouped_ordered = df_grouped_recovery.withColumn("recoveryRate", func.round(
+        df_grouped_recovery["sum(recovered)"] / df_grouped_recovery["sum(confirmed)"] * 100, 2)).orderBy(
+        func.desc("recoveryRate")).limit(10).orderBy(func.asc("recoveryRate"))
 
-    return df_latest_grouped_with_recovery_rate
+    return df_grouped_ordered
 
 
 def load_data(dataframe, name):

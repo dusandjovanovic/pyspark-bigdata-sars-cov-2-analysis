@@ -142,13 +142,13 @@ def transform_abstracts_words(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/research_challenge_01.png "")
+![alt text](docs/screenshots/research_challenge_01.png "")
 
 #### 3) Nalaženje najčešće korišćenih reči
 
 Oslanjajući se na prethodno dobijeni i normalizovani dataset, gradi se korpus reči i prikazuje 25 najčešće korišćenih.
 
-![alt text](docscreenshots/research_challenge_02.png "")
+![alt text](docs/screenshots/research_challenge_02.png "")
 
 
 
@@ -173,9 +173,9 @@ def transform_papers_and_abstracts(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/cases_time_analysis_01.png "")
+![alt text](docs/screenshots/cases_time_analysis_01.png "")
 
-![alt text](docscreenshots/cases_time_analysis_02.png "")
+![alt text](docs/screenshots/cases_time_analysis_02.png "")
 
 #### 2) Analiza registrovanih slučajeva različitih zemalja
 
@@ -195,7 +195,7 @@ def transform_confirmed_cases_countries(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/cases_time_analysis_03.png "")
+![alt text](docs/screenshots/cases_time_analysis_03.png "")
 
 #### 3) Analiza registrovanih slučajeva na nivou Evrope
 
@@ -211,11 +211,11 @@ def transform_confirmed_cases_europe(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/cases_time_analysis_04.png "")
+![alt text](docs/screenshots/cases_time_analysis_04.png "")
 
 Iz istog dataframe-a se lako izvlači opadajuća lista najgore pogodjenih zemalja.
 
-![alt text](docscreenshots/cases_time_analysis_05.png "")
+![alt text](docs/screenshots/cases_time_analysis_05.png "")
 
 #### 4) Analiza odnosa rasta registrovanih, preminulih i aktivnih slučajeva 
 
@@ -227,7 +227,7 @@ def transform_confirmed_cases_comparison(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/cases_time_analysis_06.png "")
+![alt text](docs/screenshots/cases_time_analysis_06.png "")
 
 #### 5) Analiza zemalja po najboljem/najgorem odnosu oporavljenih i preminulih pacijenata
 
@@ -247,8 +247,8 @@ def transform_confirmed_cases_comparison_countries(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/cases_time_analysis_07.png "")
-![alt text](docscreenshots/cases_time_analysis_08.png "")
+![alt text](docs/screenshots/cases_time_analysis_07.png "")
+![alt text](docs/screenshots/cases_time_analysis_08.png "")
 
 #### 6) Analiza i predvidjanje budućeg napredovanja pandemije
 
@@ -272,8 +272,8 @@ Analizom serijskih vremenskih podataka mogu se utcrditi trendovi i predvinjanja 
 
 Nakon definisanja podataka za treniranje, dobijaju se gornja i donja granica predikcije, kao i kriva koja predstavlja predvidjeni napredak pandemije.
 
-![alt text](docscreenshots/cases_time_analysis_09.png "")
-![alt text](docscreenshots/cases_time_analysis_10.png "")
+![alt text](docs/screenshots/cases_time_analysis_09.png "")
+![alt text](docs/screenshots/cases_time_analysis_10.png "")
 
 
 
@@ -296,9 +296,9 @@ def transform_hemoglobin_red_blood_cells_values(dataframe):
     ...
 ```
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_01.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_01.png "")
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_02.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_02.png "")
 
 #### 2) Analiza relacije izmedju uzrasta pacijenata i rezultata testa na CVOID-19
 
@@ -328,9 +328,9 @@ def transform_age_relations(dataframe, sql_context):
     ...
 ```
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_03.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_03.png "")
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_04.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_04.png "")
 
 #### 2) Analiza pacijenata i brige koja im je pružana
 
@@ -346,7 +346,7 @@ def transform_care_relations(dataframe, sql_context):
     ...
 ```
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_06.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_06.png "")
 
 #### 3) Predikcije prisutnosti virusa kod pacijenata
 
@@ -359,7 +359,7 @@ df_transformed_null = dataframe.select(
 
 ```
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_07a.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_07a.png "")
 
 Iz priloženih rezultata može se videti da postoji nekoliko kolona koje su zanemarive.
 
@@ -379,9 +379,9 @@ df_transformed = dataframe.withColumn("result", udf_function_result("SARS-Cov-2 
 df_transformed_collected = df_transformed.groupBy('result').count()
 ```
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_07.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_07.png "")
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_08.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_08.png "")
 
 Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredjen za testiranje. Biraju se kolone koje c2e se koristiti kao ulazne i jedna izlazna (u ovom slučaju rezultat testa).
 
@@ -426,4 +426,4 @@ Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredje
 
 Uspešnost svih modela se evaluira odvojeno.
 
-![alt text](docscreenshots/cases_clinical_spectrum_analysis_09.png "")
+![alt text](docsc/sreenshots/cases_clinical_spectrum_analysis_09.png "")

@@ -24,10 +24,12 @@ hs_err_pid*
 
 # virtual machine env
 spark/venv/
+Spark-cluster/venv/
 visualization/venv/
 
 # pycache
 spark/dependencies/__pycache__/
+Spark-cluster/dependencies/__pycache__/
 visualization/dependencies/__pycache__/
 
 # COVID-19 dataset archives
@@ -41,3 +43,11 @@ spark/spark-warehouse/
 spark/jobs/outputs/
 spark/jobs/temporary.parquet/
 spark/jobs/spark-warehouse/
+
+spark-cluster/outputs/
+spark-cluster/temporary.parquet/
+spark-cluster/spark-warehouse/
+
+spark-cluster/jobs/outputs/
+spark-cluster/jobs/temporary.parquet/
+spark-cluster/jobs/spark-warehouse/

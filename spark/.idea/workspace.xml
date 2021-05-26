@@ -2,11 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/spark-databricks.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/jobs/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/jobs/cases_clinical_spectrum_analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/jobs/cases_time_analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../spark-databricks/jobs/research_challenge_analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/cases_time_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_time_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/scripts/cases_clinical_spectrum_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/cases_clinical_spectrum_visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/scripts/cases_time_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/cases_time_visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/scripts/research_challenge_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/research_challenge_visualization.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_clinical_spectrum_analysis.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,7 +52,7 @@
       <recent name="$PROJECT_DIR$/jobs" />
     </key>
   </component>
-  <component name="RunManager" selected="Python.cases_time_analysis">
+  <component name="RunManager" selected="Python.cases_clinical_spectrum_analysis">
     <configuration name="cases_clinical_spectrum_analysis" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="spark" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -129,7 +138,11 @@
       <workItem from="1621460503354" duration="248000" />
       <workItem from="1621460961988" duration="160000" />
       <workItem from="1621521968092" duration="4000" />
-      <workItem from="1621521975659" duration="1939000" />
+      <workItem from="1621521975659" duration="2273000" />
+      <workItem from="1621696477953" duration="336000" />
+      <workItem from="1621699526396" duration="540000" />
+      <workItem from="1621712748464" duration="2000" />
+      <workItem from="1621712754930" duration="533000" />
     </task>
     <servers />
   </component>
@@ -155,8 +168,8 @@
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/spark$cases_time_analysis.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1621524253324" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
+    <SUITE FILE_PATH="coverage/spark$cases_time_analysis.coverage" NAME="cases_time_analysis Coverage Results" MODIFIED="1621524325011" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
     <SUITE FILE_PATH="coverage/spark$cases_research_challenge_analysis.coverage" NAME="cases_research_challenge_analysis Coverage Results" MODIFIED="1621460177737" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
-    <SUITE FILE_PATH="coverage/spark$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1621523238069" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
+    <SUITE FILE_PATH="coverage/spark$cases_clinical_spectrum_analysis.coverage" NAME="cases_clinical_spectrum_analysis Coverage Results" MODIFIED="1621713226116" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/jobs" />
   </component>
 </project>

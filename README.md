@@ -426,4 +426,4 @@ Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredje
 
 Uspešnost svih modela se evaluira odvojeno.
 
-![alt text](docs/sreenshots/cases_clinical_spectrum_analysis_09.png "")
+![alt text](docs/screenshots/cases_clinical_spectrum_analysis_09.png "")

@@ -9,6 +9,7 @@ pandas = "*"
 plotly="*"
 scipy="*"
 wordcloud = "*"
+imageio = "*"
 
 [dev-packages]
 

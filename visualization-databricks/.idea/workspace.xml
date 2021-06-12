@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="ac6e3c4f-294f-46fc-bcde-b5568acaa0fe" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/spark-databricks.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/jobs/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/jobs/cases_clinical_spectrum_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/jobs/cases_time_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../spark-databricks/jobs/research_challenge_analysis.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/visualization-databricks.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies/__init__.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies/colors.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies/load_dataset.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dependencies/load_spark.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/cases_clinical_spectrum_visualization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/cases_time_visualization.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/scripts/research_challenge_visualization.py" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
+  </component>
+  <component name="ProjectId" id="1t4hQujE2oe6IM51Gwqj9kG28hv" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+  </component>
+  <component name="RunManager">
+    <configuration name="cases_time_visualization" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
+      <module name="visualization-databricks" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+        <env name="PYSPARK_PYTHON" value="python3" />
+      </envs>
+      <option name="SDK_HOME" value="/opt/anaconda3/envs/dbconnect/bin/python" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/scripts" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/scripts/cases_time_visualization.py" />
+      <option name="PARAMETERS" value="/outputs/cases_time_analysis" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="ac6e3c4f-294f-46fc-bcde-b5568acaa0fe" name="Default Changelist" comment="" />
+      <created>1622034255496</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1622034255496</updated>
+      <workItem from="1622034256757" duration="243000" />
+      <workItem from="1622034510447" duration="2011000" />
+      <workItem from="1622377721984" duration="89000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+    <option name="oldMeFiltersMigrated" value="true" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/visualization_databricks$cases_time_visualization.coverage" NAME="cases_time_visualization Coverage Results" MODIFIED="1622036261117" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/scripts" />
+  </component>
+</project>

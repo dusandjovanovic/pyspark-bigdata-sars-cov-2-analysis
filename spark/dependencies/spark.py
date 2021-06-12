@@ -7,8 +7,7 @@ from pyspark.sql import SparkSession
 from dependencies import logging
 
 
-def start_spark(app_name='my_spark_app', master='local[*]', jar_packages=[],
-                files=[], spark_config={}):
+def start_spark(app_name='sars_cov2_analysis', master='local[*]', jar_packages=[], files=[], spark_config={}):
     flag_repl = not (hasattr(__main__, '__file__'))
 
     # ručno podesiti debug ukoliko je potrebno

@@ -23,37 +23,37 @@ def main():
     data = extract_data(spark)
     data_initial = transform_data(data, sql_context)
 
-    # # hemoglobin values analysis
-    # data_transformed = transform_hemoglobin_values(data_initial)
-    # load_data(data_transformed, "hemoglobin_values")
-    #
-    # # red blood cells values analysis
-    # data_transformed = transform_red_blood_cells_values(data_initial)
-    # load_data(data_transformed, "red_blood_cells_values")
-    #
-    # # average age/result aggregated distribution analysis
-    # data_transformed = transform_aggregate_age_result(data_initial, sql_context)
-    # load_data(data_transformed, "aggregate_age_result")
-    #
-    # # age relations to test outcomes
-    # data_transformed = transform_age_relations(data_initial, sql_context)
-    # load_data(data_transformed, "age_relations")
-    #
-    # # care type relations of positive patients
-    # data_transformed = transform_care_relations(data_initial, sql_context)
-    # load_data(data_transformed, "care_relations")
-    #
-    # # missing values for predictions
-    # data_transformed = transform_predictions_missing_values(data_initial, sql_context)
-    # load_data(data_transformed, "predictions_missing_values")
-    #
-    # # value distribution for predictions
-    # data_transformed = transform_predictions_value_distribution(data_initial, sql_context)
-    # load_data(data_transformed, "predictions_value_distribution")
-    #
-    # # test result distribution for predictions
-    # data_transformed = transform_predictions_test_result_distribution(data_initial, sql_context)
-    # load_data(data_transformed, "predictions_test_result_distribution")
+    # hemoglobin values analysis
+    data_transformed = transform_hemoglobin_values(data_initial)
+    load_data(data_transformed, "hemoglobin_values")
+
+    # red blood cells values analysis
+    data_transformed = transform_red_blood_cells_values(data_initial)
+    load_data(data_transformed, "red_blood_cells_values")
+
+    # average age/result aggregated distribution analysis
+    data_transformed = transform_aggregate_age_result(data_initial, sql_context)
+    load_data(data_transformed, "aggregate_age_result")
+
+    # age relations to test outcomes
+    data_transformed = transform_age_relations(data_initial, sql_context)
+    load_data(data_transformed, "age_relations")
+
+    # care type relations of positive patients
+    data_transformed = transform_care_relations(data_initial, sql_context)
+    load_data(data_transformed, "care_relations")
+
+    # missing values for predictions
+    data_transformed = transform_predictions_missing_values(data_initial, sql_context)
+    load_data(data_transformed, "predictions_missing_values")
+
+    # value distribution for predictions
+    data_transformed = transform_predictions_value_distribution(data_initial, sql_context)
+    load_data(data_transformed, "predictions_value_distribution")
+
+    # test result distribution for predictions
+    data_transformed = transform_predictions_test_result_distribution(data_initial, sql_context)
+    load_data(data_transformed, "predictions_test_result_distribution")
 
     # predictions
     data_transformed = transform_predictions(data_initial, sql_context, spark)

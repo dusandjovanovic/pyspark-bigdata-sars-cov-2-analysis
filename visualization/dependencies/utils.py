@@ -1,13 +1,21 @@
 import random
 import dependencies.colors as color_scheme
+from os import listdir, path
+import pandas as pd
 
 
-def get_options(analysis):
-    dict_list = []
-    for i in analysis:
-        dict_list.append({'label': i, 'value': i})
+def load_dataset(path_to_dir, subdir):
+    path_output = path_to_dir + "/" + subdir + "/"
+    filenames = find_csv_filenames(path_output)
+    dataframe = pd.read_json(path.join(path_output, filenames[0]), lines=True)
 
-    return dict_list
+    return dataframe
+
+
+def find_csv_filenames(path_to_dir, suffix=".json"):
+    filenames = listdir(path_to_dir)
+
+    return [filename for filename in filenames if filename.endswith(suffix)]
 
 
 def generate_custom_color(word, font_size, position, orientation, random_state=None, **kwargs):

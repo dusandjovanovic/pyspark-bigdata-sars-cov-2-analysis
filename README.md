@@ -101,10 +101,11 @@ def main():
 U nastavku su ukratko opisani korišćeni izvori podataka, zatim će biti obradjena većina izvršenih analiza.
 
 Odabrana su četiri različita izvora podataka o ovom virusu:
-1. COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
-2. COVID-19 Dataset [@Kaggle](https://www.kaggle.com/imdevskp/corona-virus-report)
-3. Diagnosis of COVIDand its Clinical spectrum [@Kaggle](https://www.kaggle.com/einsteindata4u/covid19)
-4. COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
+* COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
+* COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
+* COVID-19 Dataset [@Kaggle](https://www.kaggle.com/imdevskp/corona-virus-report)
+* Diagnosis of COVIDand its Clinical spectrum [@Kaggle](https://www.kaggle.com/einsteindata4u/covid19)
+
 
 
 ```diff
@@ -122,6 +123,133 @@ Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobi
 `$ cd visualization && py radiography_analysis_visualization.py hdfs://../path/to/results/`
 
 ![alt text](docs/screenshots/dash_frontend.png "")
+
+
+## COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
+
+Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogodjeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
+
+#### 1) Pregled uzoraka slika i njihove anatomije
+
+Počnimo od učitavanja (Extraction) i formiranja polaznog DataFrame-a. Za potrebe eksrakcije, koristi se već dostupan deo API-a *Sparka* za analizu slika. Kako će se kasnije raditi predikcije, dodaja se kolona `label` koja će se koristiti kao deskriptor klase kojoj primerak slike pripada.
+
+```python
+def extract_data(spark):
+    ...
+    
+    dataframe_normal = spark.read.format("image").option("dropInvalid", True) \
+        .load(normal_image_dir).withColumn("label", func.lit(DESCRIPTOR_NORMAL))
+
+    dataframe_covid19 = spark.read.format("image").option("dropInvalid", True) \
+        .load(covid19_image_dir).withColumn("label", func.lit(DESCRIPTOR_COVID19))
+
+    dataframe_lung_opacity = spark.read.format("image").option("dropInvalid", True) \
+        .load(lung_opacity_image_dir).withColumn("label", func.lit(DESCRIPTOR_LUNG_OPACITY))
+
+    dataframe_viral_pneumonia = spark.read.format("image").option("dropInvalid", True) \
+        .load(viral_pneumonia_image_dir).withColumn("label", func.lit(DESCRIPTOR_VIRAL_PNEUMONIA))
+
+    return [dataframe_normal, dataframe_covid19, dataframe_lung_opacity, dataframe_viral_pneumonia]
+```
+
+Zatim se uzima četiri nasumičnih slika (po jedna iz scake kategorije). Polazi se od pregleda slika i traži potencijalan šablon izmedju slike i grupe kojoj pripada. Na RGB slici, svaki piksel je predstavljen sa tri 8-bitna broja koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u opsegu od 0 do 255 za svaki kanal boja.
+
+![alt text](docs/screenshots/radiography_analysis_01.png "")
+
+Iako su slike dataseta u crno-beloj boji, sačinjene su od tri kanala, medjutim vrednosti svakog kanala su identične po pikselu. Zatim, na sledećoj slici dat je pregled istih slika sa **izolovanim kanalom crvene boje**.
+
+![alt text](docs/screenshots/radiography_analysis_02.png "")
+
+Iz svega do sada izloženog, može se zaključiti da su rendgenski snimci iz ugla obrade prosti nizovi brojeva oblika `[Height, Width, Channel]`.
+
+#### 2) Analiza zastupnosti klasa rendgenskih snimaka
+
+Sada je dobar trenutak razmotriti zastupnost svih klasa slika u datasetu. Grupisanjem po prethodno pomenutoj opisnoj koloni, a zatim i primenom agregacije, dobija se pregled zastupljenosti.
+
+```python
+def transform_percentage_of_samples(dataframe):
+    df_percentages = dataframe.groupby('label') \
+        .agg((func.count('image')).alias('count'), (func.count('image') / dataframe.count()).alias('percentage')) \
+        .orderBy(func.col("label").asc())
+
+    return df_percentages
+```
+
+![alt text](docs/screenshots/radiography_analysis_03.png "")
+
+Može se videti da se klasa slika sa najvećim brojem primeraka odnosi na snimke zdravih pacijenata.
+
+#### 3) Analiza distribucije karakteristika boja i osvetljenja
+
+Ova analiza bi trebala da da uvid u moguće šablone koji postoje izmedju boja snimaka i klasa kojima pripadaju. Traže se najmanje, najveće, srednje, kao i vrednosti standardne devijacije *(engl. standard deviation)* boja.
+
+```python
+
+def transform_colour_distribution(dataframe):
+    udf_function_min = udf(min_value, FloatType())
+    udf_function_max = udf(max_value, FloatType())
+    udf_function_mean = udf(mean_value, FloatType())
+    udf_function_standard_deviation = udf(standard_deviation_value, FloatType())
+
+    sample_size = 1000
+
+    df_normal = dataframe \
+        .filter(dataframe.label == DESCRIPTOR_NORMAL) \
+        .limit(sample_size)
+
+    df_covid19 = dataframe \
+        .filter(dataframe.label == DESCRIPTOR_COVID19) \
+        .limit(sample_size)
+
+    df_lung_opacity = dataframe \
+        .filter(dataframe.label == DESCRIPTOR_LUNG_OPACITY) \
+        .limit(sample_size)
+
+    df_viral_pneumonia = dataframe \
+        .filter(dataframe.label == DESCRIPTOR_VIRAL_PNEUMONIA) \
+        .limit(sample_size)
+
+    df_merged = reduce(lambda first, second: first.union(second),
+                       [df_normal, df_covid19, df_lung_opacity, df_viral_pneumonia])
+
+    df_colour_distribution = df_merged \
+        .withColumn("min", udf_function_min("image.data")) \
+        .withColumn("max", udf_function_max("image.data")) \
+        .withColumn("mean", udf_function_mean("image.data")) \
+        .withColumn("standard_deviation", udf_function_standard_deviation("image.data"))
+
+    return df_colour_distribution
+```
+
+Kako je ovo veoma skupa operacija, bira se nasumičnih hiljadu slika iz svake klase. Zatim, primenom udf funkcija nalaze se pomenute vrednosti za svaku od njih. Separacijom po klasama, možemo da utvrdimo i vizualizujemo distribucije pronadjenih vrednosti.
+
+Klasa `Viral Pneumonia` se pokazala kao jedina koja približno oslikava "Normalnu" distribuciju [@Wikipedia](https://en.wikipedia.org/wiki/Normal_distribution).
+![alt text](docs/screenshots/radiography_analysis_04.png "")
+
+Najveća moguća vrednost osvetljenja je 255 i sve dostižu vrhove u ovom regionu, što se i očekuje. `Viral Pneumonia`, ponovo, je jedina klasa koja pokazuje niže vrednosti prilikom prikaza distribucije maksimuma. U slučaju maksimuma, `Lung Opacity` i `COVID-19` imaju slične distribucije dok je primetno da snimci zdravih pacijenata imaju svetlije karakteristike.
+
+![alt text](docs/screenshots/radiography_analysis_05.png "")
+
+U slučaju srednjih vrednosti, klase `Lung Opacity` i `Normal` su predstavljene jako sličnom distribucijom. Kako se u svakom ciklusu analize uzima nasumičan podskup uzoraka, može se zaključiti da postoji korelacija s obzirom da je u više navrata dobijen isti rezultat. Medjutim, postoje jasne razlike u vrednostima dostignutih vrhova.
+
+![alt text](docs/screenshots/radiography_analysis_06.png "")
+
+U slučaju standardne devijacije, odnosno mere odstupanja, većina primeraka poseduje vrednosti sličnih granica. Izuzetak predstavlja jedino klasa `Normal` sa primetno većim prosekom. Ova razlika iznosi približno 0.02.
+
+![alt text](docs/screenshots/radiography_analysis_07.png "")
+
+#### 4) Analiza veze srednje vrednosti i standardne devijacije
+
+Na rezultatima x-osa predstavlja srednju vrednost, dok y-osa predstavlja unakrsne vrednosti standardne devijacije posmatranih primeraka. Očigledno, na većini slika su grupacije prisutne u centralnom delu što znači da **nema velikog kontrasta izmedju vrednosti piksela**. Takodje, sve klase poseduju manji broj izolovanih uzoraka na periferiji spektra.
+
+Klase `COVID-19` i `Viral Pneumonia` su jedine koje poseduju manje rasute klastere u donjim-levim uglovima. Ovo su klasteri uzoraka sa malim srednjim vrednostima, kao i malim vrednostima devijacije.
+
+Klasu `Viral Pneumonia` **opisuje centralizovana veza**, što znači da uzorci **imaju više sličnosti medju sobom**, u poredjenju sa ostalim klasama.
+
+Klasu `COVID-19`, sa druge strane, **opisuje suprotna `rasuta` veza**. Odnosno, ima najviše rasutih i izolovanih uzoraka. Ovo može nagovestiti da rendgenski snimci ove grupe imaju više različitosti medju sobom.
+
+![alt text](docs/screenshots/radiography_analysis_08.png "")
+
 
 
 ## COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
@@ -446,38 +574,3 @@ Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredje
 Uspešnost svih modela evaluira se odvojeno, nad preostalim delom dataseta koji je označen za ovu svrhu.
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_09.png "")
-
-
-
-
-## COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
-
-Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogodjeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
-
-#### 1) Pregled 
-
-![alt text](docs/screenshots/radiography_analysis_01.png "")
-
-![alt text](docs/screenshots/radiography_analysis_02.png "")
-
-
-#### 2) Analiza
-
-![alt text](docs/screenshots/radiography_analysis_03.png "")
-
-
-
-#### 3) Analiza
-
-![alt text](docs/screenshots/radiography_analysis_04.png "")
-
-![alt text](docs/screenshots/radiography_analysis_05.png "")
-
-![alt text](docs/screenshots/radiography_analysis_06.png "")
-
-![alt text](docs/screenshots/radiography_analysis_07.png "")
-
-
-#### 4) Analiza
-
-![alt text](docs/screenshots/radiography_analysis_08.png "")

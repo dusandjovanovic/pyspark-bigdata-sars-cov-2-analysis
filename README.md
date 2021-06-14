@@ -98,18 +98,33 @@ def main():
 
 ## Pregled dataset-ova i analiza
 
-U nastavku su ukratko opisani korišćeni izvori podataka kao i analize koje su izvršavane.
+U nastavku su ukratko opisani korišćeni izvori podataka, zatim će biti obradjena većina izvršenih analiza.
+
+Odabrana su četiri različita izvora podataka o ovom virusu:
+1. COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
+2. COVID-19 Dataset [@Kaggle](https://www.kaggle.com/imdevskp/corona-virus-report)
+3. Diagnosis of COVIDand its Clinical spectrum [@Kaggle](https://www.kaggle.com/einsteindata4u/covid19)
+4. COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
 
 
 ```diff
-- Napomena* sadržaji datasetova se ne nalaze na repozitorijumu i potrebno ih je preuzeti i smestiti u direktorijum /data. Razlog je težina od više desetina GB.
+- Napomena* sadržaji dataset-ova se ne nalaze na repozitorijumu i potrebno ih je preuzeti i snimiti u direktorijum /data. Razlog je težina od više desetina GB.
 
 + Napomena** Nakon svake analize, podaci se mogu vizualizovati odvojenim skriptama iz direktorijuma /visualization.
 ```
 
+## Dash Front-End i vizualizacija rezultata
+
+Kako postoji ukupno četiri grupa ETL analiza, nakon izvršavanja istih, moguće je pristupiti rezultatima i prikazati ih. Za potrebe vizualizacije rezultata odabrano je rešenje `Dash Front-End` koje se bazira na `Flusk-u`. Pokretanje jedne ovakve web-aplikacije zahteva kao ulazni argumenat putanju do rezultata analiza na HDFS-u.
+
+Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobija se uz:
+
+`$ cd visualization && py radiography_analysis_visualization.py hdfs://../path/to/results/`
+
+![alt text](docs/screenshots/dash_frontend.png "")
 
 
-## COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge/tasks)
+## COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
 
 Ovaj dataset sadrži više od 400,000 medicinskih članaka o virusu COVID-19, SARS-CoV-2 i relevantnim temama.
 
@@ -336,7 +351,7 @@ def transform_age_relations(dataframe, sql_context):
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_04.png "")
 
-#### 2) Analiza pacijenata i brige koja im je pružana
+#### 3) Analiza pacijenata i brige koja im je pružana
 
 Primenom slične tehnike kao u prošlom primeru, udf funkcijama se označavaju pacijenti koji su pozitivni, a zatim se vrši prikaz onih pacijenata koji su zbrinuti na intenzivnoj nezi.
 
@@ -352,7 +367,7 @@ def transform_care_relations(dataframe, sql_context):
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_06.png "")
 
-#### 3) Predikcije prisutnosti virusa kod pacijenata
+#### 4) Predikcije prisutnosti virusa kod pacijenata
 
 Potrebno je pre svega razumeti koje stavke dataseta su nepotpune i eliminisati kolone koje ne bi doprinele treniranju efikasnih modela.
 
@@ -431,3 +446,38 @@ Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredje
 Uspešnost svih modela evaluira se odvojeno, nad preostalim delom dataseta koji je označen za ovu svrhu.
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_09.png "")
+
+
+
+
+## COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
+
+Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogodjeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
+
+#### 1) Pregled 
+
+![alt text](docs/screenshots/radiography_analysis_01.png "")
+
+![alt text](docs/screenshots/radiography_analysis_02.png "")
+
+
+#### 2) Analiza
+
+![alt text](docs/screenshots/radiography_analysis_03.png "")
+
+
+
+#### 3) Analiza
+
+![alt text](docs/screenshots/radiography_analysis_04.png "")
+
+![alt text](docs/screenshots/radiography_analysis_05.png "")
+
+![alt text](docs/screenshots/radiography_analysis_06.png "")
+
+![alt text](docs/screenshots/radiography_analysis_07.png "")
+
+
+#### 4) Analiza
+
+![alt text](docs/screenshots/radiography_analysis_08.png "")

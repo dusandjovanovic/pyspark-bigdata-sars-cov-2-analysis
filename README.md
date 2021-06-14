@@ -49,7 +49,7 @@ data/data_dir/
 ```
 
 - `--master local[*]` - adresa Spark klastera. **Ovo može biti lokalni klaster ili klaster u cloud-u koji se zadaje adresom `spark://adresa_klastera:7077`**;
-- `--packages 'com.somesparkjar.dependency:1.0.0,...'` - Maven dependency lista koja je potrebna za izvršavanje;
+- `--packages 'com.somesparkjar.dependency:1.0.0,...'` - Maven dependency lista;
 - `--files configs/etl_config.json` - putanja do konfiguracione datoteke;
 - `--py-files packages.zip` - prethodno pomenuta arhiva sa dependency-ma;
 - `jobs/job_name.py` - Python modul sa kodom analize.
@@ -116,7 +116,7 @@ Odabrana su četiri različita izvora podataka o ovom virusu:
 
 ## Dash Front-End i vizualizacija rezultata
 
-Kako postoji ukupno četiri grupa ETL analiza, nakon izvršavanja istih, moguće je pristupiti rezultatima i prikazati ih. Za potrebe vizualizacije rezultata odabrano je rešenje `Dash Front-End` koje se bazira na `Flusk-u`. Pokretanje jedne ovakve web-aplikacije zahteva kao ulazni argumenat putanju do rezultata analiza na HDFS-u.
+Kako postoji ukupno četiri grupa ETL analiza, nakon izvršavanja istih, moguće je pristupiti rezultatima i prikazati ih. Za potrebe vizualizacije rezultata odabrano je rešenje `Dash Front-End` koje je bazirano `Flasku`. Pokretanje jedne ovakve web-aplikacije zahteva kao ulazni argumenat putanju do rezultata analiza na HDFS-u.
 
 Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobija se uz:
 

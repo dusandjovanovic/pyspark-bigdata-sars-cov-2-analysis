@@ -129,7 +129,7 @@ Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobi
 
 Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogodjeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
 
-#### 1) Pregled uzoraka slika i njihove anatomije
+#### 1) Pregled uzoraka snimaka i njihove anatomije
 
 Počnimo od učitavanja (Extraction) i formiranja polaznog DataFrame-a. Za potrebe eksrakcije, koristi se već dostupan deo API-a *Sparka* za analizu slika. Kako će se kasnije raditi predikcije, dodaja se kolona `label` koja će se koristiti kao deskriptor klase kojoj primerak slike pripada.
 
@@ -152,7 +152,7 @@ def extract_data(spark):
     return [dataframe_normal, dataframe_covid19, dataframe_lung_opacity, dataframe_viral_pneumonia]
 ```
 
-Zatim se uzima četiri nasumičnih slika (po jedna iz scake kategorije). Polazi se od pregleda slika i traži potencijalan šablon izmedju slike i grupe kojoj pripada. Na RGB slici, svaki piksel je predstavljen sa tri 8-bitna broja koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u opsegu od 0 do 255 za svaki kanal boja.
+Zatim se uzima četiri nasumičnih snimaka (po jedna iz scake kategorije). Polazi se od pregleda snimaka i traži postojanje šablona izmedju slike i grupe kojoj pripada. **Na RGB slici, svaki piksel predstavljen je sa tri 8-bitna broja** koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u **opsegu od 0 do 255** za svaki kanal boja.
 
 ![alt text](docs/screenshots/radiography_analysis_01.png "")
 

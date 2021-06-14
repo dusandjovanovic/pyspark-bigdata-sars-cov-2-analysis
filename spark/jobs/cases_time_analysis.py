@@ -4,6 +4,10 @@ from pyspark.sql import Window
 from pyspark.sql.types import IntegerType
 import pyspark.sql.functions as func
 
+from prophet import Prophet
+import pandas as pd
+import numpy as np
+
 from dependencies.spark import start_spark
 
 
@@ -50,6 +54,22 @@ def main():
     # confirmed cases comparison by recovery rate
     data_transformed = transform_confirmed_cases_recovery_rates(data_initial)
     load_data(data_transformed, "confirmed_cases_recovery_rates")
+
+    # time series
+    data_transformed = transform_time_series(data_initial)
+    load_data(data_transformed, "time_series")
+
+    # time series test data
+    data_transformed = transform_time_series_test_data(data_initial, spark)
+    load_data(data_transformed, "time_series_test_data")
+
+    # time series predictions
+    data_transformed = transform_time_series_predictions(data_initial, spark)
+    load_data(data_transformed, "future_predictions")
+
+    # time series forecasting
+    data_transformed = transform_time_series_forecasting(data_initial, spark)
+    load_data(data_transformed, "future_forecasting")
 
     log.warn('Terminating cases_time analysis...')
 
@@ -168,6 +188,58 @@ def transform_confirmed_cases_recovery_rates(dataframe):
         func.desc("recoveryRate")).limit(10).orderBy(func.asc("recoveryRate"))
 
     return df_grouped_ordered
+
+
+def transform_time_series(dataframe):
+    time_series_data = dataframe.select(["date", "confirmed"]).groupby("date").sum().orderBy("date")
+    time_series_data = time_series_data.withColumnRenamed("date", "ds")
+    time_series_data = time_series_data.withColumnRenamed("sum(confirmed)", "y")
+
+    return time_series_data
+
+
+def transform_time_series_test_data(dataframe, spark):
+    time_series_data = transform_time_series(dataframe).toPandas()
+
+    train_range = np.random.rand(len(time_series_data)) < 0.8
+    test_ts = time_series_data[~train_range]
+
+    df_test = spark.createDataFrame(test_ts)
+
+    return df_test
+
+
+def transform_time_series_predictions(dataframe, spark):
+    time_series_data = transform_time_series(dataframe).toPandas()
+
+    train_range = np.random.rand(len(time_series_data)) < 0.8
+    train_ts = time_series_data[train_range]
+    test_ts = time_series_data[~train_range]
+    test_ts = test_ts.set_index('ds')
+
+    prophet_model = Prophet()
+    prophet_model.fit(train_ts)
+
+    future = pd.DataFrame(test_ts.index)
+    predict = prophet_model.predict(future)
+    forecast = predict[['ds', 'yhat', 'yhat_lower', 'yhat_upper']]
+
+    df_predictions = spark.createDataFrame(forecast)
+
+    return df_predictions
+
+
+def transform_time_series_forecasting(dataframe, spark):
+    time_series_data = transform_time_series(dataframe).toPandas()
+
+    prophet_model_full = Prophet()
+    prophet_model_full.fit(time_series_data)
+    future_full = prophet_model_full.make_future_dataframe(periods=150)
+    forecast_full = prophet_model_full.predict(future_full)
+
+    df_forecast = spark.createDataFrame(forecast_full)
+
+    return df_forecast
 
 
 def load_data(dataframe, name):

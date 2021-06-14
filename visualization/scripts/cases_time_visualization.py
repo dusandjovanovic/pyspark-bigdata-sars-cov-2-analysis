@@ -8,12 +8,14 @@ import dependencies.colors as color_scheme
 
 
 def main():
-    visualize_confirmed_cases_and_deaths_globally()
-    visualize_confirmed_cases_countries()
-    visualize_confirmed_cases_europe()
-    visualize_confirmed_cases_comparison()
-    visualize_confirmed_cases_mortality_rates()
-    visualize_confirmed_cases_recovery_rates()
+    # visualize_confirmed_cases_and_deaths_globally()
+    # visualize_confirmed_cases_countries()
+    # visualize_confirmed_cases_europe()
+    # visualize_confirmed_cases_comparison()
+    # visualize_confirmed_cases_mortality_rates()
+    # visualize_confirmed_cases_recovery_rates()
+    visualize_future_predictions()
+    visualize_future_forecasting()
 
     return None
 
@@ -129,6 +131,84 @@ def visualize_confirmed_cases_recovery_rates():
                  color_discrete_sequence=[color_scheme.color_500]
                  )
     fig.show()
+
+    return None
+
+
+def visualize_future_predictions():
+    dataframe_predictions = load_dataset(sys.argv[1], "future_predictions")
+    dataframe_time_series = load_dataset(sys.argv[1], "time_series_test_data")
+
+    dataframe_predictions = dataframe_predictions.set_index('ds')
+    dataframe_time_series = dataframe_time_series.set_index('ds')
+
+    test_fig = go.Figure()
+
+    test_fig.add_trace(go.Scatter(
+        x=dataframe_time_series.index,
+        y=dataframe_time_series.y,
+        name="Actual Cases",
+        line_color=color_scheme.color_400,
+        mode='lines',
+        opacity=0.8))
+
+    test_fig.add_trace(go.Scatter(
+        x=dataframe_predictions.index,
+        y=dataframe_predictions.yhat,
+        name="Prediction",
+        mode='lines',
+        line_color=color_scheme.color_alt,
+        opacity=0.8))
+
+    test_fig.add_trace(go.Scatter(
+        x=dataframe_predictions.index,
+        y=dataframe_predictions.yhat_lower,
+        name="Prediction Lower Bound",
+        mode='lines',
+        line=dict(color=color_scheme.color_200, width=2, dash='dash'),
+        opacity=0.8))
+
+    test_fig.add_trace(go.Scatter(
+        x=dataframe_predictions.index,
+        y=dataframe_predictions.yhat_upper,
+        name="Prediction Upper Bound",
+        mode='lines',
+        line=dict(color=color_scheme.color_200, width=2, dash='dash'),
+        opacity=0.8
+    ))
+
+    test_fig.update_layout(title_text="Model's Test Prediction", xaxis_title="Date", yaxis_title="Cases")
+
+    test_fig.show()
+
+    return None
+
+
+def visualize_future_forecasting():
+    dataframe_forecasting = load_dataset(sys.argv[1], "future_forecasting")
+    dataframe_time_series = load_dataset(sys.argv[1], "time_series")
+
+    dataframe_forecasting = dataframe_forecasting.set_index('ds')
+
+    prediction_fig = go.Figure()
+
+    prediction_fig.add_trace(go.Scatter(
+        x=dataframe_time_series.ds,
+        y=dataframe_time_series.y,
+        name="Actual",
+        line_color=color_scheme.color_400,
+        opacity=0.8))
+
+    prediction_fig.add_trace(go.Scatter(
+        x=dataframe_forecasting.index,
+        y=dataframe_forecasting.yhat,
+        name="Prediction",
+        line_color=color_scheme.color_alt,
+        opacity=0.8))
+
+    prediction_fig.update_layout(title_text="Model Forecasting", xaxis_title="Date", yaxis_title="Cases")
+
+    prediction_fig.show()
 
     return None
 

@@ -9,7 +9,9 @@ pandas = "*"
 plotly="*"
 scipy="*"
 wordcloud = "*"
-imageio = "*"
+opencv-python = "*"
+dash = "*"
+dash-bootstrap-components = "*"
 
 [dev-packages]
 

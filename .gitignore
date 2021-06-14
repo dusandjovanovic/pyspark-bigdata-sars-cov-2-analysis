@@ -51,3 +51,6 @@ spark-cluster/spark-warehouse/
 spark-cluster/jobs/outputs/
 spark-cluster/jobs/temporary.parquet/
 spark-cluster/jobs/spark-warehouse/
+
+# other
+.DS_Store

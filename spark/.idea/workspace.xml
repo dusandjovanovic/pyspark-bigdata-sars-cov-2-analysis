@@ -1,18 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/cases_time_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/cases_time_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/radiography_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/radiography_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/Pipfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/dependencies/colors.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/dependencies/colors.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/scripts/cases_time_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/cases_time_visualization.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/scripts/radiography_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/radiography_visualization.py" afterDir="false" />
-    </list>
+    <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -138,9 +127,9 @@
       <method v="2" />
     </configuration>
     <list>
+      <item itemvalue="Python.cases_clinical_spectrum_analysis" />
       <item itemvalue="Python.cases_research_challenge_analysis" />
       <item itemvalue="Python.cases_time_analysis" />
-      <item itemvalue="Python.cases_clinical_spectrum_analysis" />
       <item itemvalue="Python.radiography_analysis" />
     </list>
   </component>

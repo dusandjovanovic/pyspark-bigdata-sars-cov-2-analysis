@@ -1,12 +1,14 @@
-## Struktura analiza, odnosno `job`-ova
+## Struktura analiza
 
-Zbog lakšeg izvršavanja i testiranja korak 'Transformacije' izolovan je od 'Ekstrakcije' i 'učitavanja' - ulazni podaci se prihvataju i pakuju u jedinstveni DataFrame. Zatim, kod koji obuhvata transformacije u `main()` funkciji, bavi se izvlačenjem podataka, daljim prosledjivanje funkciji transformacije, kao i čuvanjem rezultata.
+Arhitektura projekta bazirana je na takozvanim Extract-Transform-Load (ETL) poslovima. Zbog lakšeg izvršavanja i testiranja, korak transformacije izolovan je od ekstrakcije i učitavanja. Ulazni podaci prihvataju se i pakuju u jedinstveni DataFrame. Zatim, kod koji obuhvata transformacije bavi se izvlačenjem podataka, daljim prosleđivanjem funkciji transformacije, kao i čuvanjem rezultata.
 
 Generalizovano, funkcije transformacije bi trebalo dizajnirati kao _idempotent_ funkcije. Drugim rečima, višestruko primenjianje funkcija transformacije ne bi trebalo da rezultuje promenama u izlazu, sve dok nema promena ulaznih podataka. Zbog ovakvog pristupa moguće je izvršavati analize sa ponavlanjima ukoliko je to potrebno (na primer, koristeći `cron` za poziv `spark-submit` komande, po pre-definisanom rasporedu poziva).
 
+**Transformacije** predstavljaju pozive transformacionih funkcija *Sparka* gde svaki poziv rezultira formiranjem nove distribuirane strukture. **Učitavanje**, na kraju, svodi se na snimanje konačne strukture u celini.
+
 ## Prosledjivanje konfiguracionih parametara analizama
 
-Kako se ne bi slali argumenti sa komandne linije, efiaksnije rešenje je koristiti konfiguracione fajlove po potrebi - na primer, koristeći `--files configs/jon_name_config.json` flag sa `spark-submit` komandom - flag koji će referencirati konfiguracionu datoteku, datoteka koja se može koristiti u analizama u vidu rečnika, iliti `dictionary` ulaza kao `json.loads(config_file_contents)`.
+Kako se ne bi slali argumenti sa komandne linije, efiaksnije rešenje je koristiti konfiguracione fajlove po potrebi - na primer, koristeći `--files configs/jon_name_config.json` flag sa `spark-submit` komandom - flag koji će referencirati konfiguracionu datoteku. Ove datoteke mogu se koristiti u analizama u vidu rečnika, iliti `dictionary` ulaza kao `json.loads(config_file_contents)`.
 
 ```python
 import json
@@ -24,17 +26,17 @@ Deljene funkcije na koje se oslanjaju analize nalaze se u paketu `dependencies` 
 from dependencies import start_spark
 ```
 
-Ovaj paket, zajedno sa svim ostalim dependency-ma, mora biti kopiran na svaki Spark čvor. Postoji više načina za postizanje ovoga, izabrano je pakovanje svih zavisnosti u `zip` arhivu zajedno sa poslom koji treba izvršiti, zatim se koristi `--py-files` naredba prilikom pokretanja analize. Pomoćna shell skripta `build_dependencies.sh` koristi se za pakovanje arhive. Ova skripta uzima u obzir graf zavisnosti okruženja i sve navedene zavisnosti u `Pipfile` datoteci.
+Ovaj paket, zajedno sa svim ostalim dependency-ma, mora biti kopiran na svaki Spark čvor. Postoji više načina za postizanje ovoga, izabrano je pakovanje svih zavisnosti u `zip` arhivu zajedno sa analizom koju treba izvršiti. Zatim se koristi `--py-files` naredba prilikom pokretanja analize. Pomoćna shell skripta `build_dependencies.sh` koristi se za pakovanje arhive. Ova skripta uzima u obzir graf zavisnosti okruženja i sve navedene zavisnosti u `Pipfile` datoteci.
 
 ## Pokretanje posla lokalno/na klasteru
 
-Pokretanje Spark klastera lokalno:
+Lokalno pokretanje klastera:
 
 ```bash
 cd $SPARK_HOME && spark-shell --master local
 ```
 
-Ukoliko `$SPARK_HOME` promenljiva okruženja ukazuje na instalaciju Spark-a, analiza (posao) pokreće se:
+Ukoliko `$SPARK_HOME` promenljiva okruženja ukazuje na instalaciju Spark-a, analiza pokreće se kao:
 
 ```bash
 $SPARK_HOME/bin/spark-submit \
@@ -43,15 +45,17 @@ $SPARK_HOME/bin/spark-submit \
 --py-files packages.zip \
 --files configs/etl_config.json \
 jobs/job_name.py
+data/data_dir/
 ```
 
 - `--master local[*]` - adresa Spark klastera. **Ovo može biti lokalni klaster ili klaster u cloud-u koji se zadaje adresom `spark://adresa_klastera:7077`**;
-- `--packages 'com.somesparkjar.dependency:1.0.0,...'` - Opcionalno Maven dependency lista koja je potrebna za izvršavanje;
-- `--files configs/etl_config.json` - opcionalno putanja do konfiguracione datoteke;
+- `--packages 'com.somesparkjar.dependency:1.0.0,...'` - Maven dependency lista koja je potrebna za izvršavanje;
+- `--files configs/etl_config.json` - putanja do konfiguracione datoteke;
 - `--py-files packages.zip` - prethodno pomenuta arhiva sa dependency-ma;
-- `jobs/job_name.py` - Python modul sa kodom analize/posla.
+- `jobs/job_name.py` - Python modul sa kodom analize.
+- `data/data_dir/` - putanja do ulaznog dataseta na HDFS-u.
 
-Početna točka svake Spark aplikacije je otvaranje sesije. Ovo je driver proces koji održava sve relevantne informacije o aplikaciji u toku njenog životnog ciklusa i odgovoran je za distribuiranje i zakazivanje rada nad svim executor procesima.
+Početna tačka svake Spark analize je otvaranje sesije. Ovo je driver proces koji održava sve relevantne informacije i odgovoran je za distribuiranje i zakazivanje rada nad svim executor procesima.
 
 ```python
 def start_spark(app_name='my_spark_app', master='local[*]',
@@ -100,7 +104,7 @@ U nastavku su ukratko opisani korišćeni izvori podataka kao i analize koje su 
 ```diff
 - Napomena* sadržaji datasetova se ne nalaze na repozitorijumu i potrebno ih je preuzeti i smestiti u direktorijum /data. Razlog je težina od više desetina GB.
 
-+ Napomena** Nakon svake analize, podaci se prikupljaju u master čvoru i odatle vizualizuju rezultati.
++ Napomena** Nakon svake analize, podaci se mogu vizualizovati odvojenim skriptama iz direktorijuma /visualization.
 ```
 
 
@@ -129,7 +133,7 @@ def transform_papers_and_abstracts(dataframe):
 
 #### 2) Sentiment analiza sažetaka
 
-Udf funkcijama paralelizovano se nalaze *sentiment vrednosti* svakog sažetka (abstract). Ove vrednosti se zatim i vizualizuju. Prethodno se sličnom analogijom vrši normalizacija svakog sažetka u vidu transformacije u mala slova i tokenizacije.
+Udf funkcijama paralelizovano se nalaze *sentiment vrednosti* sažetaka (abstract). Prethodno se sličnom analogijom vrši normalizacija svakog sažetka u vidu transformacije u mala slova i tokenizacije.
 
 ```python
 def transform_abstracts_words(dataframe):
@@ -158,7 +162,7 @@ Ovaj dataset sadrži brojeve registorvanih, oporavljenih i preminulih pacijenata
 
 #### 1) Sumiranje registrovanih i preminulih pacijenata
 
-Nakon uvodnih transformacija i proširivanja dataseta novim kolonama, kao i preuredjivanjem početnih, vrši se sumiranje gorepomenutih klasa slučajeva. Sumirani vremenski prikaz registrovanih i preminulih pacijenata se prikazuje po logaritamskoj skali.
+Nakon uvodnih transformacija i proširivanja dataseta novim kolonama, kao i preuredjivanjem početnih, vrši se sumiranje gorepomenutih klasa slučajeva. Sumirani vremenski prikaz registrovanih i preminulih pacijenata prikazuje se po logaritamskoj skali.
 
 ```python
 def transform_papers_and_abstracts(dataframe):
@@ -177,9 +181,9 @@ def transform_papers_and_abstracts(dataframe):
 
 ![alt text](docs/screenshots/cases_time_analysis_02.png "")
 
-#### 2) Analiza registrovanih slučajeva različitih zemalja
+#### 2) Analiza registrovanih slučajeva različitih država
 
-Kao primer, izabrane su zemlje - Srbija, Kina, Italija i Norveška. Filtriranjem i sumiranjem dobijaju se vremenski pregledi napredovanja virusa u ocim zemljama.
+Kao primer, izabrane su države - Srbija, Kina, Italija i Norveška. Filtriranjem i sumiranjem dobijaju se vremenski pregledi napredovanja virusa u njima.
 
 ```python
 def transform_confirmed_cases_countries(dataframe):
@@ -199,7 +203,7 @@ def transform_confirmed_cases_countries(dataframe):
 
 #### 3) Analiza registrovanih slučajeva na nivou Evrope
 
-Particionisanjem datafrema po zemlji, a zatim filtriranju po najsvežijim podacima i na kraju grupacijom koja uzima u obzir samo zemlje Evrope dobija se presek trenutnog stanja registrovanih pacijenata na našem kontinentu.
+Particionisanjem datafrema po zemlji, a zatim i filtiranjem sa grupacijom koja uzima u obzir samo države Evrope, dobija se presek trenutnog stanja registrovanih pacijenata na našem kontinentu.
 
 ```python
 def transform_confirmed_cases_europe(dataframe):
@@ -213,7 +217,7 @@ def transform_confirmed_cases_europe(dataframe):
 
 ![alt text](docs/screenshots/cases_time_analysis_04.png "")
 
-Iz istog dataframe-a se lako izvlači opadajuća lista najgore pogodjenih zemalja.
+Iz istog dataframe-a se lako izvlači opadajuća lista najgore pogodjenih država.
 
 ![alt text](docs/screenshots/cases_time_analysis_05.png "")
 
@@ -229,9 +233,9 @@ def transform_confirmed_cases_comparison(dataframe):
 
 ![alt text](docs/screenshots/cases_time_analysis_06.png "")
 
-#### 5) Analiza zemalja po najboljem/najgorem odnosu oporavljenih i preminulih pacijenata
+#### 5) Analiza država po najboljim/najgorim odnosima oporavka i smrtnosti
 
-Dodavanjem novih kolona i izvlačenjem informacija o odnosima oporavljenih i preminulih pacijenata u odnosu na ukupan broj, dobija se mera kvaliteta ophodjenja država prema pandemiji. Zatim, na osnovu novododatih kolona, lako se izdvajaju zemlje se najboljim ili najgorim koeficijentima.
+Dodavanjem novih kolona i izvlačenjem informacija o odnosima oporavljenih i preminulih pacijenata u odnosu na ukupan broj, dobija se mera kvaliteta ophodjenja država prema pandemiji. Zatim, na osnovu novododatih kolona, lako se izdvajaju države se najboljim ili najgorim koeficijentima.
 
 ```python
 def transform_confirmed_cases_comparison_countries(dataframe):
@@ -252,7 +256,7 @@ def transform_confirmed_cases_comparison_countries(dataframe):
 
 #### 6) Analiza i predvidjanje budućeg napredovanja pandemije
 
-Analizom serijskih vremenskih podataka mogu se utcrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da se dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predvidjanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
+Analizom serijskih vremenskih podataka mogu se utvrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da je dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predvidjanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
 
 ```python
     time_series_data = dataframe.select(["date", "confirmed"]).groupby("date").sum().orderBy("date")
@@ -279,11 +283,11 @@ Nakon definisanja podataka za treniranje, dobijaju se gornja i donja granica pre
 
 ## Diagnosis of COVID-19 and its clinical spectrum [@Kaggle](https://www.kaggle.com/einsteindata4u/covid19)
 
-Ovaj dataset sadrži anonimne laboratorijske nalaze pacijenata bolnice iz São Paula. Laboratirijski nalazi sa veoma širokog spektra i opisuju izmerene nivoe različitih parametara u krvi. Pored laboratorijskih nalaza prisutne su i informacije o pozitivnom/negativnom rezultatu testiranja pacijenata i slično.
+Ovaj dataset sadrži anonimne laboratorijske nalaze pacijenata bolnice iz São Paula. Laboratirijski nalazi su širokog spektra i opisuju izmerene nivoe različitih parametara u krvi. Pored laboratorijskih nalaza prisutne su i informacije o pozitivnom/negativnom rezultatu testiranja pacijenata.
 
-#### 1) Analiza distribucije Hemoglobina i crvenih krvnih zrnaca pacijenata
+#### 1) Analiza distribucije Hemoglobina i crvenih krvnih zrnaca kod pacijenata
 
-Nakon uvodnih transformacija i normalizacije dataseta, poput popunjavanja nepoznatih vrednosti, selekcijom i tranformacijom može se doći do distribucije pomenutih parametara medju pacijentima.
+Nakon uvodnih transformacija i normalizacije dataseta, poput popunjavanja nepoznatih vrednosti, selekcijom i tranformacijom može se doći do distribucije pomenutih parametara.
 
 ```python
 def transform_hemoglobin_red_blood_cells_values(dataframe):
@@ -300,9 +304,9 @@ def transform_hemoglobin_red_blood_cells_values(dataframe):
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_02.png "")
 
-#### 2) Analiza relacije izmedju uzrasta pacijenata i rezultata testa na CVOID-19
+#### 2) Analiza relacije izmedju uzrasta pacijenata i rezultata testa na virus
 
-Prva transformacija predstavlja odnsos srednje vrednosti starosti pacijenta i verovatnoće pozitivnog testa. Polazi se od grupacije po rezultatu testa a zatim se nalaze agregacije vrednosti uzrasta.
+Prva transformacija predstavlja odnos srednje vrednosti starosti pacijenta i verovatnoće pozitivnog testa. Polazi se od grupacije po rezultatu testa a zatim se nalaze agregacije vrednosti uzrasta.
 
 ```python
 def transform_aggregate(dataframe, sql_context):
@@ -350,7 +354,7 @@ def transform_care_relations(dataframe, sql_context):
 
 #### 3) Predikcije prisutnosti virusa kod pacijenata
 
-Potrebno je pre svega razumeti koje stavke dataseta su nepotpune i eliminisati kolone koje ne bi doprinele izgradnji kvalitetnih modela.
+Potrebno je pre svega razumeti koje stavke dataseta su nepotpune i eliminisati kolone koje ne bi doprinele treniranju efikasnih modela.
 
 ```python
 df_transformed_null = dataframe.select(
@@ -383,7 +387,7 @@ df_transformed_collected = df_transformed.groupBy('result').count()
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_08.png "")
 
-Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredjen za testiranje. Biraju se kolone koje c2e se koristiti kao ulazne i jedna izlazna (u ovom slučaju rezultat testa).
+Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredjen za testiranje. Prilikom podele modela, izabran je odnos po kome se 80% ulaznih podataka koristi za treniranje. Biraju se kolone koje će se koristiti kao ulazne i jedna izlazna (u ovom slučaju rezultat testa).
 
 ```python
  # build the dataset to be used as a rf_model base
@@ -424,6 +428,6 @@ Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredje
     gb_predictions = gb_model.transform(test_data)
 ```
 
-Uspešnost svih modela se evaluira odvojeno.
+Uspešnost svih modela evaluira se odvojeno, nad preostalim delom dataseta koji je označen za ovu svrhu.
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_09.png "")

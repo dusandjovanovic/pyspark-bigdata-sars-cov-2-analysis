@@ -8,6 +8,9 @@ numpy = "*"
 textblob = "*"
 prophet = "*"
 pandas = "*"
+sklearn = "*"
+keras = "*"
+tensorflow = "*"
 
 [dev-packages]
 pyspark = "==3.1.1"

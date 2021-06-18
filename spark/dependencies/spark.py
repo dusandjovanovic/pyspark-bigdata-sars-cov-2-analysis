@@ -35,6 +35,8 @@ def start_spark(app_name='sars_cov2_analysis', master='local[*]', jar_packages=[
         for key, val in spark_config.items():
             spark_builder.config(key, val)
 
+    spark_builder.config("spark.executor.memory", "2g")
+
     spark_sess = spark_builder.getOrCreate()
     spark_logger = logging.Log4j(spark_sess)
 

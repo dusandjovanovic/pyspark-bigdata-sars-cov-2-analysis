@@ -1,8 +1,10 @@
+import pandas as pd
+
 from dependencies.utils import load_dataset
 from dependencies.dash import app, dash_content, dash_sidebar, dash_graph, dash_error
 from meta.radiography import analysis_name, analysis_description, analysis_options, marker_labels, marker_colours, \
     DESCRIPTOR_NORMAL, DESCRIPTOR_COVID19, DESCRIPTOR_LUNG_OPACITY, DESCRIPTOR_VIRAL_PNEUMONIA, CLASSNAME_NORMAL, \
-    CLASSNAME_COVID19, CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_LUNG_OPACITY
+    CLASSNAME_COVID19, CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_LUNG_OPACITY, CLASSNAME_TOTAL
 
 import sys
 import cv2
@@ -43,6 +45,10 @@ def render_page_content(pathname):
         return visualize_sample_images_channel()
     elif pathname == "/ml_classification":
         return visualize_ml_classification()
+    elif pathname == '/dl_classification_matrix':
+        return visualize_dl_classification_matrix()
+    elif pathname == '/dl_classification_accuracy':
+        return visualize_dl_classification_accuracy()
 
     return dash_error()
 
@@ -273,13 +279,95 @@ def visualize_ml_classification():
         margin=dict(
             l=200,
             r=200,
-            b=50,
-            t=200,
+            b=100,
+            t=100,
             pad=4
         )
     )
 
-    figure.show()
+    return dash_graph(figure)
+
+
+def visualize_dl_classification_matrix():
+    dataframe_pd = load_dataset(sys.argv[1], "dl_classification_matrix")
+
+    x = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+    y = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+
+    z_text = [[str(y) for y in x] for x in dataframe_pd.values]
+
+    figure = ff.create_annotated_heatmap(
+        dataframe_pd.values.tolist(),
+        x=x,
+        y=y,
+        annotation_text=z_text,
+        colorscale='oranges'
+    )
+
+    figure.add_annotation(
+        dict(
+            font=dict(color="black", size=14),
+            x=0.5,
+            y=-0.15,
+            showarrow=False,
+            text="Predicted value",
+            xref="paper",
+            yref="paper"
+        )
+    )
+
+    figure.add_annotation(
+        dict(
+            font=dict(color="black", size=14),
+            x=-0.35,
+            y=0.5,
+            showarrow=False,
+            text="Real value",
+            textangle=-90,
+            xref="paper",
+            yref="paper"
+        )
+    )
+
+    figure.update_layout(margin=dict(t=50, l=200))
+    figure['data'][0]['showscale'] = True
+
+    figure.update_layout(
+        title='Confusion Matrix of CNN Neural network (based on test data)',
+        margin=dict(
+            l=200,
+            r=200,
+            b=100,
+            t=100,
+            pad=4
+        )
+    )
+
+    return dash_graph(figure)
+
+
+def visualize_dl_classification_accuracy():
+    dataframe_pd = load_dataset(sys.argv[1], "dl_classification_accuracy")
+    array_pd = dataframe_pd.values.tolist()
+
+    classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_TOTAL]
+
+    accuracy_report = []
+    for i in range(len(array_pd)):
+        accuracy_report.append({"precision": array_pd[i][0]})
+    dataframe_pd = pd.DataFrame(accuracy_report)
+
+    figure = go.Figure(
+        data=[
+            go.Bar(
+                x=classes,
+                y=dataframe_pd['precision'].values,
+                marker_color=marker_colours
+            )
+        ]
+    )
+
+    figure.update_layout(title='Precision metrics by classname')
 
     return dash_graph(figure)
 

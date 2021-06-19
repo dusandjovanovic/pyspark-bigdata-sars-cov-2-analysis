@@ -2,15 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/dependencies/keras.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/spark.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/spark.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Pipfile.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/radiography_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/radiography_analysis.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/Pipfile" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/Pipfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/Pipfile.lock" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/Pipfile.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../visualization/meta/radiography.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/meta/radiography.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../visualization/scripts/radiography_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/radiography_visualization.py" afterDir="false" />
     </list>
@@ -184,7 +176,7 @@
       <workItem from="1624069789379" duration="2059000" />
       <workItem from="1624073137521" duration="2907000" />
       <workItem from="1624077631678" duration="3812000" />
-      <workItem from="1624082443844" duration="9430000" />
+      <workItem from="1624082443844" duration="11797000" />
     </task>
     <servers />
   </component>

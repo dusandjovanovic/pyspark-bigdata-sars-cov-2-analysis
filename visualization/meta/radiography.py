@@ -8,8 +8,8 @@ analysis_options = [
     {"title": "Standard deviation pixel color distribution", "href": "/standard_deviation"},
     {"title": "Comparison of mean/standard deviation values", "href": "/mean_standard_deviation"},
     {"title": "Classification - Machine Learning", "href": "/ml_classification"},
-    {"title": "Classification - Deep Learning accuracy", "href": "/dl_classification"},
     {"title": "Classification - Deep Learning matrix", "href": "/dl_classification_matrix"},
+    {"title": "Classification - Deep Learning accuracy", "href": "/dl_classification_accuracy"},
     {"title": "Sample images of all categories", "href": "/sample_images"},
     {"title": "Sample images of all categories (R-Channel)", "href": "/sample_images_channel"},
 ]
@@ -22,7 +22,7 @@ analysis_description = "A team of researchers from Qatar University, Doha, Qatar
 
 marker_labels = ["Healthy", "COVID-19", "Lung Opacity", "Viral Pneumonia"]
 
-marker_colours = [color_scheme.color_200, color_scheme.color_400, color_scheme.color_600, color_scheme.color_800]
+marker_colours = [color_scheme.color_200, color_scheme.color_400, color_scheme.color_600, color_scheme.color_800, color_scheme.color_900]
 
 DESCRIPTOR_NORMAL = 0
 DESCRIPTOR_COVID19 = 1
@@ -33,3 +33,4 @@ CLASSNAME_NORMAL = "Normal"
 CLASSNAME_COVID19 = "COVID"
 CLASSNAME_LUNG_OPACITY = "Lung_Opacity"
 CLASSNAME_VIRAL_PNEUMONIA = "Viral_Pneumonia"
+CLASSNAME_TOTAL = "Total"

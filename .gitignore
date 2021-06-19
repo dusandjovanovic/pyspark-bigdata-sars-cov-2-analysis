@@ -24,12 +24,14 @@ hs_err_pid*
 
 # virtual machine env
 spark/venv/
-Spark-cluster/venv/
+databricks-cluster/venv/
+bde-cluster/venv/
 visualization/venv/
 
 # pycache
 spark/dependencies/__pycache__/
-Spark-cluster/dependencies/__pycache__/
+databricks-cluster/dependencies/__pycache__/
+bde-cluster/dependencies/__pycache__/
 visualization/dependencies/__pycache__/
 
 # COVID-19 dataset archives
@@ -44,13 +46,21 @@ spark/jobs/outputs/
 spark/jobs/temporary.parquet/
 spark/jobs/spark-warehouse/
 
-spark-cluster/outputs/
-spark-cluster/temporary.parquet/
-spark-cluster/spark-warehouse/
+databricks-cluster/outputs/
+databricks-cluster/temporary.parquet/
+databricks-cluster/spark-warehouse/
 
-spark-cluster/jobs/outputs/
-spark-cluster/jobs/temporary.parquet/
-spark-cluster/jobs/spark-warehouse/
+databricks-cluster/jobs/outputs/
+databricks-cluster/jobs/temporary.parquet/
+databricks-cluster/jobs/spark-warehouse/
+
+bde-cluster/outputs/
+bde-cluster/temporary.parquet/
+bde-cluster/spark-warehouse/
+
+bde-cluster/jobs/outputs/
+bde-cluster/jobs/temporary.parquet/
+bde-cluster/jobs/spark-warehouse/
 
 # other
 .DS_Store

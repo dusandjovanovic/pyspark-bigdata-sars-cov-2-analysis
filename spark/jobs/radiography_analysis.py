@@ -46,14 +46,14 @@ def main():
     # data_transformed = transform_colour_distribution(data_initial)
     # load_data(data_transformed, "colour_distribution")
 
-    # ML classification (distributed)
-    data_transformed = transform_ml_classification(data_initial, spark)
-    load_data(data_transformed, "ml_classification")
+    # # ML classification (distributed)
+    # data_transformed = transform_ml_classification(data_initial, spark)
+    # load_data(data_transformed, "ml_classification")
 
-    # # DL model compiling/training (not distributed)
-    # [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
-    # load_data(data_transformed_matrix, "dl_classification_matrix")
-    # load_data(data_transformed_acc, "dl_classification_accuracy")
+    # DL model compiling/training (not distributed)
+    [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
+    load_data(data_transformed_matrix, "dl_classification_matrix")
+    load_data(data_transformed_acc, "dl_classification_accuracy")
     #
     # # DL model inference (distributed)
     # data_transformed = transform_dl_model_inference(data_initial)
@@ -223,7 +223,7 @@ def transform_ml_classification(dataframe, spark):
 def transform_dl_classification(dataframe, spark):
     classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
     batch_size = 16
-    epochs = 12
+    epochs = 128
 
     udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
     udf_function_classify = udf(classify, StringType())

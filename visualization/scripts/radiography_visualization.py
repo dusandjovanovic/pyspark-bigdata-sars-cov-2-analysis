@@ -1,7 +1,8 @@
 from dependencies.utils import load_dataset
 from dependencies.dash import app, dash_content, dash_sidebar, dash_graph, dash_error
 from meta.radiography import analysis_name, analysis_description, analysis_options, marker_labels, marker_colours, \
-    DESCRIPTOR_NORMAL, DESCRIPTOR_COVID19, DESCRIPTOR_LUNG_OPACITY, DESCRIPTOR_VIRAL_PNEUMONIA
+    DESCRIPTOR_NORMAL, DESCRIPTOR_COVID19, DESCRIPTOR_LUNG_OPACITY, DESCRIPTOR_VIRAL_PNEUMONIA, CLASSNAME_NORMAL, \
+    CLASSNAME_COVID19, CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_LUNG_OPACITY
 
 import sys
 import cv2
@@ -40,6 +41,8 @@ def render_page_content(pathname):
         return visualize_sample_images()
     elif pathname == "/sample_images_channel":
         return visualize_sample_images_channel()
+    elif pathname == "/ml_classification":
+        return visualize_ml_classification()
 
     return dash_error()
 
@@ -219,6 +222,68 @@ def visualize_colour_distribution_mean_standard_deviation():
     return dash_graph(figure)
 
 
+def visualize_ml_classification():
+    dataframe_pd = load_dataset(sys.argv[1], "ml_classification")
+
+    accuracy = dataframe_pd.iloc[0].accuracy
+    confusion_matrix = dataframe_pd.iloc[0].matrix
+    x = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+    y = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+
+    z_text = [[str(y) for y in x] for x in confusion_matrix]
+
+    figure = ff.create_annotated_heatmap(
+        confusion_matrix,
+        x=x,
+        y=y,
+        annotation_text=z_text,
+        colorscale='balance'
+    )
+
+    figure.add_annotation(
+        dict(
+            font=dict(color="black", size=14),
+            x=0.5,
+            y=-0.15,
+            showarrow=False,
+            text="Predicted value",
+            xref="paper",
+            yref="paper"
+        )
+    )
+
+    figure.add_annotation(
+        dict(
+            font=dict(color="black", size=14),
+            x=-0.35,
+            y=0.5,
+            showarrow=False,
+            text="Real value",
+            textangle=-90,
+            xref="paper",
+            yref="paper"
+        )
+    )
+
+    figure.update_layout(margin=dict(t=50, l=200))
+    figure['data'][0]['showscale'] = True
+
+    figure.update_layout(
+        title='Confusion Matrix with reported accuracy of ' + str(accuracy),
+        margin=dict(
+            l=200,
+            r=200,
+            b=50,
+            t=200,
+            pad=4
+        )
+    )
+
+    figure.show()
+
+    return dash_graph(figure)
+
+
 def visualize_sample_images():
     [img_normal, img_covid, img_lung_opacity, img_viral_pneumonia] = sample_images()
 
@@ -286,7 +351,7 @@ def visualize_sample_images_channel():
 
     figure.update_yaxes(matches=None, showticklabels=False, visible=False)
     figure.update_xaxes(matches=None, showticklabels=False, visible=False)
-    figure.update_layout(title_text="Side By Side Radiography Images (B-Channel)")
+    figure.update_layout(title_text="Side By Side Radiography Images (R-Channel)")
 
     return dash_graph(figure)
 
@@ -303,11 +368,23 @@ def colour_distribution_dataframe():
 
 
 def sample_images():
-    img_base = sys.argv[2]
-    img_normal = cv2.imread(img_base + '/Normal/Normal-1.png')
-    img_covid = cv2.imread(img_base + '/COVID/COVID-1.png')
-    img_lung_opacity = cv2.imread(img_base + '/Lung_Opacity/Lung_Opacity-1.png')
-    img_viral_pneumonia = cv2.imread(img_base + '/Viral_Pneumonia/Viral_Pneumonia-1.png')
+    dataframe_pd = load_dataset(sys.argv[1], "take_samples")
+
+    img_normal = cv2.imread(
+        (dataframe_pd.loc[dataframe_pd['class_name'] == CLASSNAME_NORMAL]).iloc[0].origin
+    )
+
+    img_covid = cv2.imread(
+        (dataframe_pd.loc[dataframe_pd['class_name'] == CLASSNAME_COVID19]).iloc[0].origin
+    )
+
+    img_lung_opacity = cv2.imread(
+        (dataframe_pd.loc[dataframe_pd['class_name'] == CLASSNAME_LUNG_OPACITY]).iloc[0].origin
+    )
+
+    img_viral_pneumonia = cv2.imread(
+        (dataframe_pd.loc[dataframe_pd['class_name'] == CLASSNAME_VIRAL_PNEUMONIA]).iloc[0].origin
+    )
 
     return [img_normal, img_covid, img_lung_opacity, img_viral_pneumonia]
 

@@ -1,11 +1,11 @@
 import sys
-
 import numpy as np
 import pandas as pd
-import pyspark.sql.functions as func
-from pyspark.sql.functions import udf
+
 from functools import reduce
-from pyspark.sql.types import FloatType, StringType
+import pyspark.sql.functions as func
+from pyspark.sql.functions import udf, pandas_udf
+from pyspark.sql.types import FloatType, StringType, ArrayType, ByteType
 
 from pyspark.ml.classification import RandomForestClassifier
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
@@ -13,12 +13,11 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.mllib.evaluation import MulticlassMetrics
 from pyspark.ml.linalg import VectorUDT, DenseVector
 
+from dependencies.keras import model_efficacy, add_conv2d_entry_layer, add_conv2d_layer, add_average_pooling2d_layer, \
+    add_exit_layers, train_generator_from_dataframe, test_generator_from_dataframe
 from keras.models import Sequential, load_model
-from keras.layers import Dense, Flatten, Dropout, BatchNormalization, AveragePooling2D
-from keras.layers import Conv2D, Activation
 from keras.optimizers import SGD
-from keras.preprocessing.image import ImageDataGenerator
-from sklearn.metrics import confusion_matrix, accuracy_score, precision_recall_fscore_support
+import tensorflow as tf
 
 from dependencies.spark import start_spark
 
@@ -47,18 +46,18 @@ def main():
     # data_transformed = transform_colour_distribution(data_initial)
     # load_data(data_transformed, "colour_distribution")
 
-    # # ML classification (distributed)
-    # data_transformed = transform_ml_classification(data_initial, spark)
-    # load_data(data_transformed, "ml_classification")
+    # ML classification (distributed)
+    data_transformed = transform_ml_classification(data_initial, spark)
+    load_data(data_transformed, "ml_classification")
 
-    # DL classification (not distributed)
-    [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
-    load_data(data_transformed_matrix, "dl_classification_matrix")
-    load_data(data_transformed_acc, "dl_classification_accuracy")
-
-    # DL distributed model execution
-    # data_transformed = transform_dl_model_execution(data_initial, spark)
-    # load_data(data_transformed, "dl_predictions")
+    # # DL model compiling/training (not distributed)
+    # [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
+    # load_data(data_transformed_matrix, "dl_classification_matrix")
+    # load_data(data_transformed_acc, "dl_classification_accuracy")
+    #
+    # # DL model inference (distributed)
+    # data_transformed = transform_dl_model_inference(data_initial)
+    # load_data(data_transformed, "dl_inference")
 
     log.warn('Terminating radiography analysis...')
 
@@ -93,6 +92,10 @@ def transform_data(data_normal, data_covid19, data_lung_opacity, data_viral_pneu
         [data_normal, data_covid19, data_lung_opacity, data_viral_pneumonia]
     )
 
+    dataframe_merged = dataframe_merged.where(
+        (func.col("image.height") == 299) & (func.col("image.width") == 299)
+    )
+
     dataframe_repartitioned = dataframe_merged.repartition(200)
 
     return dataframe_repartitioned
@@ -107,8 +110,13 @@ def transform_percentage_of_samples(dataframe):
 
 
 def transform_take_samples(dataframe):
-    df_samples = dataframe.dropDuplicates(['label'])
-    df_samples = df_samples.withColumn("encoded", func.base64(func.col("image.data")))
+    udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
+    udf_function_classify = udf(classify, StringType())
+
+    df_samples = dataframe.dropDuplicates(['label']) \
+        .withColumn("origin", udf_function_get_hdfs_origin("image")) \
+        .withColumn("class_name", udf_function_classify("label")) \
+        .drop("image", "label")
 
     return df_samples
 
@@ -202,10 +210,12 @@ def transform_ml_classification(dataframe, spark):
     df_metrics = df_metrics.select(['prediction', 'label'])
     df_confusion_matrix = MulticlassMetrics(df_metrics.rdd.map(tuple)).confusionMatrix()
 
-    df_efficacy = spark.sparkContext.parallelize([{
-        "accuracy": rf_accuracy,
-        "matrix": df_confusion_matrix.toArray().tolist()
-    }])
+    df_efficacy = spark.sparkContext.parallelize(
+        [{
+            "accuracy": rf_accuracy,
+            "matrix": df_confusion_matrix.toArray().tolist()
+        }]
+    )
 
     return spark.createDataFrame(df_efficacy)
 
@@ -213,7 +223,7 @@ def transform_ml_classification(dataframe, spark):
 def transform_dl_classification(dataframe, spark):
     classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
     batch_size = 16
-    epochs = 1
+    epochs = 12
 
     udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
     udf_function_classify = udf(classify, StringType())
@@ -236,7 +246,7 @@ def transform_dl_classification(dataframe, spark):
     [train_datagen, train_gen] = train_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
     [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
 
-    # Constructing the model
+    # Constructing the deep CNN network
     model = Sequential()
     add_conv2d_entry_layer(model)
     add_conv2d_layer(model)
@@ -269,7 +279,7 @@ def transform_dl_classification(dataframe, spark):
     predictions_y = model.predict(test_gen)
     [conf_matrix, accuracy] = model_efficacy(predictions_y, test_gen, classes)
 
-    model.save('./outputs/models/')
+    model.save('./outputs/model/')
 
     return [
         spark.createDataFrame(conf_matrix),
@@ -277,149 +287,47 @@ def transform_dl_classification(dataframe, spark):
     ]
 
 
-def transform_dl_model_execution(dataframe, spark):
-    num_partitions = 10
-    udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
-    udf_function_classify = udf(classify, StringType())
+def transform_dl_model_inference(dataframe):
+    num_sample_images = 100
+    udf_function_get_hdfs_image = udf(hdfs_image_data, ArrayType(ByteType()))
 
-    dataframe_pred = dataframe.withColumn("class_name", udf_function_classify("label")) \
-        .withColumn("origin", udf_function_get_hdfs_origin("image")) \
-        .drop("image", "label")
+    # Take random 100 sample images
+    dataframe_pred = dataframe \
+        .withColumn("image_data", udf_function_get_hdfs_image("image")) \
+        .drop("image", "label") \
+        .limit(num_sample_images)
 
-    rdd_pred = dataframe_pred \
-        .rdd \
-        .repartition(num_partitions) \
-        .mapPartitions(predict_for_partition)
+    dataframe_pred.cache()
 
-    return spark.createDataFrame(rdd_pred)
+    # Distributed model inference
+    # Predict batches across different partitions in parallel
+    dataframe_inference = dataframe_pred \
+        .select(predict_batch_udf(func.col("image_data")).alias("prediction"))
 
-
-def predict_for_partition(partition):
-    model = load_model("./outputs/models")
-
-    for row in partition:
-        prediction = model.predict_classes(row)
-        yield prediction
+    return dataframe_inference
 
 
-def model_efficacy(predictions_y, test_gen, classes):
-    predictions = np.array(list(map(lambda x: np.argmax(x), predictions_y)))
+@pandas_udf(ArrayType(FloatType()))
+def predict_batch_udf(image_batch_iter):
+    batch_size = 64
+    model = load_model("./outputs/model/")
 
-    conf_matrix = pd.DataFrame(
-        confusion_matrix(test_gen.classes, predictions),
-        columns=classes,
-        index=classes
-    )
+    for image_batch in image_batch_iter:
+        images = np.vstack(image_batch)
+        ds_tensors = tf.data.Dataset.from_tensor_slices(images)
+        ds_tensors = ds_tensors.map(parse_image, num_parallel_calls=8) \
+            .prefetch(5000).batch(batch_size)
 
-    acc = accuracy_score(test_gen.classes, predictions)
+        predictions = model.predict(ds_tensors)
 
-    results_all = precision_recall_fscore_support(
-        test_gen.classes, predictions,
-        average='macro',
-        zero_division=1
-    )
-    results_class = precision_recall_fscore_support(
-        test_gen.classes,
-        predictions,
-        average=None, zero_division=1
-    )
-
-    # Organise the Results into a Dataframe
-    metric_columns = ['Precision', 'Recall', 'F-Score', 'S']
-    accuracy = pd.concat([pd.DataFrame(list(results_class)).T, pd.DataFrame(list(results_all)).T])
-    accuracy.columns = metric_columns
-    accuracy.index = ['COVID', 'Lung_Opacity', 'Normal', 'Viral Pneumonia', 'Total']
-
-    return [conf_matrix, accuracy]
+        yield pd.Series(list(predictions))
 
 
-def add_conv2d_entry_layer(model):
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', input_shape=(299, 299, 1)))
-    model.add(BatchNormalization())
-    return None
+def parse_image(image_data):
+    image = tf.image.convert_image_dtype(image_data, dtype=tf.float32) * (2. / 255) - 1
+    image = tf.reshape(image, [299, 299, 1])
 
-
-def add_conv2d_layer(model):
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    return None
-
-
-def add_average_pooling2d_layer(model):
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-    return None
-
-
-def add_exit_layers(model):
-    model.add(Flatten())
-    model.add(BatchNormalization())
-    model.add(Dense(128, activation='relu'))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.25))
-    model.add(BatchNormalization())
-    model.add(Dense(4, activation='softmax'))
-    return None
-
-
-def train_generator_from_dataframe(dataframe_keras_master, batch_size, classes):
-    train_datagen = ImageDataGenerator(
-        rescale=1. / 255,
-        rotation_range=20,
-        width_shift_range=0.2,
-        height_shift_range=0.2,
-        horizontal_flip=True,
-        validation_split=0.2
-    )
-
-    train_gen = train_datagen.flow_from_dataframe(
-        dataframe=dataframe_keras_master,
-        directory=None,
-        x_col="origin",
-        y_col="class_name",
-        classes=classes,
-        batch_size=batch_size,
-        target_size=(299, 299),
-        class_mode="categorical",
-        subset="training",
-        color_mode="grayscale",
-        shuffle=True,
-        validate_filenames=False
-    )
-
-    return [train_datagen, train_gen]
-
-
-def test_generator_from_dataframe(dataframe_keras_master, batch_size, classes):
-    test_datagen = ImageDataGenerator(
-        rescale=1. / 255,
-        validation_split=0.2
-    )
-
-    test_gen = test_datagen.flow_from_dataframe(
-        dataframe=dataframe_keras_master,
-        directory=None,
-        x_col="origin",
-        y_col="class_name",
-        classes=classes,
-        batch_size=batch_size,
-        target_size=(299, 299),
-        class_mode="categorical",
-        subset="validation",
-        color_mode="grayscale",
-        shuffle=False,
-        validate_filenames=False
-    )
-
-    return [test_datagen, test_gen]
-
-
-def load_data(dataframe, name):
-    (dataframe
-     .coalesce(1)
-     .write
-     .json("./outputs/radiography_analysis/" + name, mode='overwrite'))
-    return None
+    return image
 
 
 def mean_value(arr):
@@ -449,6 +357,10 @@ def hdfs_origin(image):
         return image.origin[7:]
 
 
+def hdfs_image_data(image):
+    return image.data
+
+
 def classify(descriptor):
     if descriptor == DESCRIPTOR_NORMAL:
         return CLASSNAME_NORMAL
@@ -460,6 +372,14 @@ def classify(descriptor):
         return CLASSNAME_VIRAL_PNEUMONIA
     else:
         return CLASSNAME_INVALID
+
+
+def load_data(dataframe, name):
+    (dataframe
+     .coalesce(1)
+     .write
+     .json("./outputs/radiography_analysis/" + name, mode='overwrite'))
+    return None
 
 
 DESCRIPTOR_NORMAL = 0

@@ -7,6 +7,9 @@ analysis_options = [
     {"title": "Mean pixel color distribution", "href": "/mean"},
     {"title": "Standard deviation pixel color distribution", "href": "/standard_deviation"},
     {"title": "Comparison of mean/standard deviation values", "href": "/mean_standard_deviation"},
+    {"title": "Classification - Machine Learning", "href": "/ml_classification"},
+    {"title": "Classification - Deep Learning accuracy", "href": "/dl_classification"},
+    {"title": "Classification - Deep Learning matrix", "href": "/dl_classification_matrix"},
     {"title": "Sample images of all categories", "href": "/sample_images"},
     {"title": "Sample images of all categories (R-Channel)", "href": "/sample_images_channel"},
 ]
@@ -25,3 +28,8 @@ DESCRIPTOR_NORMAL = 0
 DESCRIPTOR_COVID19 = 1
 DESCRIPTOR_LUNG_OPACITY = 2
 DESCRIPTOR_VIRAL_PNEUMONIA = 3
+
+CLASSNAME_NORMAL = "Normal"
+CLASSNAME_COVID19 = "COVID"
+CLASSNAME_LUNG_OPACITY = "Lung_Opacity"
+CLASSNAME_VIRAL_PNEUMONIA = "Viral_Pneumonia"

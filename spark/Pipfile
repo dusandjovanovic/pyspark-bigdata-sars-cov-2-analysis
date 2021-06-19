@@ -9,14 +9,12 @@ textblob = "*"
 prophet = "*"
 pandas = "*"
 sklearn = "*"
-keras = "*"
-tensorflow = "*"
+tensorflow = "~=2.4.2"
+keras = "~=2.4.0"
+pyarrow = "*"
 
 [dev-packages]
 pyspark = "==3.1.1"
 
 [requires]
-python_version = "3.9"
-
-[pipenv]
-allow_prereleases = true
+python_version = "3.8"

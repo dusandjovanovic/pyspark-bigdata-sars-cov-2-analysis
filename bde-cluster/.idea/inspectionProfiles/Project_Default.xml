@@ -1,0 +1,37 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="false" level="WARNING" enabled_by_default="false">
+      <option name="ignoredPackages">
+        <value>
+          <list size="17">
+            <item index="0" class="java.lang.String" itemvalue="pandas" />
+            <item index="1" class="java.lang.String" itemvalue="nltk" />
+            <item index="2" class="java.lang.String" itemvalue="ipython" />
+            <item index="3" class="java.lang.String" itemvalue="flake8" />
+            <item index="4" class="java.lang.String" itemvalue="ptyprocess" />
+            <item index="5" class="java.lang.String" itemvalue="pickleshare" />
+            <item index="6" class="java.lang.String" itemvalue="wordcloud" />
+            <item index="7" class="java.lang.String" itemvalue="pyspark" />
+            <item index="8" class="java.lang.String" itemvalue="wcwidth" />
+            <item index="9" class="java.lang.String" itemvalue="cycler" />
+            <item index="10" class="java.lang.String" itemvalue="py4j" />
+            <item index="11" class="java.lang.String" itemvalue="regex" />
+            <item index="12" class="java.lang.String" itemvalue="ipython-genutils" />
+            <item index="13" class="java.lang.String" itemvalue="backcall" />
+            <item index="14" class="java.lang.String" itemvalue="mccabe" />
+            <item index="15" class="java.lang.String" itemvalue="textblob" />
+            <item index="16" class="java.lang.String" itemvalue="openpyxl" />
+          </list>
+        </value>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="PyStubPackagesAdvertiser" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="pyspark-stubs==3.0.0.post1" />
+        </list>
+      </option>
+    </inspection_tool>
+  </profile>
+</component>

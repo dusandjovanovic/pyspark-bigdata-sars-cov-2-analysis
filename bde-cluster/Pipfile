@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+numpy = "*"
+pandas = "*"
+sklearn = "*"
+tensorflow = "~=2.1.4"
+keras = "~=2.1.6"
+pyarrow = "*"
+
+[dev-packages]
+pyspark = "==3.1.1"
+
+[requires]
+python_version = "3.7"

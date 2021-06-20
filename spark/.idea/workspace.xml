@@ -1,7 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="" />
+    <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/bde-cluster.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/other.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/Pipfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/Pipfile.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/infrastructure/docker-compose.yml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/infrastructure/hadoop.env" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/infrastructure/start_spark.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/infrastructure/stop_all.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/infrastructure/stop_spark.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/infrastructure/upload_dir.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/radiography_analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/start_analysis.sh" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../bde-cluster/stop_analysis.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />

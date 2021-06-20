@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  submit:
+    build: ./
+    image: spark-submit:latest
+    container_name: analysis
+    environment:
+      SPARK_MASTER_NAME: spark-master
+      SPARK_MASTER_PORT: 7077
+      SPARK_APPLICATION_ARGS: ""
+      ENABLE_INIT_DAEMON: "false"

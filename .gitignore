@@ -36,6 +36,7 @@ visualization/dependencies/__pycache__/
 
 # COVID-19 dataset archives
 data/
+bde-cluster/infrastructure/data/
 
 # generated hdfs results (during local testing)
 spark/outputs/

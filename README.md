@@ -96,6 +96,13 @@ def main():
     load_data(data_transformed, "confirmed_cases_and_deaths_globally")
 ```
 
+## BDE Klaster
+
+Analize se mogu izvršavati na klasteru računara koji je realizovan *Docker* kontejnerima.
+
+Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`. Klaster se može simulirati lokalno gde se pokreće infrastruktura čvorova nad HDFS-om. Tehnički, poziva se `spark-submit` komanda i namenode-u šalju analize za izvršenje. Procedura slanja analize je pritom uopštena docker kontejnerom u kome se izvršava.
+
+
 ## Pregled dataset-ova i analiza
 
 U nastavku su ukratko opisani korišćeni izvori podataka, zatim će biti obradjena većina izvršenih analiza.
@@ -124,12 +131,6 @@ Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobi
 
 ![alt text](docs/screenshots/dash_frontend.png "")
 
-
-## BDE Klaster
-
-Analize se mogu izvršavati na klasteru računara koji je realizovan *Docker* kontejnerima.
-
-Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`.
 
 ## COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
 

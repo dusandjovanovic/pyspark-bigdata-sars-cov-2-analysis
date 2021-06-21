@@ -245,10 +245,13 @@ def classify(descriptor):
 
 
 def load_data(dataframe, name):
-    (dataframe
-     .coalesce(1)
-     .write
-     .json("./outputs/radiography_analysis/" + name, mode='overwrite'))
+    root = os.getenv('HDFS_ROOT')
+
+    dataframe \
+        .coalesce(1) \
+        .write \
+        .json(root + "/data/outputs/radiography_analysis/" + name, mode='overwrite')
+
     return None
 
 

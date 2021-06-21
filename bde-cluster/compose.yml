@@ -10,3 +10,8 @@ services:
       SPARK_MASTER_PORT: 7077
       SPARK_APPLICATION_ARGS: ""
       ENABLE_INIT_DAEMON: "false"
+
+networks:
+  default:
+    external:
+      name: bde

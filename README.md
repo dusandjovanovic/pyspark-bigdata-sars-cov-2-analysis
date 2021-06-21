@@ -125,6 +125,12 @@ Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobi
 ![alt text](docs/screenshots/dash_frontend.png "")
 
 
+## BDE Klaster
+
+Analize se mogu izvršavati na klasteru računara koji je realizovan *Docker* kontejnerima.
+
+Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`.
+
 ## COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
 
 Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogodjeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
@@ -336,7 +342,7 @@ Na sledećim slikama mogu se videti matrica modela, kao i distribucija prediznos
 
 ![alt text](docs/screenshots/radiography_analysis_11.png "")
 
-#### 5) DL klasifikacija (distribuirano zaključivanje)
+#### 6) DL klasifikacija (distribuirano zaključivanje)
 
 Kako je model izgradjen na jednom čvoru, a zatim i snimljen, može se iskoristiti distribuirano i eksploatisati pogodnosti sparka.
 

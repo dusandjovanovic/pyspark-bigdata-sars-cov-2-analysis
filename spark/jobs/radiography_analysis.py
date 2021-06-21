@@ -13,9 +13,9 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.mllib.evaluation import MulticlassMetrics
 from pyspark.ml.linalg import VectorUDT, DenseVector
 
-from dependencies.keras import model_efficacy, train_generator_from_dataframe, test_generator_from_dataframe, \
-    add_conv2d_layer, add_average_pooling2d_layer, add_conv2d_entry_layer, add_exit_layers
+from dependencies.keras import model_efficacy, train_generator_from_dataframe, test_generator_from_dataframe
 from keras.models import Sequential, load_model
+from keras.layers import Conv2D, Activation, Dense, Flatten, Dropout, BatchNormalization, AveragePooling2D
 from keras.optimizers import Adam
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 import tensorflow as tf
@@ -224,7 +224,7 @@ def transform_ml_classification(dataframe, spark):
 def transform_dl_classification(dataframe, spark):
     classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
     batch_size = 16
-    epochs = 20
+    epochs = 128
 
     udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
     udf_function_classify = udf(classify, StringType())
@@ -249,18 +249,45 @@ def transform_dl_classification(dataframe, spark):
 
     # Constructing the deep CNN network
     model = Sequential()
-    add_conv2d_entry_layer(model)
-    add_conv2d_layer(model)
-    add_average_pooling2d_layer(model)
-    add_conv2d_layer(model)
-    add_conv2d_layer(model)
-    add_average_pooling2d_layer(model)
-    add_conv2d_layer(model)
-    add_average_pooling2d_layer(model)
-    add_conv2d_layer(model)
-    add_conv2d_layer(model)
-    add_average_pooling2d_layer(model)
-    add_exit_layers(model)
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', input_shape=(299, 299, 1)))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+
+    model.add(BatchNormalization())
+    model.add(Dense(128, activation='relu'))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.25))
+
+    # Output
+    model.add(BatchNormalization())
+    model.add(Dense(4, activation='softmax'))
 
     learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=10, factor=0.5, min_lr=0.00001)
     early_stopping_monitor = EarlyStopping(patience=100, monitor='loss', mode='min')

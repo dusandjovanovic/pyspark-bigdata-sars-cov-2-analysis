@@ -1,6 +1,6 @@
-## Izvršavanje na klasteru računara - `bde` i Docker
+## Izvršavanje na klasteru računara `Big-data Europe`
 
-#### Docker datoteke
+#### Docker
 
 Osnovni imidž koji se proširava je `bde2020/spark-submit`.
 
@@ -53,7 +53,11 @@ networks:
       name: bde
 ```
 
-Redosled pozivanja skripti:
+
+#### Pokretanje Docker kontejnera
+
+Infrastruktura je opisana u odvojenoj konfiguracionoj datoteci i sadrži više kontejnera poput `namenode`, `datanote`, `historyserver` itd. Potrebno je podići infrastrukturu, a zatim postaviti dataset na HDFs. Nakon ovih priprema, može se pokrenuti kontejner analize.
+
 * `$ docker network create bde`
 * `$ cd infrastructure && ./start_spark.sh && ./upload_dataset_hdfs.sh`
 * `$ cd .. && ./build_analysis.sh && ./start_analysis.sh`

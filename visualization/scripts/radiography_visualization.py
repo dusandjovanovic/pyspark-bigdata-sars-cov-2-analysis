@@ -343,6 +343,8 @@ def visualize_dl_classification_matrix():
         )
     )
 
+    figure.show()
+
     return dash_graph(figure)
 
 

@@ -250,7 +250,136 @@ Klasu `COVID-19`, sa druge strane, **opisuje suprotna `rasuta` veza**. Odnosno, 
 
 ![alt text](docs/screenshots/radiography_analysis_08.png "")
 
+#### 5) ML klasifikacija i predikcije
 
+Sparkova `mllib` biblioteka poseduje paletu algoritama mašinskog učenja, jedan od ovih algoritama je *Random forest classifier*. Takozvane šume sastoje se od stabala odluka, kombinuju veliki broj stabala kako bi se smanjio rizik *overfitting-a*. Ovaj algoritam se može koristi za binarnu i multiclass klasifikaciju.
+
+U ovom slučaju, korišćena je multiclass klasifikacija za četiri grupe (prethodno pomenute grupe slika). Izdvajanjem opisnih parametara slika sastavlja se vektor karakteristika. Ovi parametri su `min`, `max`, `mean` i `standard_deviation`. Zatim se dataframe deli u odnosu 0.1/0.9 gde se veći deo koristi za treniranje ML modela. Nakon treniranja se vrši evaluacija modela na preostalim delom ulaza.
+
+```python
+def transform_ml_classification(dataframe, spark):
+    ...
+
+    df_vectorized = dataframe \
+        .withColumn("features_vector", udf_extract_features("image.data")) \
+        .withColumn("min", udf_function_min("image.data")) \
+        .withColumn("max", udf_function_max("image.data")) \
+        .withColumn("mean", udf_function_mean("image.data")) \
+        .withColumn("standard_deviation", udf_function_standard_deviation("image.data")) \
+        .select(["label", "min", "max", "mean", "standard_deviation"])
+
+    # Assembling features into a vector column
+    assembler = VectorAssembler(
+        inputCols=["min", "max", "mean", "standard_deviation"],
+        outputCol="features"
+    )
+
+    df_assembled = assembler \
+        .transform(df_vectorized) \
+        .select(['features', 'label'])
+    df_assembled.cache()
+
+    # Split the dataset into train/test subgroups
+    (training_data, test_data) = df_assembled.randomSplit([0.9, 0.1])
+
+    rf = RandomForestClassifier(labelCol='label', featuresCol='features', maxDepth=10)
+    rf_model = rf.fit(training_data)
+    rf_predictions = rf_model.transform(test_data)
+
+    multi_evaluator = MulticlassClassificationEvaluator(labelCol='label', metricName='accuracy')
+    rf_accuracy = multi_evaluator.evaluate(rf_predictions)
+```
+
+Evaluacijom je dobijena ukupna uspešnost od ~63%. Ovo je i očekivano s obzirom da je algoritam primenjen na neutemeljenoj metodi. Na sledećoj slici može se videti matrica pogodaka i promašaja modela. Model se pokazao kao najprecizniji za snimke klase `Normal`.
+
+![alt text](docs/screenshots/radiography_analysis_09.png "")
+
+#### 5) DL klasifikacija i predikcije (ne-distribuirano)
+
+"Duboke" neuronske mreže su sofisticiranija metoda klasifikacije, pre svega u slučaju obrade vizualnih datasetova.
+
+Medjutim, podrška distribuiranog treniranja ovih mreža u *pyspark-u* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *pyspark-a* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
+
+Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Samo "pripremanje" izvora za treniranje mreže obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, dobijeni model se snima.
+
+```python
+def transform_dl_classification(dataframe, spark):
+    # Preparing the distributed dataframe
+    dataframe_keras = dataframe.withColumn("height", dataframe.image.height) \
+        .withColumn("width", dataframe.image.width) \
+        .withColumn("n_channels", dataframe.image.nChannels) \
+        .withColumn("class_name", udf_function_classify("label")) \
+        .withColumn("origin", udf_function_get_hdfs_origin("image"))
+
+    dataframe_keras = dataframe_keras.filter(func.col("class_name") != CLASSNAME_INVALID)
+    dataframe_keras = dataframe_keras.drop("image", "label")
+    dataframe_keras.cache()
+
+    dataframe_keras_master = dataframe_keras.toPandas()
+
+    # Data generators
+    # Based on distributed dataframe, batch_size and classes to predict
+    [train_datagen, train_gen] = train_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
+    [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
+
+    # Constructing the deep CNN network
+    model = Sequential()
+    ...
+    ...
+
+    model.fit(...)
+```
+
+Na sledećim slikama mogu se videti matrica modela, kao i distribucija prediznosti po svim klasama.
+
+![alt text](docs/screenshots/radiography_analysis_10.png "")
+
+![alt text](docs/screenshots/radiography_analysis_11.png "")
+
+#### 5) DL klasifikacija (distribuirano zaključivanje)
+
+Kako je model izgradjen na jednom čvoru, a zatim i snimljen, može se iskoristiti distribuirano i eksploatisati pogodnosti sparka.
+
+Metoda distribuiranog zaključivanja *(engl. Model inference)* je **distribuirano izvršavanje modela nad delovima dataframea**, paralelno i na različitim čvorovima. Model se učitava odvojeno na različitim čvorovima i primenjuje - time ostvarujući distribuirano zaključivanje.
+
+```python
+def transform_dl_model_inference(dataframe):
+    num_sample_images = 100
+    udf_function_get_hdfs_image = udf(hdfs_image_data, ArrayType(ByteType()))
+
+    # Take random 100 sample images
+    dataframe_pred = dataframe \
+        .withColumn("image_data", udf_function_get_hdfs_image("image")) \
+        .drop("image", "label") \
+        .limit(num_sample_images)
+
+    dataframe_pred.cache()
+
+    # Distributed model inference
+    # Predict batches across different partitions in parallel
+    dataframe_inference = dataframe_pred \
+        .select(predict_batch_udf(func.col("image_data")).alias("prediction"))
+
+    return dataframe_inference
+
+
+@pandas_udf(ArrayType(FloatType()))
+def predict_batch_udf(image_batch_iter):
+    batch_size = 64
+    model = load_model("./outputs/model/")
+
+    for image_batch in image_batch_iter:
+        images = np.vstack(image_batch)
+        ds_tensors = tf.data.Dataset.from_tensor_slices(images)
+        ds_tensors = ds_tensors.map(parse_image, num_parallel_calls=8) \
+            .prefetch(5000).batch(batch_size)
+
+        predictions = model.predict(ds_tensors)
+
+        yield pd.Series(list(predictions))
+```
+
+`predict_batch_udf` je metoda koja će se izvršavati na svim čvorovima. Predikcije će se odnositi samo na delove dataframea koji se nalaze na konkretnom čvoru. Nakon paralelnih proračuna, sve predikcije se skupljaju u *master* čvoru.
 
 ## COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
 
@@ -401,23 +530,50 @@ def transform_confirmed_cases_comparison_countries(dataframe):
 
 Analizom serijskih vremenskih podataka mogu se utvrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da je dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predvidjanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
 
-```python
-    time_series_data = dataframe.select(["date", "confirmed"]).groupby("date").sum().orderBy("date")
-    time_series_data = time_series_data.withColumnRenamed("date", "ds")
-    time_series_data = time_series_data.withColumnRenamed("sum(confirmed)", "y")
-    
-    ...
-    
-    train_range = np.random.rand(len(time_series_data)) < 0.8
-    train_ts = time_series_data[train_range]
-    test_ts = time_series_data[~train_range]
-    test_ts = test_ts.set_index('ds')
+Počevši od filtriranja po državama, dobija se takozvani `timeseries` dataframe koji sadrži dnevne preseke četiri države.
 
+Zatim, izvršenjem operacije `groupBy` po koloni države, iteratori koji sadrže podatke podeljene po državama biće rasporedjeni na različitim čvorovima. Drugim rečima, jedan *worker* čvor će držati barem jednu celokupnu grupu države. Ako se ovo uzme u obzir, treniranje `prophet` modela može se odavde izvršavati distribuirano. Svaki od čvorova će vršiti potrebne proračune za formiranje modela nad svojom pod-grupom podataka (svi će se odnositi na istu državu). `@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)` metode će biti zadužene za distribuirano treniranje i formiranje predikcija. Na kraju, delovi predikcija biće sumirani u *master* čvoru.
+
+```python
+def transform_time_series_forecasting(dataframe, spark):
+    df_time_series_data = dataframe.filter(dataframe.country.isin(["Serbia", "Croatia", "Slovenia", "Montenegro"]))
+    df_time_series_data = df_time_series_data.select(["date", "confirmed", "country"]) \
+        .drop_duplicates() \
+        .orderBy("date")
+
+    df_time_series_data = df_time_series_data.withColumnRenamed("date", "ds")
+    df_time_series_data = df_time_series_data.withColumnRenamed("confirmed", "y")
+
+    df_forecast = (
+        df_time_series_data
+            .groupBy('country')
+            .apply(distributed_model_prediction)
+    )
+
+    return df_forecast
+
+@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)
+def distributed_model_prediction(history_pd):
+    history_pd['ds'] = pd.to_datetime(history_pd['ds'])
+
+    # make the model
     prophet_model = Prophet()
-    prophet_model.fit(train_ts)
+    prophet_model.fit(history_pd)
+
+    future_pd = prophet_model.make_future_dataframe(
+        periods=90,
+        freq='d',
+        include_history=True
+    )
+
+    # make predictions
+    results_pd = prophet_model.predict(future_pd)
+    results_pd["country"] = history_pd["country"].iloc[0]
+
+    return pd.DataFrame(results_pd, columns=result_schema.fieldNames())
 ```
 
-Nakon definisanja podataka za treniranje, dobijaju se gornja i donja granica predikcije, kao i kriva koja predstavlja predvidjeni napredak pandemije.
+Nakon definisanja podataka za treniranje modela, potrebno je odraditi i samo treniranje koje je distribuirano (po državama). Primenom doobijenih modela dobija se gornja i donja granica predikcije, kao i kriva koja predstavlja predvidjeni napredak pandemije.
 
 ![alt text](docs/screenshots/cases_time_analysis_09.png "")
 ![alt text](docs/screenshots/cases_time_analysis_10.png "")

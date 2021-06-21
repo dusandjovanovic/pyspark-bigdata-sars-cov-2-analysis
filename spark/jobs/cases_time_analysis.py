@@ -1,7 +1,8 @@
 import sys
 
 from pyspark.sql import Window
-from pyspark.sql.types import IntegerType
+from pyspark.sql.pandas.functions import pandas_udf, PandasUDFType
+from pyspark.sql.types import IntegerType, StructType, StringType, TimestampType, DoubleType, StructField
 import pyspark.sql.functions as func
 
 from prophet import Prophet
@@ -14,7 +15,8 @@ from dependencies.spark import start_spark
 def main():
     spark, sql_context, log, config = start_spark(
         app_name='cases_time_analysis',
-        files=['configs/cases_time_analysis_config.json'])
+        files=['configs/cases_time_analysis_config.json']
+    )
 
     log.warn('Running cases_time analysis...')
 
@@ -59,6 +61,10 @@ def main():
     data_transformed = transform_time_series(data_initial)
     load_data(data_transformed, "time_series")
 
+    # time series by countries
+    data_transformed = transform_time_series_by_countries(data_initial)
+    load_data(data_transformed, "time_series_by_countries")
+
     # time series test data
     data_transformed = transform_time_series_test_data(data_initial, spark)
     load_data(data_transformed, "time_series_test_data")
@@ -98,9 +104,11 @@ def transform_data(frame, sql_context):
     dt_transformed = dt_transformed.fillna('', subset=['state'])
     dt_transformed = dt_transformed.fillna(0, subset=['confirmed', 'deaths', 'recovered', 'active'])
 
-    dt_transformed = dt_transformed.withColumn("active",
-                                               dt_transformed["confirmed"] - dt_transformed["deaths"] - dt_transformed[
-                                                   "recovered"])
+    dt_transformed = dt_transformed.withColumn(
+        "active",
+        dt_transformed["confirmed"] - dt_transformed["deaths"] - dt_transformed[
+            "recovered"]
+    )
     dt_transformed = dt_transformed.withColumn("country", func.regexp_replace('country', "Mainland China", "China"))
 
     dt_transformed = dt_transformed.withColumn("confirmed", dt_transformed["confirmed"].cast(IntegerType()))
@@ -149,7 +157,8 @@ def transform_confirmed_cases_europe(dataframe):
     df_temp = dataframe.select([c for c in dataframe.columns if c not in {"state"}])
     w = Window.partitionBy("country")
     df_latest = df_temp.withColumn("maxDate", func.max("date").over(w)).where(
-        func.col("date") == func.col("maxDate"))
+        func.col("date") == func.col("maxDate")
+    )
 
     df_grouped = df_latest.groupby("country").sum("confirmed")
     df_grouped_europe = df_grouped.filter(df_grouped.country.isin(europe))
@@ -167,12 +176,17 @@ def transform_confirmed_cases_comparison(dataframe):
 def transform_confirmed_cases_mortality_rates(dataframe):
     mortality_window = Window.partitionBy('country')
     df_mortality = dataframe.withColumn("maxDate", func.max("date").over(mortality_window)).where(
-        func.col("date") == func.col("maxDate"))
+        func.col("date") == func.col("maxDate")
+    )
     df_grouped_mortality = df_mortality.groupby("country").sum("confirmed", "deaths", "recovered", "active")
 
-    df_grouped_ordered = df_grouped_mortality.withColumn("mortalityRate", func.round(
-        df_grouped_mortality["sum(deaths)"] / df_grouped_mortality["sum(confirmed)"] * 100, 2)).orderBy(
-        func.desc("mortalityRate")).limit(10).orderBy(func.asc("mortalityRate"))
+    df_grouped_ordered = df_grouped_mortality.withColumn(
+        "mortalityRate", func.round(
+            df_grouped_mortality["sum(deaths)"] / df_grouped_mortality["sum(confirmed)"] * 100, 2
+        )
+    ).orderBy(
+        func.desc("mortalityRate")
+    ).limit(10).orderBy(func.asc("mortalityRate"))
 
     return df_grouped_ordered
 
@@ -180,12 +194,17 @@ def transform_confirmed_cases_mortality_rates(dataframe):
 def transform_confirmed_cases_recovery_rates(dataframe):
     recovery_window = Window.partitionBy('country')
     df_recovery = dataframe.withColumn("maxDate", func.max("date").over(recovery_window)).where(
-        func.col("date") == func.col("maxDate"))
+        func.col("date") == func.col("maxDate")
+    )
     df_grouped_recovery = df_recovery.groupby("country").sum("confirmed", "deaths", "recovered", "active")
 
-    df_grouped_ordered = df_grouped_recovery.withColumn("recoveryRate", func.round(
-        df_grouped_recovery["sum(recovered)"] / df_grouped_recovery["sum(confirmed)"] * 100, 2)).orderBy(
-        func.desc("recoveryRate")).limit(10).orderBy(func.asc("recoveryRate"))
+    df_grouped_ordered = df_grouped_recovery.withColumn(
+        "recoveryRate", func.round(
+            df_grouped_recovery["sum(recovered)"] / df_grouped_recovery["sum(confirmed)"] * 100, 2
+        )
+    ).orderBy(
+        func.desc("recoveryRate")
+    ).limit(10).orderBy(func.asc("recoveryRate"))
 
     return df_grouped_ordered
 
@@ -194,6 +213,14 @@ def transform_time_series(dataframe):
     time_series_data = dataframe.select(["date", "confirmed"]).groupby("date").sum().orderBy("date")
     time_series_data = time_series_data.withColumnRenamed("date", "ds")
     time_series_data = time_series_data.withColumnRenamed("sum(confirmed)", "y")
+
+    return time_series_data
+
+
+def transform_time_series_by_countries(dataframe):
+    time_series_data = dataframe.filter(dataframe.country.isin(["Serbia", "Croatia", "Slovenia", "Montenegro"]))
+    time_series_data = time_series_data.select(["date", "confirmed", "country"]).drop_duplicates()
+    time_series_data = time_series_data.orderBy("date")
 
     return time_series_data
 
@@ -230,16 +257,53 @@ def transform_time_series_predictions(dataframe, spark):
 
 
 def transform_time_series_forecasting(dataframe, spark):
-    time_series_data = transform_time_series(dataframe).toPandas()
+    df_time_series_data = dataframe.filter(dataframe.country.isin(["Serbia", "Croatia", "Slovenia", "Montenegro"]))
+    df_time_series_data = df_time_series_data.select(["date", "confirmed", "country"]) \
+        .drop_duplicates() \
+        .orderBy("date")
 
-    prophet_model_full = Prophet()
-    prophet_model_full.fit(time_series_data)
-    future_full = prophet_model_full.make_future_dataframe(periods=150)
-    forecast_full = prophet_model_full.predict(future_full)
+    df_time_series_data = df_time_series_data.withColumnRenamed("date", "ds")
+    df_time_series_data = df_time_series_data.withColumnRenamed("confirmed", "y")
 
-    df_forecast = spark.createDataFrame(forecast_full)
+    df_forecast = (
+        df_time_series_data
+            .groupBy('country')
+            .apply(distributed_model_prediction)
+    )
 
     return df_forecast
+
+
+result_schema = StructType(
+    [
+        StructField('country', StringType(), True),
+        StructField('ds', TimestampType(), True),
+        StructField('yhat', DoubleType(), True),
+        StructField('yhat_upper', DoubleType(), True),
+        StructField('yhat_lower', DoubleType(), True),
+    ]
+)
+
+
+@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)
+def distributed_model_prediction(history_pd):
+    history_pd['ds'] = pd.to_datetime(history_pd['ds'])
+
+    # make the model
+    prophet_model = Prophet()
+    prophet_model.fit(history_pd)
+
+    future_pd = prophet_model.make_future_dataframe(
+        periods=90,
+        freq='d',
+        include_history=True
+    )
+
+    # make predictions
+    results_pd = prophet_model.predict(future_pd)
+    results_pd["country"] = history_pd["country"].iloc[0]
+
+    return pd.DataFrame(results_pd, columns=result_schema.fieldNames())
 
 
 def load_data(dataframe, name):
@@ -256,7 +320,8 @@ europe = list(
      'Italy', 'Latvia', 'Luxembourg', 'Lithuania', 'Malta', 'Norway', 'Netherlands', 'Poland', 'Portugal', 'Romania',
      'Slovakia', 'Slovenia',
      'Spain', 'Sweden', 'United Kingdom', 'Iceland', 'Russia', 'Switzerland', 'Serbia', 'Ukraine', 'Belarus',
-     'Albania', 'Bosnia and Herzegovina', 'Kosovo', 'Moldova', 'Montenegro', 'North Macedonia'])
+     'Albania', 'Bosnia and Herzegovina', 'Kosovo', 'Moldova', 'Montenegro', 'North Macedonia']
+)
 
 if __name__ == '__main__':
     main()

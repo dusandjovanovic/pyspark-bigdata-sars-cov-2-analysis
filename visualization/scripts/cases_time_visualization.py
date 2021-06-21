@@ -276,27 +276,119 @@ def visualize_future_predictions():
 
 def visualize_future_forecasting():
     dataframe_forecasting = load_dataset(sys.argv[1], "future_forecasting")
-    dataframe_time_series = load_dataset(sys.argv[1], "time_series")
+    dataframe_time_series = load_dataset(sys.argv[1], "time_series_by_countries")
     dataframe_forecasting = dataframe_forecasting.set_index('ds')
+
+    dataframe_forecasting_serbia = dataframe_forecasting.loc[
+        dataframe_forecasting['country'] == "Serbia"
+        ]
+
+    dataframe_forecasting_croatia = dataframe_forecasting.loc[
+        dataframe_forecasting['country'] == "Croatia"
+        ]
+
+    dataframe_forecasting_slovenia = dataframe_forecasting.loc[
+        dataframe_forecasting['country'] == "Slovenia"
+        ]
+
+    dataframe_forecasting_montenegro = dataframe_forecasting.loc[
+        dataframe_forecasting['country'] == "Montenegro"
+        ]
+
+    dataframe_time_series_serbia = dataframe_time_series.loc[
+        dataframe_time_series['country'] == "Serbia"
+        ]
+
+    dataframe_time_series_croatia = dataframe_time_series.loc[
+        dataframe_time_series['country'] == "Croatia"
+        ]
+
+    dataframe_time_series_slovenia = dataframe_time_series.loc[
+        dataframe_time_series['country'] == "Slovenia"
+        ]
+
+    dataframe_time_series_montenegro = dataframe_time_series.loc[
+        dataframe_time_series['country'] == "Montenegro"
+        ]
 
     figure = go.Figure()
 
     figure.add_trace(
         go.Scatter(
-            x=dataframe_time_series.ds,
-            y=dataframe_time_series.y,
-            name="Actual",
-            line_color=color_scheme.color_400,
+            x=dataframe_time_series_serbia.date,
+            y=dataframe_time_series_serbia.confirmed,
+            name="Actual (Serbia)",
+            line_color=color_scheme.color_200,
             opacity=0.8
         )
     )
 
     figure.add_trace(
         go.Scatter(
-            x=dataframe_forecasting.index,
-            y=dataframe_forecasting.yhat,
-            name="Prediction",
-            line_color=color_scheme.color_alt,
+            x=dataframe_forecasting_serbia.index,
+            y=dataframe_forecasting_serbia.yhat,
+            name="Prediction (Serbia)",
+            line_color=color_scheme.color_600,
+            opacity=0.8
+        )
+    )
+
+    figure.add_trace(
+        go.Scatter(
+            x=dataframe_time_series_croatia.date,
+            y=dataframe_time_series_croatia.confirmed,
+            name="Actual (Croatia)",
+            line_color=color_scheme.color_200,
+            opacity=0.8
+        )
+    )
+
+    figure.add_trace(
+        go.Scatter(
+            x=dataframe_forecasting_croatia.index,
+            y=dataframe_forecasting_croatia.yhat,
+            name="Prediction (Croatia)",
+            line_color=color_scheme.color_600,
+            opacity=0.8
+        )
+    )
+
+    figure.add_trace(
+        go.Scatter(
+            x=dataframe_time_series_slovenia.date,
+            y=dataframe_time_series_slovenia.confirmed,
+            name="Actual (Slovenia)",
+            line_color=color_scheme.secondary_200,
+            opacity=0.8
+        )
+    )
+
+    figure.add_trace(
+        go.Scatter(
+            x=dataframe_forecasting_slovenia.index,
+            y=dataframe_forecasting_slovenia.yhat,
+            name="Prediction (Slovenia)",
+            line_color=color_scheme.secondary_600,
+            opacity=0.8
+        )
+    )
+
+    figure.add_trace(
+        go.Scatter(
+            x=dataframe_time_series_montenegro.date,
+            y=dataframe_time_series_montenegro.confirmed,
+            name="Actual (Montenegro)",
+            line_color=color_scheme.tertiary_200,
+            opacity=0.8
+        )
+    )
+
+    figure.add_trace(
+        go.Scatter(
+            x=dataframe_forecasting_montenegro.index,
+            y=dataframe_forecasting_montenegro.yhat,
+            name="Prediction (Montenegro)",
+            line_color=color_scheme.tertiary_600,
             opacity=0.8
         )
     )

@@ -8,7 +8,7 @@ Odavde se poziva *spark-submit* komanda i python izvršna datoteka šalje ka kla
 
 Zatim se na osnovu niza zavisnosti pribavljaju potrebni izvori i razrešavaju zavisnosti. Na kraju, poziva se *submit* naredba izvršnog programa `/app/app.py`. Ukoliko je neophodno mogu se definisati promenljive okruženja poput `HDFS_ROOT` i `HDFS_DATASET_PATH`.
 
-```bash
+```Dockerfile
 FROM bde2020/spark-submit:3.1.1-hadoop3.2
 
 # Add build dependencies for c-libraries (important for building numpy and other sci-libs)

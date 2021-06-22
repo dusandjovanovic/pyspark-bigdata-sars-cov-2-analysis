@@ -305,9 +305,11 @@ Evaluacijom je dobijena ukupna uspešnost od ~63%. Ovo je i očekivano s obzirom
 
 "Duboke" neuronske mreže su sofisticiranija metoda klasifikacije, pre svega u slučaju obrade vizualnih datasetova.
 
-Medjutim, podrška distribuiranog treniranja ovih mreža u *pyspark-u* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *pyspark-a* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
+Medjutim, podrška distribuiranog treniranja dubokih mreža u *Pysparku* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *Pysparka* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
 
-Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Samo "pripremanje" izvora za treniranje mreže obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, dobijeni model se snima.
+Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Samo "pripremanje" izvora za treniranje obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, potrebno je snimiti dobijeni model i iskoristiti ga za predikcije.
+
+Model je baziran na CNN-arhitekturi od 20ak slojeva i trenira se kroz 128 *epocha*. Ulazni dataframe deli se u razmeri gde se 80% koristi za treniranje modela, a preostalih 20% za validaciju. Validacija podrazumeva i izgradjivanje matrice preciznosti, uz pregled preciznosti po klasama za predikciju.
 
 ```python
 def transform_dl_classification(dataframe, spark):
@@ -359,11 +361,11 @@ def transform_dl_classification(dataframe, spark):
     ]
 ```
 
-Na sledećim slikama mogu se videti matrica modela, kao i distribucija prediznosti po svim klasama.
+Na slikama u nastavku mogu se videti matrica preciznosti, iliti "konfuzije", i distribucija preciznosti modela po klasama.
 
 ![alt text](docs/screenshots/radiography_analysis_10.png "")
 
-Iz matrice "konfuzije" može se videti distribucija promašaja predikcija. Najveći broj promašaja prisutan je u slučajevima klasifikacije snimaka zdravih pacijenata. Nasuprot, najveća preciznost ostvarena je u klasifikaciji primeraka viralne pneumonije.
+Matrica preciznosti daje pregled uspešnih klasifikacija, kao i promašaja. Najveći broj promašaja prisutan je u slučajevima klasifikacije snimaka zdravih pacijenata. Nasuprot, najveća preciznost ostvarena je u klasifikaciji primeraka viralne pneumonije.
 
 ![alt text](docs/screenshots/radiography_analysis_11.png "")
 
@@ -371,9 +373,11 @@ Može se videti da je nakon treniranja od 128 *epocha* preciznost modela blizu 8
 
 #### 6) DL klasifikacija (distribuirano zaključivanje)
 
-Kako je model izgradjen na jednom čvoru, a zatim i snimljen, može se iskoristiti distribuirano i eksploatisati pogodnosti sparka.
+Kako je model izgradjen na jednom čvoru, a zatim i snimljen, može se koristiti za distribuirane/paralelne obrade.
 
 Metoda distribuiranog zaključivanja *(engl. Model inference)* je **distribuirano izvršavanje modela nad delovima dataframea**, paralelno i na različitim čvorovima. Model se učitava odvojeno na različitim čvorovima i primenjuje - time ostvarujući distribuirano zaključivanje.
+
+Ova tehnika se veoma često koristi u slučaju obrada *streaming* podataka, ovde je primenjena nad delom ulaznog skupa podataka. Uzima se nasumičnih 100 primeraka i metodom inferencije se rade predikcije, oslanjajući se na prethodno trenirani model. Na ovaj način više ćvorova će paralelno obradjivati delove distribuirane strukture.
 
 ```python
 def transform_dl_model_inference(dataframe):

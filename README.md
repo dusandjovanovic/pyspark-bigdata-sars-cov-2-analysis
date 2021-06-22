@@ -311,6 +311,9 @@ Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Samo "pr
 
 ```python
 def transform_dl_classification(dataframe, spark):
+    udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
+    udf_function_classify = udf(classify, StringType())
+
     # Preparing the distributed dataframe
     dataframe_keras = dataframe.withColumn("height", dataframe.image.height) \
         .withColumn("width", dataframe.image.width) \
@@ -330,11 +333,30 @@ def transform_dl_classification(dataframe, spark):
     [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
 
     # Constructing the deep CNN network
+    # Entry kernel layers
     model = Sequential()
-    ...
-    ...
+    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', input_shape=(299, 299, 1)))
+    model.add(BatchNormalization())
 
+    # Imagery processing layers
+    add_imagery_layers(model)
+
+    # Output layers
+    model.add(BatchNormalization())
+    model.add(Dense(4, activation='softmax'))
+
+    # Compiling the model and initiating training
+    model.compile(...)
     model.fit(...)
+
+    [conf_matrix, accuracy] = model_efficacy(model.predict(test_gen), test_gen, classes)
+
+    model.save(...)
+
+    return [
+        spark.createDataFrame(conf_matrix),
+        spark.createDataFrame(accuracy)
+    ]
 ```
 
 Na sledećim slikama mogu se videti matrica modela, kao i distribucija prediznosti po svim klasama.

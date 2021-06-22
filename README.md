@@ -33,7 +33,7 @@ Ovaj paket, zajedno sa svim ostalim dependency-ma, mora biti kopiran na svaki Sp
 Lokalno pokretanje klastera:
 
 ```bash
-cd $SPARK_HOME && spark-shell --master local
+$ cd $SPARK_HOME && spark-shell --master local
 ```
 
 Ukoliko `$SPARK_HOME` promenljiva okruženja ukazuje na instalaciju Spark-a, analiza pokreće se kao:
@@ -127,7 +127,9 @@ Kako postoji ukupno četiri grupa ETL analiza, nakon izvršavanja istih, moguće
 
 Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobija se uz:
 
-`$ cd visualization && py radiography_analysis_visualization.py hdfs://../path/to/results/`
+```bash
+$ cd visualization && py radiography_analysis_visualization.py hdfs://../path/to/results/
+```
 
 ![alt text](docs/screenshots/dash_frontend.png "")
 

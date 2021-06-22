@@ -343,8 +343,6 @@ def visualize_dl_classification_matrix():
         )
     )
 
-    figure.show()
-
     return dash_graph(figure)
 
 
@@ -370,8 +368,6 @@ def visualize_dl_classification_accuracy():
     )
 
     figure.update_layout(title='Precision metrics by classname')
-
-    figure.show()
 
     return dash_graph(figure)
 

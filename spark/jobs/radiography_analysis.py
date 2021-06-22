@@ -13,11 +13,11 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.mllib.evaluation import MulticlassMetrics
 from pyspark.ml.linalg import VectorUDT, DenseVector
 
-from dependencies.keras import model_efficacy, train_generator_from_dataframe, test_generator_from_dataframe
+from dependencies.keras import model_efficacy, train_generator_from_dataframe, test_generator_from_dataframe, \
+    add_imagery_layers, model_callbacks
 from keras.models import Sequential, load_model
-from keras.layers import Conv2D, Activation, Dense, Flatten, Dropout, BatchNormalization, AveragePooling2D
+from keras.layers import Conv2D, Dense, BatchNormalization
 from keras.optimizers import Adam
-from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 import tensorflow as tf
 
 from dependencies.spark import start_spark
@@ -35,30 +35,31 @@ def main():
     [data_normal, data_covid19, data_lung_opacity, data_viral_pneumonia] = extract_data(spark)
     data_initial = transform_data(data_normal, data_covid19, data_lung_opacity, data_viral_pneumonia, sql_context)
 
-    # # percentage of samples (different categories)
-    # data_transformed = transform_percentage_of_samples(data_initial)
-    # load_data(data_transformed, "percentage_of_samples")
-    #
-    # # take one sample of each group
-    # data_transformed = transform_take_samples(data_initial)
-    # load_data(data_transformed, "take_samples")
-    #
-    # # colour distribution
-    # data_transformed = transform_colour_distribution(data_initial)
-    # load_data(data_transformed, "colour_distribution")
+    # percentage of samples (different categories)
+    data_transformed = transform_percentage_of_samples(data_initial)
+    load_data(data_transformed, "percentage_of_samples")
 
-    # # ML classification (distributed)
-    # data_transformed = transform_ml_classification(data_initial, spark)
-    # load_data(data_transformed, "ml_classification")
+    # take one sample of each group
+    data_transformed = transform_take_samples(data_initial)
+    load_data(data_transformed, "take_samples")
 
-    # DL model compiling/training (not distributed)
-    [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
-    load_data(data_transformed_matrix, "dl_classification_matrix")
-    load_data(data_transformed_acc, "dl_classification_accuracy")
-    #
-    # # DL model inference (distributed)
-    # data_transformed = transform_dl_model_inference(data_initial)
-    # load_data(data_transformed, "dl_inference")
+    # colour distribution
+    data_transformed = transform_colour_distribution(data_initial)
+    load_data(data_transformed, "colour_distribution")
+
+    # ML classification (distributed)
+    data_transformed = transform_ml_classification(data_initial, spark)
+    load_data(data_transformed, "ml_classification")
+
+    # The already trained model is available in -> /keras_model
+    # # DL model compiling/training (not distributed)
+    # [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
+    # load_data(data_transformed_matrix, "dl_classification_matrix")
+    # load_data(data_transformed_acc, "dl_classification_accuracy")
+
+    # DL model inference (distributed)
+    data_transformed = transform_dl_model_inference(data_initial)
+    load_data(data_transformed, "dl_inference")
 
     log.warn('Terminating radiography analysis...')
 
@@ -248,51 +249,17 @@ def transform_dl_classification(dataframe, spark):
     [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
 
     # Constructing the deep CNN network
+    # Entry kernel layers
     model = Sequential()
     model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', input_shape=(299, 299, 1)))
     model.add(BatchNormalization())
 
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
+    # Imagery processing layers
+    add_imagery_layers(model)
 
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Flatten())
-
-    model.add(BatchNormalization())
-    model.add(Dense(128, activation='relu'))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.25))
-
-    # Output
+    # Output layers
     model.add(BatchNormalization())
     model.add(Dense(4, activation='softmax'))
-
-    learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=10, factor=0.5, min_lr=0.00001)
-    early_stopping_monitor = EarlyStopping(patience=100, monitor='loss', mode='min')
-
-    callbacks_list = [learning_rate_reduction, early_stopping_monitor]
 
     # Compiling the model and initiating training
     model.compile(
@@ -307,7 +274,7 @@ def transform_dl_classification(dataframe, spark):
         validation_steps=len(test_gen) // batch_size,
         validation_data=test_gen,
         epochs=epochs,
-        callbacks=[callbacks_list]
+        callbacks=[model_callbacks()]
     )
 
     predictions_y = model.predict(test_gen)

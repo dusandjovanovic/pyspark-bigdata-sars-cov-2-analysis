@@ -3,6 +3,7 @@ import pandas as pd
 
 from keras.layers import Conv2D, Activation, Dense, Flatten, Dropout, BatchNormalization, AveragePooling2D
 from keras.preprocessing.image import ImageDataGenerator
+from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_recall_fscore_support
 
 
@@ -37,33 +38,49 @@ def model_efficacy(predictions_y, test_gen, classes):
     return [conf_matrix, accuracy]
 
 
-def add_conv2d_entry_layer(model):
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', input_shape=(299, 299, 1)))
-    model.add(BatchNormalization())
-    return None
-
-
-def add_conv2d_layer(model):
+def add_imagery_layers(model):
     model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
     model.add(BatchNormalization())
-    return None
-
-
-def add_average_pooling2d_layer(model):
     model.add(AveragePooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.25))
-    return None
 
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
 
-def add_exit_layers(model):
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+
+    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
+    model.add(BatchNormalization())
+    model.add(AveragePooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.25))
+
     model.add(Flatten())
+
     model.add(BatchNormalization())
     model.add(Dense(128, activation='relu'))
     model.add(Activation('relu'))
     model.add(Dropout(0.25))
-    model.add(BatchNormalization())
-    model.add(Dense(4, activation='softmax'))
     return None
+
+
+def model_callbacks():
+    learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=10, factor=0.5, min_lr=0.00001)
+    early_stopping_monitor = EarlyStopping(patience=100, monitor='loss', mode='min')
+
+    callbacks_list = [learning_rate_reduction, early_stopping_monitor]
+
+    return callbacks_list
 
 
 def train_generator_from_dataframe(dataframe_keras_master, batch_size, classes):

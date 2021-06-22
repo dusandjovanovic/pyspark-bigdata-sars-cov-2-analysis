@@ -341,11 +341,11 @@ Na sledećim slikama mogu se videti matrica modela, kao i distribucija prediznos
 
 ![alt text](docs/screenshots/radiography_analysis_10.png "")
 
+Iz matrice "konfuzije" može se videti distribucija promašaja predikcija. Najveći broj promašaja prisutan je u slučajevima klasifikacije snimaka zdravih pacijenata. Nasuprot, najveća preciznost ostvarena je u klasifikaciji primeraka viralne pneumonije.
+
 ![alt text](docs/screenshots/radiography_analysis_11.png "")
 
-Može se videti da je nakon treniranja od 128 *epocha* preciznost modela blizu 80%, s tim što je preciznost drastično manja u slučaju primeraka klase `Normal`.
-
-Trenirani model nalazi se u direktorijumu `/spark/keras-model` i može se koristiti za distribuirano zaključivanje, koje je objašnjeno u sledećoj analizi.
+Može se videti da je nakon treniranja od 128 *epocha* preciznost modela blizu 80%, s tim što je preciznost drastično manja u slučaju primeraka klase `Normal`. Trenirani model nalazi se u direktorijumu `/spark/keras-model` i može se koristiti za distribuirano zaključivanje, koje je objašnjeno u sledećoj analizi.
 
 #### 6) DL klasifikacija (distribuirano zaključivanje)
 

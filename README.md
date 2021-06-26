@@ -178,7 +178,9 @@ Sada je dobar trenutak razmotriti zastupnost svih klasa slika u datasetu. Grupis
 ```python
 def transform_percentage_of_samples(dataframe):
     df_percentages = dataframe.groupby('label') \
-        .agg((func.count('image')).alias('count'), (func.count('image') / dataframe.count()).alias('percentage')) \
+        .agg((func.count('image')) \
+        .alias('count'), (func.count('image') / dataframe.count()) \
+        .alias('percentage')) \
         .orderBy(func.col("label").asc())
 
     return df_percentages

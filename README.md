@@ -1,3 +1,38 @@
+## Struktura projekta
+
+```bash
+root/
+ |-- spark/
+ |---- configs/
+ |     |-- cases_time_analysis.json
+ |     |-- radiography_analysis.json
+ |     |-- research_challenge_analysis.json
+ |     |-- cases_clinical_spectrum_analysis.json
+ |---- dependencies/
+ |     |-- spark.py
+ |     |-- keras.py
+ |     |-- logging.py
+ |     |-- textblob.py
+ |---- jobs/
+ |     |-- cases_time_analysis.py
+ |     |-- radiography_analysis.py
+ |     |-- research_challenge_analysis.py
+ |     |-- cases_clinical_spectrum_analysis.py
+ |     build_dependencies.sh
+ |     packages.zip
+ |     Pipfile
+ |     Pipfile.lock
+ |     .env
+ |-- visualization/
+ |---- meta/
+ |---- dependencies/
+ |---- scripts/
+```
+
+Python moduli koji se nalaze u direktorijumu `/spark/jobs` struktuirani su po principu **Extract-Transform-Load/ETL analiza**. Dodatna podešavanja potrebna ovim analizama mogu se zadati iz datoteka pod `/spark/config` direktorijumom. Dodatni moduli koji su neophodni za izvršavanje analiza mogu se pronaći u `/spark/dependencies` direktorijumu. Ovi moduli obuhvataju postavke sesije, proširenja logovanja kao i apstrakcije oko `keras` biblioteke.
+
+Front-End koji se koristi za vizualizaciju analiza nalazu se u direktorijumu `/visualization`. Odvojeni Python moduli za pokretanje web-servera nalaze se pod `/visualization/scripts` i podeljeni su na isti način kao i same analize.
+
 ## Struktura analiza
 
 Arhitektura projekta bazirana je na takozvanim Extract-Transform-Load (ETL) poslovima. Zbog lakšeg izvršavanja i testiranja, korak transformacije izolovan je od ekstrakcije i učitavanja. Ulazni podaci prihvataju se i pakuju u jedinstveni DataFrame. Zatim, kod koji obuhvata transformacije bavi se izvlačenjem podataka, daljim prosleđivanjem funkciji transformacije, kao i čuvanjem rezultata.

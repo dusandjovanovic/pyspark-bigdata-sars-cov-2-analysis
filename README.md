@@ -41,7 +41,7 @@ Generalizovano, funkcije transformacije bi trebalo dizajnirati kao _idempotent_ 
 
 **Transformacije** predstavljaju pozive transformacionih funkcija *Sparka* gde svaki poziv rezultira formiranjem nove distribuirane strukture. **Učitavanje**, na kraju, svodi se na snimanje konačne strukture u celini.
 
-## Prosledjivanje konfiguracionih parametara analizama
+## Prosleđivanje konfiguracionih parametara analizama
 
 Kako se ne bi slali argumenti sa komandne linije, efiaksnije rešenje je koristiti konfiguracione fajlove po potrebi - na primer, koristeći `--files configs/jon_name_config.json` flag sa `spark-submit` komandom - flag koji će referencirati konfiguracionu datoteku. Ove datoteke mogu se koristiti u analizama u vidu rečnika, iliti `dictionary` ulaza kao `json.loads(config_file_contents)`.
 
@@ -53,7 +53,7 @@ config = json.loads("""{"field": "value"}""")
 
 Datoteka se učitava i parsuje funkcijom `start_spark()` iz pomoćne datoteke `dependencies/spark.py` koja pored parsovanja konfiguracionih fajlova učitava Spark drajver program koji se pokreće na klasteru i alocira loger.
 
-## Pakovanje dependency-a analiza
+## Prosleđivanje zavisnosti analizama
 
 Deljene funkcije na koje se oslanjaju analize nalaze se u paketu `dependencies` i referenciraju module Spark-a koji su neophodni, na primer:
 
@@ -63,7 +63,7 @@ from dependencies import start_spark
 
 Ovaj paket, zajedno sa svim ostalim dependency-ma, mora biti kopiran na svaki Spark čvor. Postoji više načina za postizanje ovoga, izabrano je pakovanje svih zavisnosti u `zip` arhivu zajedno sa analizom koju treba izvršiti. Zatim se koristi `--py-files` naredba prilikom pokretanja analize. Pomoćna shell skripta `build_dependencies.sh` koristi se za pakovanje arhive. Ova skripta uzima u obzir graf zavisnosti okruženja i sve navedene zavisnosti u `Pipfile` datoteci.
 
-## Pokretanje posla lokalno/na klasteru
+## Pokretanje analiza lokalno/na klasteru
 
 Lokalno pokretanje klastera:
 
@@ -140,7 +140,7 @@ Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https:
 
 ## Pregled dataset-ova i analiza
 
-U nastavku su ukratko opisani korišćeni izvori podataka, zatim će biti obradjena većina izvršenih analiza.
+U nastavku su ukratko opisani korišćeni izvori podataka, zatim će biti obrađena većina izvršenih analiza.
 
 Odabrana su četiri različita izvora podataka o ovom virusu:
 * COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
@@ -171,7 +171,7 @@ $ cd visualization && py radiography_analysis_visualization.py hdfs://../path/to
 
 ## COVID-19 Radiography Database [@Kaggle](https://www.kaggle.com/tawsifurrahman/covid19-radiography-database)
 
-Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogodjeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
+Ovaj dataset sadrži rendgenske snimke pacijenata obolelih od virusa SARS-CoV-2, pacijenata koji su pogođeni "normalnom" pneumonijom, kao i snimke zdravih ljudi. Tim istraživača Univerziteta u Dohi u saradnji sa medicinskim stručnjacima sastavio je ovaj izvor podataka.
 
 #### 1) Pregled uzoraka snimaka i njihove anatomije
 
@@ -196,11 +196,11 @@ def extract_data(spark):
     return [dataframe_normal, dataframe_covid19, dataframe_lung_opacity, dataframe_viral_pneumonia]
 ```
 
-Zatim se uzima četiri nasumičnih snimaka (po jedna iz scake kategorije). Polazi se od pregleda snimaka i traži postojanje šablona izmedju slike i grupe kojoj pripada. **Na RGB slici, svaki piksel predstavljen je sa tri 8-bitna broja** koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u **opsegu od 0 do 255** za svaki kanal boja.
+Zatim se uzima četiri nasumičnih snimaka (po jedna iz scake kategorije). Polazi se od pregleda snimaka i traži postojanje šablona između slike i grupe kojoj pripada. **Na RGB slici, svaki piksel predstavljen je sa tri 8-bitna broja** koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u **opsegu od 0 do 255** za svaki kanal boja.
 
 ![alt text](docs/screenshots/radiography_analysis_01.png "")
 
-Iako su slike dataseta u crno-beloj boji, sačinjene su od tri kanala, medjutim vrednosti svakog kanala su identične po pikselu. Zatim, na sledećoj slici dat je pregled istih slika sa **izolovanim kanalom crvene boje**.
+Iako su slike dataseta u crno-beloj boji, sačinjene su od tri kanala, međutim vrednosti svakog kanala su identične po pikselu. Zatim, na sledećoj slici dat je pregled istih slika sa **izolovanim kanalom crvene boje**.
 
 ![alt text](docs/screenshots/radiography_analysis_02.png "")
 
@@ -227,7 +227,7 @@ Može se videti da se klasa slika sa najvećim brojem primeraka odnosi na snimke
 
 #### 3) Analiza distribucije karakteristika boja i osvetljenja
 
-Ova analiza bi trebala da da uvid u moguće šablone koji postoje izmedju boja snimaka i klasa kojima pripadaju. Traže se najmanje, najveće, srednje, kao i vrednosti standardne devijacije *(engl. standard deviation)* boja.
+Ova analiza bi trebala da da uvid u moguće šablone koji postoje između boja snimaka i klasa kojima pripadaju. Traže se najmanje, najveće, srednje, kao i vrednosti standardne devijacije *(engl. standard deviation)* boja.
 
 ```python
 
@@ -267,7 +267,7 @@ def transform_colour_distribution(dataframe):
     return df_colour_distribution
 ```
 
-Kako je ovo veoma skupa operacija, bira se nasumičnih hiljadu slika iz svake klase. Zatim, primenom udf funkcija nalaze se pomenute vrednosti za svaku od njih. Separacijom po klasama, možemo da utvrdimo i vizualizujemo distribucije pronadjenih vrednosti.
+Kako je ovo veoma skupa operacija, bira se nasumičnih hiljadu slika iz svake klase. Zatim, primenom udf funkcija nalaze se pomenute vrednosti za svaku od njih. Separacijom po klasama, možemo da utvrdimo i vizualizujemo distribucije pronađenih vrednosti.
 
 Klasa `Viral Pneumonia` se pokazala kao jedina koja približno oslikava "Normalnu" distribuciju [@Wikipedia](https://en.wikipedia.org/wiki/Normal_distribution).
 ![alt text](docs/screenshots/radiography_analysis_04.png "")
@@ -276,7 +276,7 @@ Najveća moguća vrednost osvetljenja je 255 i sve dostižu vrhove u ovom region
 
 ![alt text](docs/screenshots/radiography_analysis_05.png "")
 
-U slučaju srednjih vrednosti, klase `Lung Opacity` i `Normal` su predstavljene jako sličnom distribucijom. Kako se u svakom ciklusu analize uzima nasumičan podskup uzoraka, može se zaključiti da postoji korelacija s obzirom da je u više navrata dobijen isti rezultat. Medjutim, postoje jasne razlike u vrednostima dostignutih vrhova.
+U slučaju srednjih vrednosti, klase `Lung Opacity` i `Normal` su predstavljene jako sličnom distribucijom. Kako se u svakom ciklusu analize uzima nasumičan podskup uzoraka, može se zaključiti da postoji korelacija s obzirom da je u više navrata dobijen isti rezultat. Međutim, postoje jasne razlike u vrednostima dostignutih vrhova.
 
 ![alt text](docs/screenshots/radiography_analysis_06.png "")
 
@@ -286,13 +286,13 @@ U slučaju standardne devijacije, odnosno mere odstupanja, većina primeraka pos
 
 #### 4) Analiza veze srednje vrednosti i standardne devijacije
 
-Na rezultatima x-osa predstavlja srednju vrednost, dok y-osa predstavlja unakrsne vrednosti standardne devijacije posmatranih primeraka. Očigledno, na većini slika su grupacije prisutne u centralnom delu što znači da **nema velikog kontrasta izmedju vrednosti piksela**. Takodje, sve klase poseduju manji broj izolovanih uzoraka na periferiji spektra.
+Na rezultatima x-osa predstavlja srednju vrednost, dok y-osa predstavlja unakrsne vrednosti standardne devijacije posmatranih primeraka. Očigledno, na većini slika su grupacije prisutne u centralnom delu što znači da **nema velikog kontrasta između vrednosti piksela**. Takođe, sve klase poseduju manji broj izolovanih uzoraka na periferiji spektra.
 
 Klase `COVID-19` i `Viral Pneumonia` su jedine koje poseduju manje rasute klastere u donjim-levim uglovima. Ovo su klasteri uzoraka sa malim srednjim vrednostima, kao i malim vrednostima devijacije.
 
-Klasu `Viral Pneumonia` **opisuje centralizovana veza**, što znači da uzorci **imaju više sličnosti medju sobom**, u poredjenju sa ostalim klasama.
+Klasu `Viral Pneumonia` **opisuje centralizovana veza**, što znači da uzorci **imaju više sličnosti među sobom**, u poređenju sa ostalim klasama.
 
-Klasu `COVID-19`, sa druge strane, **opisuje suprotna `rasuta` veza**. Odnosno, ima najviše rasutih i izolovanih uzoraka. Ovo može nagovestiti da rendgenski snimci ove grupe imaju više različitosti medju sobom.
+Klasu `COVID-19`, sa druge strane, **opisuje suprotna `rasuta` veza**. Odnosno, ima najviše rasutih i izolovanih uzoraka. Ovo može nagovestiti da rendgenski snimci ove grupe imaju više različitosti među sobom.
 
 ![alt text](docs/screenshots/radiography_analysis_08.png "")
 
@@ -344,11 +344,11 @@ Evaluacijom je dobijena ukupna uspešnost od ~63%. Ovo je i očekivano s obzirom
 
 "Duboke" neuronske mreže su sofisticiranija metoda klasifikacije, pre svega u slučaju obrade vizualnih datasetova.
 
-Medjutim, podrška distribuiranog treniranja dubokih mreža u *Pysparku* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *Pysparka* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
+Međutim, podrška distribuiranog treniranja dubokih mreža u *Pysparku* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *Pysparka* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
 
 Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Samo "pripremanje" izvora za treniranje obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, potrebno je snimiti dobijeni model i iskoristiti ga za predikcije.
 
-Model je baziran na CNN-arhitekturi od 20ak slojeva i trenira se kroz 128 *epocha*. Ulazni dataframe deli se u razmeri gde se 80% koristi za treniranje modela, a preostalih 20% za validaciju. Validacija podrazumeva i izgradjivanje matrice preciznosti, uz pregled preciznosti po klasama za predikciju.
+Model je baziran na CNN-arhitekturi od 20ak slojeva i trenira se kroz 128 *epocha*. Ulazni dataframe deli se u razmeri gde se 80% koristi za treniranje modela, a preostalih 20% za validaciju. Validacija podrazumeva i izgrađivanje matrice preciznosti, uz pregled preciznosti po klasama za predikciju.
 
 ```python
 def transform_dl_classification(dataframe, spark):
@@ -412,11 +412,11 @@ Može se videti da je nakon treniranja od 128 *epocha* preciznost modela blizu 8
 
 #### 6) DL klasifikacija (distribuirano zaključivanje)
 
-Kako je model izgradjen na jednom čvoru, a zatim i snimljen, može se koristiti za distribuirane/paralelne obrade.
+Kako je model izgrađen na jednom čvoru, a zatim i snimljen, može se koristiti za distribuirane/paralelne obrade.
 
 Metoda distribuiranog zaključivanja *(engl. Model inference)* je **distribuirano izvršavanje modela nad delovima dataframea**, paralelno i na različitim čvorovima. Model se učitava odvojeno na različitim čvorovima i primenjuje - time ostvarujući distribuirano zaključivanje.
 
-Ova tehnika se veoma često koristi u slučaju obrada *streaming* podataka, ovde je primenjena nad delom ulaznog skupa podataka. Uzima se nasumičnih 100 primeraka i metodom inferencije se rade predikcije, oslanjajući se na prethodno trenirani model. Na ovaj način više ćvorova će paralelno obradjivati delove distribuirane strukture.
+Ova tehnika se veoma često koristi u slučaju obrada *streaming* podataka, ovde je primenjena nad delom ulaznog skupa podataka. Uzima se nasumičnih 100 primeraka i metodom inferencije se rade predikcije, oslanjajući se na prethodno trenirani model. Na ovaj način više ćvorova će paralelno obrađivati delove distribuirane strukture.
 
 ```python
 def transform_dl_model_inference(dataframe):
@@ -510,7 +510,7 @@ Ovaj dataset sadrži brojeve registorvanih, oporavljenih i preminulih pacijenata
 
 #### 1) Sumiranje registrovanih i preminulih pacijenata
 
-Nakon uvodnih transformacija i proširivanja dataseta novim kolonama, kao i preuredjivanjem početnih, vrši se sumiranje gorepomenutih klasa slučajeva. Sumirani vremenski prikaz registrovanih i preminulih pacijenata prikazuje se po logaritamskoj skali.
+Nakon uvodnih transformacija i proširivanja dataseta novim kolonama, kao i preuređivanjem početnih, vrši se sumiranje gorepomenutih klasa slučajeva. Sumirani vremenski prikaz registrovanih i preminulih pacijenata prikazuje se po logaritamskoj skali.
 
 ```python
 def transform_papers_and_abstracts(dataframe):
@@ -565,7 +565,7 @@ def transform_confirmed_cases_europe(dataframe):
 
 ![alt text](docs/screenshots/cases_time_analysis_04.png "")
 
-Iz istog dataframe-a se lako izvlači opadajuća lista najgore pogodjenih država.
+Iz istog dataframe-a se lako izvlači opadajuća lista najgore pogođenih država.
 
 ![alt text](docs/screenshots/cases_time_analysis_05.png "")
 
@@ -583,7 +583,7 @@ def transform_confirmed_cases_comparison(dataframe):
 
 #### 5) Analiza država po najboljim/najgorim odnosima oporavka i smrtnosti
 
-Dodavanjem novih kolona i izvlačenjem informacija o odnosima oporavljenih i preminulih pacijenata u odnosu na ukupan broj, dobija se mera kvaliteta ophodjenja država prema pandemiji. Zatim, na osnovu novododatih kolona, lako se izdvajaju države se najboljim ili najgorim koeficijentima.
+Dodavanjem novih kolona i izvlačenjem informacija o odnosima oporavljenih i preminulih pacijenata u odnosu na ukupan broj, dobija se mera kvaliteta ophođenja država prema pandemiji. Zatim, na osnovu novododatih kolona, lako se izdvajaju države se najboljim ili najgorim koeficijentima.
 
 ```python
 def transform_confirmed_cases_comparison_countries(dataframe):
@@ -602,13 +602,13 @@ def transform_confirmed_cases_comparison_countries(dataframe):
 ![alt text](docs/screenshots/cases_time_analysis_07.png "")
 ![alt text](docs/screenshots/cases_time_analysis_08.png "")
 
-#### 6) Analiza i predvidjanje budućeg napredovanja pandemije
+#### 6) Analiza i predviđanje budućeg napredovanja pandemije
 
-Analizom serijskih vremenskih podataka mogu se utvrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da je dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predvidjanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
+Analizom serijskih vremenskih podataka mogu se utvrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da je dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predviđanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
 
 Počevši od filtriranja po državama, dobija se takozvani `timeseries` dataframe koji sadrži dnevne preseke četiri države.
 
-Zatim, izvršenjem operacije `groupBy` po koloni države, iteratori koji sadrže podatke podeljene po državama biće rasporedjeni na različitim čvorovima. Drugim rečima, jedan *worker* čvor će držati barem jednu celokupnu grupu države. Ako se ovo uzme u obzir, treniranje `prophet` modela može se odavde izvršavati distribuirano. Svaki od čvorova će vršiti potrebne proračune za formiranje modela nad svojom pod-grupom podataka (svi će se odnositi na istu državu). `@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)` metode će biti zadužene za distribuirano treniranje i formiranje predikcija. Na kraju, delovi predikcija biće sumirani u *master* čvoru.
+Zatim, izvršenjem operacije `groupBy` po koloni države, iteratori koji sadrže podatke podeljene po državama biće raspoređeni na različitim čvorovima. Drugim rečima, jedan *worker* čvor će držati barem jednu celokupnu grupu države. Ako se ovo uzme u obzir, treniranje `prophet` modela može se odavde izvršavati distribuirano. Svaki od čvorova će vršiti potrebne proračune za formiranje modela nad svojom pod-grupom podataka (svi će se odnositi na istu državu). `@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)` metode će biti zadužene za distribuirano treniranje i formiranje predikcija. Na kraju, delovi predikcija biće sumirani u *master* čvoru.
 
 ```python
 def transform_time_series_forecasting(dataframe, spark):
@@ -649,7 +649,7 @@ def distributed_model_prediction(history_pd):
     return pd.DataFrame(results_pd, columns=result_schema.fieldNames())
 ```
 
-Nakon definisanja podataka za treniranje modela, potrebno je odraditi i samo treniranje koje je distribuirano (po državama). Primenom doobijenih modela dobija se gornja i donja granica predikcije, kao i kriva koja predstavlja predvidjeni napredak pandemije.
+Nakon definisanja podataka za treniranje modela, potrebno je odraditi i samo treniranje koje je distribuirano (po državama). Primenom doobijenih modela dobija se gornja i donja granica predikcije, kao i kriva koja predstavlja predviđeni napredak pandemije.
 
 ![alt text](docs/screenshots/cases_time_analysis_09.png "")
 ![alt text](docs/screenshots/cases_time_analysis_10.png "")
@@ -679,7 +679,7 @@ def transform_hemoglobin_red_blood_cells_values(dataframe):
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_02.png "")
 
-#### 2) Analiza relacije izmedju uzrasta pacijenata i rezultata testa na virus
+#### 2) Analiza relacije između uzrasta pacijenata i rezultata testa na virus
 
 Prva transformacija predstavlja odnos srednje vrednosti starosti pacijenta i verovatnoće pozitivnog testa. Polazi se od grupacije po rezultatu testa a zatim se nalaze agregacije vrednosti uzrasta.
 
@@ -749,7 +749,7 @@ df_transformed = df_transformed.drop("Mycoplasma pneumoniae", "Urine - Sugar",
                                          "Vitamin B12")
 ```
 
-Zatim, možemo prikazati odnose izmedju svih preostalih parametara i pozitivnog/negativnog testa. Takodje, grupacijama možemo prikazati distribuciju rezultata pacijenata.
+Zatim, možemo prikazati odnose između svih preostalih parametara i pozitivnog/negativnog testa. Takođe, grupacijama možemo prikazati distribuciju rezultata pacijenata.
 
 ```python
 udf_function_result = func.udf(transform_result, StringType())
@@ -762,7 +762,7 @@ df_transformed_collected = df_transformed.groupBy('result').count()
 
 ![alt text](docs/screenshots/cases_clinical_spectrum_analysis_08.png "")
 
-Na kraju, izgradjuju se različiti modeli nad delom dataseta koji je predodredjen za testiranje. Prilikom podele modela, izabran je odnos po kome se 80% ulaznih podataka koristi za treniranje. Biraju se kolone koje će se koristiti kao ulazne i jedna izlazna (u ovom slučaju rezultat testa).
+Na kraju, izgrađuju se različiti modeli nad delom dataseta koji je predodređen za testiranje. Prilikom podele modela, izabran je odnos po kome se 80% ulaznih podataka koristi za treniranje. Biraju se kolone koje će se koristiti kao ulazne i jedna izlazna (u ovom slučaju rezultat testa).
 
 ```python
  # build the dataset to be used as a rf_model base

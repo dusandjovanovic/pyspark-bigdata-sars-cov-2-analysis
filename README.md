@@ -1,6 +1,6 @@
 ## Struktura projekta
 
-Python moduli koji se nalaze u direktorijumu `/spark/jobs` struktuirani su po principu **Extract-Transform-Load**/ETL* analiza. Dodatna podešavanja potrebna ovim analizama mogu se zadati iz datoteka pod `/spark/config` direktorijumom. Dodatni moduli koji su neophodni za izvršavanje analiza mogu se pronaći u `/spark/dependencies` direktorijumu. Ovi moduli obuhvataju postavke sesije, proširenja logovanja kao i apstrakcije oko `keras` biblioteke.
+Python moduli koji se nalaze u direktorijumu `/spark/jobs` struktuirani su po principu **Extract-Transform-Load**/ETL analiza. Dodatna podešavanja potrebna ovim analizama mogu se zadati iz datoteka pod `/spark/config` direktorijumom. Dodatni moduli koji su neophodni za izvršavanje analiza mogu se pronaći u `/spark/dependencies` direktorijumu. Ovi moduli obuhvataju postavke sesije, proširenja logovanja kao i apstrakcije oko `keras` biblioteke.
 
 Front-End koji se koristi za vizualizaciju analiza nalazu se u direktorijumu `/visualization`. Odvojeni Python moduli za pokretanje web-servera nalaze se pod `/visualization/scripts` i podeljeni su na isti način kao i same analize.
 

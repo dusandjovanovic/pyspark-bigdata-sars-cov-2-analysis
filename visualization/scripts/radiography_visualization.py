@@ -291,8 +291,8 @@ def visualize_ml_classification():
 def visualize_dl_classification_matrix():
     dataframe_pd = load_dataset(sys.argv[1], "dl_classification_matrix")
 
-    x = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
-    y = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+    x = [CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_NORMAL, CLASSNAME_VIRAL_PNEUMONIA]
+    y = [CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_NORMAL, CLASSNAME_VIRAL_PNEUMONIA]
 
     z_text = [[str(y) for y in x] for x in dataframe_pd.values]
 
@@ -350,7 +350,7 @@ def visualize_dl_classification_accuracy():
     dataframe_pd = load_dataset(sys.argv[1], "dl_classification_accuracy")
     array_pd = dataframe_pd.values.tolist()
 
-    classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_TOTAL]
+    classes = [CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_COVID19, CLASSNAME_NORMAL, CLASSNAME_LUNG_OPACITY,  CLASSNAME_TOTAL]
 
     accuracy_report = []
     for i in range(len(array_pd)):

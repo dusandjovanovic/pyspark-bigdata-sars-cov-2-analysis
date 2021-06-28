@@ -350,7 +350,7 @@ def visualize_dl_classification_accuracy():
     dataframe_pd = load_dataset(sys.argv[1], "dl_classification_accuracy")
     array_pd = dataframe_pd.values.tolist()
 
-    classes = [CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_COVID19, CLASSNAME_NORMAL, CLASSNAME_LUNG_OPACITY,  CLASSNAME_TOTAL]
+    classes = [CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_NORMAL, CLASSNAME_VIRAL_PNEUMONIA, CLASSNAME_TOTAL]
 
     accuracy_report = []
     for i in range(len(array_pd)):

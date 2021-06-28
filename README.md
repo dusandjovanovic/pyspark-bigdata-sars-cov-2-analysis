@@ -396,7 +396,7 @@ Na slikama u nastavku mogu se videti matrica preciznosti, iliti "konfuzije", i d
 
 ![alt text](docs/screenshots/radiography_analysis_10.png "")
 
-Matrica preciznosti daje pregled uspešnih klasifikacija, kao i promašaja. Najveći broj promašaja prisutan je u slučajevima klasifikacije snimaka zdravih pacijenata. Nasuprot, najveća preciznost ostvarena je u klasifikaciji primeraka viralne pneumonije.
+Matrica preciznosti daje pregled uspešnih klasifikacija, kao i promašaja. Najveći broj promašaja prisutan je u slučajevima klasifikacije COVID-19 pacijenata. Nasuprot, najveća preciznost ostvarena je u klasifikaciji primeraka viralne pneumonije.
 
 ![alt text](docs/screenshots/radiography_analysis_11.png "")
 

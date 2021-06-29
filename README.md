@@ -415,7 +415,7 @@ Matrica preciznosti daje pregled uspešnih klasifikacija, kao i promašaja. Najv
 
 ![alt text](docs/screenshots/radiography_analysis_11.png "")
 
-Može se videti da je nakon treniranja od 128 *epocha* preciznost modela blizu 80%, s tim što je preciznost drastično manja u slučaju primeraka klase `Normal`. Trenirani model nalazi se u direktorijumu `/spark/keras-model` i može se koristiti za distribuirano zaključivanje, koje je objašnjeno u sledećoj analizi.
+Može se videti da je nakon treniranja od 50 *epocha* preciznost modela blizu 90%. Trenirani model nalazi se u direktorijumu `/spark/keras-model` i može se koristiti za distribuirano zaključivanje, koje je objašnjeno u sledećoj analizi.
 
 #### 6) DL klasifikacija (distribuirano zaključivanje)
 

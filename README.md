@@ -352,6 +352,10 @@ Model je baziran na CNN-arhitekturi od 20ak slojeva i trenira se kroz 128 *epoch
 
 ```python
 def transform_dl_classification(dataframe, spark):
+    classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+    batch_size = 16
+    epochs = 50
+
     udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
     udf_function_classify = udf(classify, StringType())
 
@@ -366,20 +370,26 @@ def transform_dl_classification(dataframe, spark):
     dataframe_keras = dataframe_keras.drop("image", "label")
     dataframe_keras.cache()
 
-    dataframe_keras_master = dataframe_keras.toPandas()
+```
 
+```python
     # Data generators
-    # Based on distributed dataframe, batch_size and classes to predict
     [train_datagen, train_gen] = train_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
     [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
 
-    # Constructing the deep CNN network
-    model = Sequential()
+    # Constructing the neural net
+    dense169 = DenseNet169(input_shape=(299, 299, 3), include_top=False, weights='imagenet')
+    dense169.trainable = False
+    model = Sequential(
+        [
+            dense169,
+            Flatten(),
+            Dense(units=256, activation='relu'),
+            Dense(units=256, activation='relu'),
+            Dense(units=4, activation='softmax')
+        ]
+    )
 
-    # Imagery processing layers
-    add_imagery_layers(model)
-    
-    # Compiling the model and initiating training
     model.compile(...)
     model.fit(...)
     model.save(...)

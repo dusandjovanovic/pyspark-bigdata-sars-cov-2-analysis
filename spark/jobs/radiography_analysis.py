@@ -5,6 +5,7 @@ import pandas as pd
 from functools import reduce
 import pyspark.sql.functions as func
 from pyspark.sql.functions import udf, pandas_udf
+from pyspark.sql.pandas.functions import PandasUDFType
 from pyspark.sql.types import FloatType, StringType, ArrayType, ByteType
 
 from pyspark.ml.classification import RandomForestClassifier
@@ -13,10 +14,10 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.mllib.evaluation import MulticlassMetrics
 from pyspark.ml.linalg import VectorUDT, DenseVector
 
-from dependencies.keras import model_efficacy, train_generator_from_dataframe, test_generator_from_dataframe, \
-    add_imagery_layers, model_callbacks
+from dependencies.keras import model_efficacy, train_generator_from_dataframe, test_generator_from_dataframe, model_callbacks
 from keras.models import Sequential, load_model
-from keras.layers import Conv2D, Dense, BatchNormalization
+from keras.applications import DenseNet169
+from keras.layers import Dense, Flatten
 from keras.optimizers import Adam
 import tensorflow as tf
 
@@ -51,8 +52,8 @@ def main():
     data_transformed = transform_ml_classification(data_initial, spark)
     load_data(data_transformed, "ml_classification")
 
-    # The already trained model is available in -> /keras_model
-    # # DL model compiling/training (not distributed)
+    # The trained model is available in -> /keras_model
+    # DL model compiling/training (not distributed)
     # [data_transformed_matrix, data_transformed_acc] = transform_dl_classification(data_initial, spark)
     # load_data(data_transformed_matrix, "dl_classification_matrix")
     # load_data(data_transformed_acc, "dl_classification_accuracy")
@@ -225,7 +226,7 @@ def transform_ml_classification(dataframe, spark):
 def transform_dl_classification(dataframe, spark):
     classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
     batch_size = 16
-    epochs = 128
+    epochs = 50
 
     udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
     udf_function_classify = udf(classify, StringType())
@@ -248,24 +249,25 @@ def transform_dl_classification(dataframe, spark):
     [train_datagen, train_gen] = train_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
     [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
 
-    # Constructing the deep CNN network
-    # Entry kernel layers
-    model = Sequential()
-    model.add(Conv2D(32, kernel_size=(3, 3), activation='relu', padding='Same', input_shape=(299, 299, 1)))
-    model.add(BatchNormalization())
-
-    # Imagery processing layers
-    add_imagery_layers(model)
-
-    # Output layers
-    model.add(BatchNormalization())
-    model.add(Dense(4, activation='softmax'))
+    # Constructing the neural net
+    # Based on transfer learning
+    dense169 = DenseNet169(input_shape=(299, 299, 3), include_top=False, weights='imagenet')
+    dense169.trainable = False
+    model = Sequential(
+        [
+            dense169,
+            Flatten(),
+            Dense(units=256, activation='relu'),
+            Dense(units=256, activation='relu'),
+            Dense(units=4, activation='softmax')
+        ]
+    )
 
     # Compiling the model and initiating training
     model.compile(
         loss='categorical_crossentropy',
-        optimizer=Adam(learning_rate=0.002),
-        metrics=['accuracy']
+        optimizer=Adam(),
+        metrics=['accuracy', 'mse']
     )
 
     model.fit(
@@ -294,9 +296,9 @@ def transform_dl_model_inference(dataframe):
 
     # Take random 100 sample images
     dataframe_pred = dataframe \
+        .limit(num_sample_images) \
         .withColumn("image_data", udf_function_get_hdfs_image("image")) \
-        .drop("image", "label") \
-        .limit(num_sample_images)
+        .drop("image", "label")
 
     dataframe_pred.cache()
 
@@ -308,7 +310,7 @@ def transform_dl_model_inference(dataframe):
     return dataframe_inference
 
 
-@pandas_udf(ArrayType(FloatType()))
+@pandas_udf(ArrayType(FloatType()), PandasUDFType.SCALAR_ITER)
 def predict_batch_udf(image_batch_iter):
     batch_size = 64
     model = load_model("./outputs/model/")
@@ -327,6 +329,7 @@ def predict_batch_udf(image_batch_iter):
 def parse_image(image_data):
     image = tf.image.convert_image_dtype(image_data, dtype=tf.float32) * (2. / 255) - 1
     image = tf.reshape(image, [299, 299, 1])
+    image = tf.image.grayscale_to_rgb(image)
 
     return image
 

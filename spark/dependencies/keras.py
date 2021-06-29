@@ -1,7 +1,6 @@
 import numpy as np
 import pandas as pd
 
-from keras.layers import Conv2D, Activation, Dense, Flatten, Dropout, BatchNormalization, AveragePooling2D
 from keras.preprocessing.image import ImageDataGenerator
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping
 from sklearn.metrics import confusion_matrix, accuracy_score, precision_recall_fscore_support
@@ -38,42 +37,6 @@ def model_efficacy(predictions_y, test_gen, classes):
     return [conf_matrix, accuracy]
 
 
-def add_imagery_layers(model):
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-
-    model.add(Conv2D(64, (3, 3), activation='relu', padding='Same'))
-    model.add(BatchNormalization())
-    model.add(AveragePooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.25))
-
-    model.add(Flatten())
-
-    model.add(BatchNormalization())
-    model.add(Dense(128, activation='relu'))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.25))
-    return None
-
-
 def model_callbacks():
     learning_rate_reduction = ReduceLROnPlateau(monitor='loss', patience=10, factor=0.5, min_lr=0.00001)
     early_stopping_monitor = EarlyStopping(patience=100, monitor='loss', mode='min')
@@ -103,7 +66,6 @@ def train_generator_from_dataframe(dataframe_keras_master, batch_size, classes):
         target_size=(299, 299),
         class_mode="categorical",
         subset="training",
-        color_mode="grayscale",
         shuffle=True,
         validate_filenames=False
     )
@@ -127,7 +89,6 @@ def test_generator_from_dataframe(dataframe_keras_master, batch_size, classes):
         target_size=(299, 299),
         class_mode="categorical",
         subset="validation",
-        color_mode="grayscale",
         shuffle=False,
         validate_filenames=False
     )

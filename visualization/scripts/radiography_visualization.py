@@ -333,7 +333,7 @@ def visualize_dl_classification_matrix():
     figure['data'][0]['showscale'] = True
 
     figure.update_layout(
-        title='Confusion Matrix of CNN Neural network (based on test data)',
+        title='Confusion Matrix of the Neural network (based on test data)',
         margin=dict(
             l=200,
             r=200,

@@ -346,12 +346,18 @@ Evaluacijom je dobijena ukupna uspešnost od ~63%. Ovo je i očekivano s obzirom
 
 Međutim, podrška distribuiranog treniranja dubokih mreža u *Pysparku* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *Pysparka* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
 
-Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Samo "pripremanje" izvora za treniranje obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, potrebno je snimiti dobijeni model i iskoristiti ga za predikcije.
+Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Konvolucionalne mreže sastoje se od slojeva konvolucije čija je scrha detekcija šablona, praćenih slojevima pod-uzorkovanja. Pri tome, treniranje modela bazirano je na metodi poznatijoj kao *Transfer Learning*. Ovom metodom se znanje već treniranog, osnovnog modela, koristi za rešavanje drugog problema. Drugim rečima, eksploatiše se već naučeno iz jednog problema kako bi se generalizovao drugi.
 
-Model je baziran na CNN-arhitekturi od 20ak slojeva i trenira se kroz 128 *epocha*. Ulazni dataframe deli se u razmeri gde se 80% koristi za treniranje modela, a preostalih 20% za validaciju. Validacija podrazumeva i izgrađivanje matrice preciznosti, uz pregled preciznosti po klasama za predikciju.
+Modeli trenirani nad slikovnim izvorima često koriste prve slojeve za detektovanje ivica, srednje za oblike, a kasnije slojeve za karakteristike. *Transfer Learning* metodom se slojevi prve dve grupe ostavljaju, dok se slojevi za detekciju karakteristika prilagođavaju konkretnom problemu.
+
+Za osnovni model odabran je _DenseNet_ i sastoji se od 169 slojeva
 
 ```python
 def transform_dl_classification(dataframe, spark):
+    classes = [CLASSNAME_NORMAL, CLASSNAME_COVID19, CLASSNAME_LUNG_OPACITY, CLASSNAME_VIRAL_PNEUMONIA]
+    batch_size = 16
+    epochs = 50
+
     udf_function_get_hdfs_origin = udf(hdfs_origin, StringType())
     udf_function_classify = udf(classify, StringType())
 
@@ -366,20 +372,29 @@ def transform_dl_classification(dataframe, spark):
     dataframe_keras = dataframe_keras.drop("image", "label")
     dataframe_keras.cache()
 
-    dataframe_keras_master = dataframe_keras.toPandas()
+```
+Samo "pripremanje" izvora za treniranje obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, potrebno je snimiti dobijeni model i iskoristiti ga za predikcije.
 
+Ulazni dataframe deli se u razmeri gde se 80% koristi za treniranje modela, a preostalih 20% za validaciju. Validacija podrazumeva i izgrađivanje matrice preciznosti, uz pregled preciznosti po klasama za predikciju.
+
+```python
     # Data generators
-    # Based on distributed dataframe, batch_size and classes to predict
     [train_datagen, train_gen] = train_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
     [test_datagen, test_gen] = test_generator_from_dataframe(dataframe_keras_master, batch_size, classes)
 
-    # Constructing the deep CNN network
-    model = Sequential()
+    # Constructing the neural net
+    dense169 = DenseNet169(input_shape=(299, 299, 3), include_top=False, weights='imagenet')
+    dense169.trainable = False
+    model = Sequential(
+        [
+            dense169,
+            Flatten(),
+            Dense(units=256, activation='relu'),
+            Dense(units=256, activation='relu'),
+            Dense(units=4, activation='softmax')
+        ]
+    )
 
-    # Imagery processing layers
-    add_imagery_layers(model)
-    
-    # Compiling the model and initiating training
     model.compile(...)
     model.fit(...)
     model.save(...)
@@ -400,7 +415,7 @@ Matrica preciznosti daje pregled uspešnih klasifikacija, kao i promašaja. Najv
 
 ![alt text](docs/screenshots/radiography_analysis_11.png "")
 
-Može se videti da je nakon treniranja od 128 *epocha* preciznost modela blizu 80%, s tim što je preciznost drastično manja u slučaju primeraka klase `Normal`. Trenirani model nalazi se u direktorijumu `/spark/keras-model` i može se koristiti za distribuirano zaključivanje, koje je objašnjeno u sledećoj analizi.
+Može se videti da je nakon treniranja od 50 *epocha* preciznost modela blizu 90%. Trenirani model nalazi se u direktorijumu `/spark/keras-model` i može se koristiti za distribuirano zaključivanje, koje je objašnjeno u sledećoj analizi.
 
 #### 6) DL klasifikacija (distribuirano zaključivanje)
 

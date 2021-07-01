@@ -15,6 +15,7 @@ RUN chmod +x /start_app.sh
 ENV SPARK_MASTER spark://spark-master:7077
 ENV SPARK_APPLICATION_PYTHON_LOCATION app/app.py
 ENV HDFS_ROOT hdfs://namenode:9000
-ENV HDFS_DATASET_PATH /data/data/
+ENV HDFS_DATASET_PATH /data/data_part/
+ENV SPARK_SUBMIT_ARGS "--total-executor-cores 2 --executor-memory 1g --executor-cores 2"
 
 CMD ["/bin/bash", "/start_app.sh"]

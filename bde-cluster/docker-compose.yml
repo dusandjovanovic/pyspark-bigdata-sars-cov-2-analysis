@@ -3,7 +3,7 @@ version: "3"
 services:
   submit:
     build: ./
-    image: spark-submit:latest
+    image: spark-submit:3.1.1-hadoop3.2
     container_name: analysis
     environment:
       SPARK_MASTER_NAME: spark-master

@@ -1,1 +1,1 @@
-docker-compose -f compose.yml run submit
+docker-compose -f docker-compose.yml run submit

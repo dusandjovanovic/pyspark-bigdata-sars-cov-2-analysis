@@ -2,13 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="dca7ac14-d25b-4aab-a0b0-66edc004d1ad" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/dependencies/keras.py" beforeDir="false" afterPath="$PROJECT_DIR$/dependencies/keras.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/jobs/radiography_analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/jobs/radiography_analysis.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/keras_model/saved_model.pb" beforeDir="false" afterPath="$PROJECT_DIR$/keras_model/saved_model.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/keras_model/variables/variables.data-00000-of-00001" beforeDir="false" afterPath="$PROJECT_DIR$/keras_model/variables/variables.data-00000-of-00001" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/keras_model/variables/variables.index" beforeDir="false" afterPath="$PROJECT_DIR$/keras_model/variables/variables.index" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../visualization/scripts/radiography_visualization.py" beforeDir="false" afterPath="$PROJECT_DIR$/../visualization/scripts/radiography_visualization.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -188,6 +184,7 @@
       <workItem from="1624948546250" duration="4273000" />
       <workItem from="1624979332847" duration="116000" />
       <workItem from="1624980309999" duration="46000" />
+      <workItem from="1625054962980" duration="11000" />
     </task>
     <servers />
   </component>

@@ -17,9 +17,9 @@ from pyspark.ml.linalg import VectorUDT, DenseVector
 
 
 def main():
-    # local testing
-    # environ['HDFS_ROOT'] = '../'
-    # environ['HDFS_DATASET_PATH'] = 'infrastructure/data'
+    environ['HDFS_ROOT'] = 'hdfs://192.168.42.135:9000'
+    environ['HDFS_DATASET_PATH'] = '/data/data_part'
+    environ['HDFS_OUTPUT_PATH'] = '/output'
 
     spark, sql_context, log, config = start_spark(app_name='radiography_analysis')
 
@@ -261,13 +261,14 @@ def classify(descriptor):
 
 def load_data(dataframe, name):
     root = getenv('HDFS_ROOT')
+    output = getenv('HDFS_OUTPUT_PATH')
 
     dataframe.show()
 
     dataframe \
         .coalesce(1) \
         .write \
-        .json(root + "/data/outputs/radiography_analysis/" + name, mode='overwrite')
+        .json(root + output + "/" + name, mode='overwrite')
 
     return None
 

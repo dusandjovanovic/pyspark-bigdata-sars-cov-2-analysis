@@ -2,12 +2,12 @@ version: "3"
 
 services:
   submit:
-    build: ./
+    build: ./app/
     image: spark-submit:3.1.1-hadoop3.2
     container_name: analysis
     environment:
-      SPARK_MASTER_NAME: spark-master
-      SPARK_MASTER_PORT: 7077
+      SPARK_MASTER_NAME: pyspark-master
+      SPARK_MASTER_PORT: 7067
       SPARK_APPLICATION_ARGS: ""
       ENABLE_INIT_DAEMON: "false"
 

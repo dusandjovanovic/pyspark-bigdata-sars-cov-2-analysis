@@ -3,7 +3,7 @@ from os import listdir, path, getenv, environ
 import numpy as np
 
 from functools import reduce
-from pyspark import SparkFiles, SQLContext
+from pyspark import SparkFiles
 from pyspark.sql import SparkSession
 import pyspark.sql.functions as func
 from pyspark.sql.functions import udf
@@ -17,11 +17,11 @@ from pyspark.ml.linalg import VectorUDT, DenseVector
 
 
 def main():
-    # local testing
+    # use this for local testing
     # environ['HDFS_ROOT'] = '../'
     # environ['HDFS_DATASET_PATH'] = 'infrastructure/data'
 
-    spark, sql_context, log, config = start_spark(app_name='radiography_analysis')
+    spark, log, config = start_spark(app_name='radiography_analysis')
 
     log.warn('Running radiography_analysis...')
 
@@ -273,13 +273,9 @@ def load_data(dataframe, name):
 
 
 def start_spark(app_name='sars_cov2_analysis'):
-    spark_builder = (
-        SparkSession
-            .builder
-            .appName(app_name))
+    spark = SparkSession.builder.appName(app_name).getOrCreate()
 
-    spark_sess = spark_builder.getOrCreate()
-    spark_logger = Log4j(spark_sess)
+    spark_logger = Log4j(spark)
 
     spark_files_dir = SparkFiles.getRootDirectory()
     config_files = [filename
@@ -295,9 +291,7 @@ def start_spark(app_name='sars_cov2_analysis'):
         spark_logger.warn('Warning: No config found.')
         config_dict = None
 
-    sql_context = SQLContext(spark_sess.sparkContext)
-
-    return spark_sess, sql_context, spark_logger, config_dict
+    return spark, spark_logger, config_dict
 
 
 class Log4j(object):

@@ -7,5 +7,5 @@ fi
 docker exec -it namenode hdfs dfs -test -e /data/COVID.metadata.xlsx
 if [ $? -eq 1 ]
 then
-  docker exec -it namenode hdfs dfs -copyFromLocal /data_part /data
+  docker exec -it namenode hdfs dfs -copyFromLocal /data /data
 fi

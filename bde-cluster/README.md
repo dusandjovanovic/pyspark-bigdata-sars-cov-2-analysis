@@ -1,6 +1,60 @@
 ## Izvršavanje na klasteru računara `Big-data Europe`
 
-#### Docker
+#### Pokretanje infrastrukture i kontejnera
+
+Infrastruktura je opisana u odvojenoj konfiguracionoj datoteci i sadrži više kontejnera poput `namenode`, `datanote`, `historyserver` itd. Potrebno je podići infrastrukturu, a zatim postaviti dataset na HDFs. Nakon ovih priprema, može se pokrenuti kontejner analize.
+
+* `$ docker network create bde`
+* `$ cd infrastructure && ./infra_start.sh && ./infra_upload_to_hdfs.sh`
+* `$ cd .. && ./analysis_start.sh`
+
+#### Infrastruktura
+
+Infrastruktura sadrži potrebne *image*, ovo podrazumeva neophodne *Hadoop* deamone, kao i master/worker čvorove.
+
+```Dockerfile
+services:
+  pyspark-master:
+    image: bde2020/spark-master:3.1.1-hadoop3.2
+    container_name: pyspark-master
+    ...
+  pyspark-worker-1:
+    image: bde2020/spark-worker:3.1.1-hadoop3.2
+    container_name: pyspark-worker-1
+    ...
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    ...
+  datanode:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode
+    ...
+  resourcemanager:
+    image: bde2020/hadoop-resourcemanager:2.0.0-hadoop3.2.1-java8
+    container_name: resourcemanager
+    ...
+  nodemanager1:
+    image: bde2020/hadoop-nodemanager:2.0.0-hadoop3.2.1-java8
+    container_name: nodemanager
+    ...
+  historyserver:
+    image: bde2020/hadoop-historyserver:2.0.0-hadoop3.2.1-java8
+    container_name: historyserver
+    ...
+
+volumes:
+  hadoop_namenode:
+  hadoop_datanode:
+  hadoop_historyserver:
+
+networks:
+  default:
+    external:
+      name: bde
+```
+
+#### "Submit" kontejner
 
 Osnovni imidž koji se proširava je `bde2020/spark-submit`.
 
@@ -20,18 +74,19 @@ RUN cd /app \ && pip3 install -r requirements.txt
 
 # Copy the source code
 COPY app /app
-ADD start_app.sh /
+ADD app/start.sh /
 RUN chmod +x /start_app.sh
 
 ENV SPARK_MASTER spark://spark-master:7077
 ENV SPARK_APPLICATION_PYTHON_LOCATION app/app.py
+ENV SPARK_SUBMIT_ARGS "--total-executor-cores 80 --executor-memory 16g --executor-cores 8"
 ENV HDFS_ROOT hdfs://namenode:9000
 ENV HDFS_DATASET_PATH /data/data/
 
 CMD ["/bin/bash", "/start_app.sh"]
 ```
 
-Na osnovu Dockerfile-a se izgradjuje kontejner. Za lokalna testiranja je važno postaviti deljenu mrežu, u ovom slučaju nazvanu `bde`. Deljena mreža treba da se poklapa sa mrežom u `/infrastructure/compose.yml`.
+Na osnovu Dockerfile-a se izgradjuje kontejner. Potrebno je da svi kontejneri definisani u `infrastructure`/`submit` imaju pristup isto deljenoj mreži, u ovom slučaju nazvanoj `bde`.
 
 ```yml
 version: "3"
@@ -52,12 +107,3 @@ networks:
     external:
       name: bde
 ```
-
-
-#### Pokretanje Docker kontejnera
-
-Infrastruktura je opisana u odvojenoj konfiguracionoj datoteci i sadrži više kontejnera poput `namenode`, `datanote`, `historyserver` itd. Potrebno je podići infrastrukturu, a zatim postaviti dataset na HDFs. Nakon ovih priprema, može se pokrenuti kontejner analize.
-
-* `$ docker network create bde`
-* `$ cd infrastructure && ./start_spark.sh && ./upload_dataset_hdfs.sh`
-* `$ cd .. && ./build_analysis.sh && ./start_analysis.sh`

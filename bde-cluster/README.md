@@ -12,7 +12,7 @@ Infrastruktura je opisana u odvojenoj konfiguracionoj datoteci i sadrži više k
 
 Infrastruktura sadrži potrebne *image*, ovo podrazumeva neophodne *Hadoop* deamone, kao i master/worker čvorove.
 
-```Dockerfile
+```yaml
 services:
   pyspark-master:
     image: bde2020/spark-master:3.1.1-hadoop3.2

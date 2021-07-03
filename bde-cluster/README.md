@@ -2,7 +2,7 @@
 
 #### Pokretanje infrastrukture i kontejnera za izdavanje poslova
 
-Infrastruktura je opisana odvojenom komozicijom i sadrži više servisa, kao na primer `namenode`, `datanote` i `historyserver` *Hadoop* deamone. Potrebno je podići infrastrukturu, a zatim postaviti izvore podataka na HDFS. Nakon ovoga, može se pokrenuti kontejner za izdavanje poslova koji će *spark-submit* API-em proslediti Python modul.
+Infrastruktura je opisana odvojenom komozicijom i sadrži više servisa, kao na primer `namenode`, `datanote` i `historyserver` *Hadoop* deamone. Potrebno je podići infrastrukturu, a zatim postaviti izvore podataka na HDFS. Nakon ovoga, može se pokrenuti kontejner za izdavanje poslova koji će *spark-submit* naredbom proslediti Python modul.
 
 Neophodno je da svi definisani `infrastructure`/`submit` kontejneri imaju pristup deljenoj mreži, u ovom slučaju mreža je `bde`.
 

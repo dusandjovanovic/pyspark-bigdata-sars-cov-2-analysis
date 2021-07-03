@@ -1,8 +1,8 @@
 ## Struktura projekta
 
-Python moduli koji se nalaze u direktorijumu `/spark/jobs` struktuirani su po principu **Extract-Transform-Load**/ETL analiza. Dodatna podešavanja potrebna ovim analizama mogu se zadati iz datoteka pod `/spark/config` direktorijumom. Dodatni moduli koji su neophodni za izvršavanje analiza mogu se pronaći u `/spark/dependencies` direktorijumu. Ovi moduli obuhvataju postavke sesije, proširenja logovanja kao i apstrakcije oko `keras` biblioteke.
+Python moduli koji se nalaze u direktorijumu `/spark/jobs` dizajnirani su kao **Extract-Transform-Load**/ETL analize. Dodatna podešavanja potrebna ovim analizama mogu se zadati iz datoteka pod `/spark/config` direktorijumom. Moduli koji su neophodni za izvršavanje analiza mogu se pronaći u `/spark/dependencies` direktorijumu. Ovi moduli obuhvataju postavke sesije, proširenja evidentiranja *(engl. logging)* kao i apstrakcije oko `keras` biblioteke.
 
-Front-End koji se koristi za vizualizaciju analiza nalazu se u direktorijumu `/visualization`. Odvojeni Python moduli za pokretanje web-servera nalaze se pod `/visualization/scripts` i podeljeni su na isti način kao i same analize.
+Front-End koji se koristi za vizualizaciju analiza nalazu se u direktorijumu `/visualization`. Odvojeni Python moduli za pokretanje web-servera nalaze se pod `/visualization/scripts` i podeljeni su po izvorima podataka.
 
 ```bash
 root/
@@ -37,13 +37,13 @@ root/
 
 Arhitektura projekta bazirana je na takozvanim Extract-Transform-Load (ETL) poslovima. Zbog lakšeg izvršavanja i testiranja, korak transformacije izolovan je od ekstrakcije i učitavanja. Ulazni podaci prihvataju se i pakuju u jedinstveni DataFrame. Zatim, kod koji obuhvata transformacije bavi se izvlačenjem podataka, daljim prosleđivanjem funkciji transformacije, kao i čuvanjem rezultata.
 
-Generalizovano, funkcije transformacije bi trebalo dizajnirati kao _idempotent_ funkcije. Drugim rečima, višestruko primenjianje funkcija transformacije ne bi trebalo da rezultuje promenama u izlazu, sve dok nema promena ulaznih podataka. Zbog ovakvog pristupa moguće je izvršavati analize sa ponavlanjima ukoliko je to potrebno (na primer, koristeći `cron` za poziv `spark-submit` komande, po pre-definisanom rasporedu poziva).
+Generalizovano, funkcije transformacije bi trebalo dizajnirati kao _idempotent_ funkcije. Drugim rečima, višestruko primenjianje funkcija transformacije ne bi trebalo da rezultuje promenama u izlazu, sve dok nema promena ulaznih podataka. Zbog ovakvog pristupa moguće je izvršavati analize sa ponavljanjima ukoliko je to potrebno (na primer, koristeći `cron` za poziv `spark-submit` komande, po pre-definisanom rasporedu poziva).
 
 **Transformacije** predstavljaju pozive transformacionih funkcija *Sparka* gde svaki poziv rezultira formiranjem nove distribuirane strukture. **Učitavanje**, na kraju, svodi se na snimanje konačne strukture u celini.
 
 ## Prosleđivanje konfiguracionih parametara analizama
 
-Kako se ne bi slali argumenti sa komandne linije, efiaksnije rešenje je koristiti konfiguracione fajlove po potrebi - na primer, koristeći `--files configs/jon_name_config.json` flag sa `spark-submit` komandom - flag koji će referencirati konfiguracionu datoteku. Ove datoteke mogu se koristiti u analizama u vidu rečnika, iliti `dictionary` ulaza kao `json.loads(config_file_contents)`.
+Kako se ne bi slali argumenti sa komandne linije, efiaksnije rešenje je koristiti konfiguracione datoteke po potrebi - na primer, koristeći `--files configs/job_name_config.json` flag sa `spark-submit` komandom - flag koji će referencirati konfiguracionu datoteku. Ove datoteke mogu se koristiti u analizama u vidu rečnika, iliti `dictionary` ulaza kao `json.loads(config_file_contents)`.
 
 ```python
 import json
@@ -51,7 +51,7 @@ import json
 config = json.loads("""{"field": "value"}""")
 ```
 
-Datoteka se učitava i parsuje funkcijom `start_spark()` iz pomoćne datoteke `dependencies/spark.py` koja pored parsovanja konfiguracionih fajlova učitava Spark drajver program koji se pokreće na klasteru i alocira loger.
+Datoteka se učitava i parsuje funkcijom `start_spark()` iz pomoćne datoteke `dependencies/spark.py` koja pored parsovanja konfiguracije učitava Spark *driver proces* koji se pokreće na klasteru i alocira loger.
 
 ## Prosleđivanje zavisnosti analizama
 
@@ -78,19 +78,19 @@ $SPARK_HOME/bin/spark-submit \
 --master local \
 --packages 'com.somesparkjar.dependency:1.0.0' \
 --py-files packages.zip \
---files configs/etl_config.json \
-jobs/job_name.py
-data/data_dir/
+--files configs/job_name_config.json \
+jobs/job_name.py \
+hdfs://data/data_dir/
 ```
 
 - `--master local[*]` - adresa Spark klastera. **Ovo može biti lokalni klaster ili klaster u cloud-u koji se zadaje adresom `spark://adresa_klastera:7077`**;
 - `--packages 'com.somesparkjar.dependency:1.0.0,...'` - Maven dependency lista;
-- `--files configs/etl_config.json` - putanja do konfiguracione datoteke;
+- `--files configs/job_name_config.json` - putanja do konfiguracione datoteke;
 - `--py-files packages.zip` - prethodno pomenuta arhiva sa dependency-ma;
 - `jobs/job_name.py` - Python modul sa kodom analize.
-- `data/data_dir/` - putanja do ulaznog dataseta na HDFS-u.
+- `hdfs://data/data_dir/` - putanja do ulaznog dataseta na HDFS-u.
 
-Početna tačka svake Spark analize je otvaranje sesije. Ovo je driver proces koji održava sve relevantne informacije i odgovoran je za distribuiranje i zakazivanje rada nad svim executor procesima.
+Početna tačka svake Spark analize je otvaranje sesije. Ovo je *driver* proces koji održava sve relevantne informacije i odgovoran je za distribuiranje i zakazivanje rada nad svim *executor* procesima.
 
 ```python
 def start_spark(app_name='my_spark_app', master='local[*]',
@@ -135,7 +135,7 @@ def main():
 
 Analize se mogu izvršavati na klasteru računara koji je realizovan *Docker* kontejnerima.
 
-Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`. Klaster se može simulirati lokalno gde se pokreće infrastruktura čvorova nad HDFS-om. Tehnički, poziva se `spark-submit` komanda i namenode-u šalju analize za izvršenje. Procedura slanja analize je pritom uopštena docker kontejnerom u kome se izvršava.
+Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`. Klaster se može simulirati lokalno gde se pokreće infrastruktura čvorova nad HDFS-om. Tehnički, poziva se `spark-submit` komanda i spark-master čvory šalju analize za izvršenje. Procedura slanja analize je pritom uopštena docker kontejnerom u kome se izvršava.
 
 
 ## Pregled dataset-ova i analiza
@@ -148,8 +148,6 @@ Odabrana su četiri različita izvora podataka o ovom virusu:
 * COVID-19 Dataset [@Kaggle](https://www.kaggle.com/imdevskp/corona-virus-report)
 * Diagnosis of COVIDand its Clinical spectrum [@Kaggle](https://www.kaggle.com/einsteindata4u/covid19)
 
-
-
 ```diff
 - Napomena* sadržaji dataset-ova se ne nalaze na repozitorijumu i potrebno ih je preuzeti i snimiti u direktorijum /data. Razlog je težina od više desetina GB.
 
@@ -158,7 +156,7 @@ Odabrana su četiri različita izvora podataka o ovom virusu:
 
 ## Dash Front-End i vizualizacija rezultata
 
-Kako postoji ukupno četiri grupa ETL analiza, nakon izvršavanja istih, moguće je pristupiti rezultatima i prikazati ih. Za potrebe vizualizacije rezultata odabrano je rešenje `Dash Front-End` koje je bazirano `Flasku`. Pokretanje jedne ovakve web-aplikacije zahteva kao ulazni argumenat putanju do rezultata analiza na HDFS-u.
+Kako postoji ukupno četiri grupa ETL analiza, nakon izvršavanja istih, moguće je pristupiti rezultatima i prikazati ih. Za potrebe vizualizacije rezultata odabrano je rešenje `Dash Front-End` koje je bazirano `Flasku` i `Reactu`. Pokretanje jedne ovakve web-aplikacije zahteva kao ulazni argumenat putanju do rezultata analiza na HDFS-u.
 
 Na primer, pokretanje servera za vizualizaciju rezultata četvrtog dataseta dobija se uz:
 
@@ -196,7 +194,7 @@ def extract_data(spark):
     return [dataframe_normal, dataframe_covid19, dataframe_lung_opacity, dataframe_viral_pneumonia]
 ```
 
-Zatim se uzima četiri nasumičnih snimaka (po jedna iz scake kategorije). Polazi se od pregleda snimaka i traži postojanje šablona između slike i grupe kojoj pripada. **Na RGB slici, svaki piksel predstavljen je sa tri 8-bitna broja** koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u **opsegu od 0 do 255** za svaki kanal boja.
+Zatim se uzima četiri nasumičnih snimaka (po jedan iz svake kategorije). Polazi se od pregleda snimaka i traži postojanje šablona između slike i grupe kojoj pripada. **Na RGB slici, svaki piksel predstavljen je sa tri 8-bitna broja** koji predstavljaju vrednosti crvene, zelene i plave boje. Ovi brojevi imaju vrednosti u **opsegu od 0 do 255** za svaki kanal boja.
 
 ![alt text](docs/screenshots/radiography_analysis_01.png "")
 
@@ -227,7 +225,7 @@ Može se videti da se klasa slika sa najvećim brojem primeraka odnosi na snimke
 
 #### 3) Analiza distribucije karakteristika boja i osvetljenja
 
-Ova analiza bi trebala da da uvid u moguće šablone koji postoje između boja snimaka i klasa kojima pripadaju. Traže se najmanje, najveće, srednje, kao i vrednosti standardne devijacije *(engl. standard deviation)* boja.
+Ova analiza bi trebala da da uvid u moguće šablone koji postoje između boja snimaka i klasa kojima pripadaju. Traže se najmanje, najveće, srednje, kao i vrednosti standardne devijacije *(engl. standard deviation)* boja/osvetljenja.
 
 ```python
 
@@ -276,7 +274,7 @@ Najveća moguća vrednost osvetljenja je 255 i sve dostižu vrhove u ovom region
 
 ![alt text](docs/screenshots/radiography_analysis_05.png "")
 
-U slučaju srednjih vrednosti, klase `Lung Opacity` i `Normal` su predstavljene jako sličnom distribucijom. Kako se u svakom ciklusu analize uzima nasumičan podskup uzoraka, može se zaključiti da postoji korelacija s obzirom da je u više navrata dobijen isti rezultat. Međutim, postoje jasne razlike u vrednostima dostignutih vrhova.
+U slučaju srednjih vrednosti, klase `Lung Opacity` i `Normal` su predstavljene jako sličnom distribucijom. Kako se u svakom ciklusu analize uzima nasumičan podskup snimaka, može se zaključiti da postoji korelacija s obzirom da je u više navrata dobijen isti rezultat. Međutim, postoje jasne razlike u vrednostima dostignutih vrhova.
 
 ![alt text](docs/screenshots/radiography_analysis_06.png "")
 
@@ -286,7 +284,7 @@ U slučaju standardne devijacije, odnosno mere odstupanja, većina primeraka pos
 
 #### 4) Analiza veze srednje vrednosti i standardne devijacije
 
-Na rezultatima x-osa predstavlja srednju vrednost, dok y-osa predstavlja unakrsne vrednosti standardne devijacije posmatranih primeraka. Očigledno, na većini slika su grupacije prisutne u centralnom delu što znači da **nema velikog kontrasta između vrednosti piksela**. Takođe, sve klase poseduju manji broj izolovanih uzoraka na periferiji spektra.
+Na rezultatima x-osa predstavlja srednju vrednost, dok y-osa predstavlja unakrsne vrednosti standardne devijacije posmatranih snimaka. Na većini slika su grupacije prisutne u centralnom delu ravni što znači da **nema velikog kontrasta između vrednosti piksela**. Takođe, sve klase poseduju manji broj izolovanih uzoraka na periferiji spektra.
 
 Klase `COVID-19` i `Viral Pneumonia` su jedine koje poseduju manje rasute klastere u donjim-levim uglovima. Ovo su klasteri uzoraka sa malim srednjim vrednostima, kao i malim vrednostima devijacije.
 
@@ -298,9 +296,9 @@ Klasu `COVID-19`, sa druge strane, **opisuje suprotna `rasuta` veza**. Odnosno, 
 
 #### 5) ML klasifikacija i predikcije
 
-Sparkova `mllib` biblioteka poseduje paletu algoritama mašinskog učenja, jedan od ovih algoritama je *Random forest classifier*. Takozvane šume sastoje se od stabala odluka, kombinuju veliki broj stabala kako bi se smanjio rizik *overfitting-a*. Ovaj algoritam se može koristi za binarnu i multiclass klasifikaciju.
+Sparkova `mllib` biblioteka poseduje paletu algoritama mašinskog učenja, jedan od ovih algoritama je *Random Forest classifier*. Takozvane šume sastoje se od stabala odluka, kombinuju veliki broj stabala kako bi se smanjio rizik *overfitting-a*. Ovaj algoritam se može koristi za binarnu i multiclass klasifikaciju.
 
-U ovom slučaju, korišćena je multiclass klasifikacija za četiri grupe (prethodno pomenute grupe slika). Izdvajanjem opisnih parametara slika sastavlja se vektor karakteristika. Ovi parametri su `min`, `max`, `mean` i `standard_deviation`. Zatim se dataframe deli u odnosu 0.1/0.9 gde se veći deo koristi za treniranje ML modela. Nakon treniranja se vrši evaluacija modela na preostalim delom ulaza.
+U ovom slučaju, korišćena je multiclass klasifikacija za četiri grupe (prethodno pomenute grupe slika). Izdvajanjem opisnih parametara snimaka sastavlja se vektor karakteristika. Ovi parametri su `min`, `max`, `mean` i `standard_deviation`. Zatim se dataframe deli u odnosu 0.1/0.9 gde se veći deo koristi za treniranje ML modela. Nakon treniranja se vrši evaluacija modela na preostalim delom ulaza.
 
 ```python
 def transform_ml_classification(dataframe, spark):
@@ -346,11 +344,11 @@ Evaluacijom je dobijena ukupna uspešnost od ~63%. Ovo je i očekivano s obzirom
 
 Međutim, podrška distribuiranog treniranja dubokih mreža u *Pysparku* nije na zavidnom nivou. Rešenja koja su dostupna neretko podržavaju samo starije verzije *Pysparka* ili nisu dovoljno stabilna. Iz ovog razloga, **treniranje neuronske mreže nije distribuirano**.
 
-Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Konvolucionalne mreže sastoje se od slojeva konvolucije čija je scrha detekcija šablona, praćenih slojevima pod-uzorkovanja. Pri tome, treniranje modela bazirano je na metodi poznatijoj kao *Transfer Learning*. Ovom metodom se znanje već treniranog, osnovnog modela, koristi za rešavanje drugog problema. Drugim rečima, eksploatiše se već naučeno iz jednog problema kako bi se generalizovao drugi.
+Odabrana je klasa CNN (Convolutional neural network) neuronskih mreža. Konvolucionalne mreže sastoje se od slojeva konvolucije čija je svrha detekcija šablona, praćenih slojevima pod-uzorkovanja. Pri tome, treniranje modela bazirano je na metodi poznatijoj kao *Transfer Learning*. Ovom metodom se znanje već treniranog, osnovnog modela, koristi za rešavanje drugog problema. Drugim rečima, eksploatiše se već naučeno iz jednog problema kako bi se generalizovao drugi.
 
-Modeli trenirani nad slikovnim izvorima često koriste prve slojeve za detektovanje ivica, srednje za oblike, a kasnije slojeve za karakteristike. *Transfer Learning* metodom se slojevi prve dve grupe ostavljaju, dok se slojevi za detekciju karakteristika prilagođavaju konkretnom problemu.
+Modeli trenirani nad slikovnim izvorima često koriste prve slojeve za detektovanje ivica, srednje za oblike, a kasnije slojeve za karakteristike. *Transfer Learning* metodom se slojevi prve dve grupe ostavljaju netaknutim, dok se slojevi za detekciju karakteristika prilagođavaju konkretnom problemu.
 
-Za osnovni model odabran je _DenseNet_ i sastoji se od 169 slojeva
+Za osnovni model odabran je _DenseNet_ i sastoji se od 169 slojeva.
 
 ```python
 def transform_dl_classification(dataframe, spark):
@@ -373,7 +371,7 @@ def transform_dl_classification(dataframe, spark):
     dataframe_keras.cache()
 
 ```
-Samo "pripremanje" izvora za treniranje obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *master* čvoru i počinje sa treniranjem mreže. Na kraju, potrebno je snimiti dobijeni model i iskoristiti ga za predikcije.
+Samo "pripremanje" izvora za treniranje obavlja se distribuirano. Nakon oblikovanja ulaznog datafrema, isti se centralizuje u *dirver* procesu i počinje sa treniranjem mreže. Na kraju, potrebno je snimiti dobijeni model i iskoristiti ga za predikcije.
 
 Ulazni dataframe deli se u razmeri gde se 80% koristi za treniranje modela, a preostalih 20% za validaciju. Validacija podrazumeva i izgrađivanje matrice preciznosti, uz pregled preciznosti po klasama za predikciju.
 
@@ -462,7 +460,7 @@ def predict_batch_udf(image_batch_iter):
         yield pd.Series(list(predictions))
 ```
 
-`predict_batch_udf` je metoda koja će se izvršavati na svim čvorovima. Predikcije će se odnositi samo na delove dataframea koji se nalaze na konkretnom čvoru. Nakon paralelnih proračuna, sve predikcije se skupljaju u *master* čvoru.
+`predict_batch_udf` je metoda koja će se izvršavati na svim čvorovima. Predikcije će se odnositi samo na delove dataframea koji se nalaze na konkretnom čvoru. Nakon paralelnih proračuna, sve predikcije se skupljaju u *driver* procesu.
 
 ## COVID-19 Open Research Dataset Challenge [@Kaggle](https://www.kaggle.com/allen-institute-for-ai/CORD-19-research-challenge)
 
@@ -470,7 +468,7 @@ Ovaj dataset sadrži više od 400,000 medicinskih članaka o virusu COVID-19, SA
 
 #### 1) Izvlačenje abstract zapisa svih članaka
 
-Polazi se od definisanja šeme (shcema) dataseta, a zatim i izvlačenja abstract zapisa svakog članka. Ovde se primenjuje par koraka normalizacije i "pročišćavanja".
+Polazi se od definisanja šeme (shcema) dataseta, a zatim i izvlačenja abstract zapisa (sažetaka) svakog članka. Ovde se primenjuje par koraka normalizacije i "pročišćavanja".
 
 ```python
 def transform_papers_and_abstracts(dataframe):
@@ -611,11 +609,11 @@ def transform_confirmed_cases_comparison_countries(dataframe):
 
 #### 6) Analiza i predviđanje budućeg napredovanja pandemije
 
-Analizom serijskih vremenskih podataka mogu se utvrditi trendovi i predvinjanja u sklopu nekog domena. S obzirom da je dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predviđanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
+Analizom serijskih vremenskih podataka mogu se utvrditi trendovi i predviđanja u sklopu nekog domena. S obzirom da je dataset vremenski orijentisan, mogu se koristiti biblioteke za treniranje modela i predviđanje budućnosti. Odabrana biblioteka koja je korišćena u ovom slučaju naziva se `prophet`.
 
 Počevši od filtriranja po državama, dobija se takozvani `timeseries` dataframe koji sadrži dnevne preseke četiri države.
 
-Zatim, izvršenjem operacije `groupBy` po koloni države, iteratori koji sadrže podatke podeljene po državama biće raspoređeni na različitim čvorovima. Drugim rečima, jedan *worker* čvor će držati barem jednu celokupnu grupu države. Ako se ovo uzme u obzir, treniranje `prophet` modela može se odavde izvršavati distribuirano. Svaki od čvorova će vršiti potrebne proračune za formiranje modela nad svojom pod-grupom podataka (svi će se odnositi na istu državu). `@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)` metode će biti zadužene za distribuirano treniranje i formiranje predikcija. Na kraju, delovi predikcija biće sumirani u *master* čvoru.
+Zatim, izvršenjem operacije `groupBy` po koloni države, iteratori koji sadrže podatke podeljene po državama biće raspoređeni na različitim čvorovima. Drugim rečima, jedan *worker* čvor će držati barem jednu grupu. Treniranje `prophet` modela može se odavde izvršavati distribuirano. Svaki od čvorova će vršiti potrebne proračune za formiranje modela nad svojom pod-grupom podataka (svi će se odnositi na istu državu). `@pandas_udf(result_schema, PandasUDFType.GROUPED_MAP)` metode će biti zadužene za distribuirano treniranje i formiranje predikcija. Na kraju, delovi predikcija biće sumirani u *driver* procesu.
 
 ```python
 def transform_time_series_forecasting(dataframe, spark):
@@ -659,6 +657,7 @@ def distributed_model_prediction(history_pd):
 Nakon definisanja podataka za treniranje modela, potrebno je odraditi i samo treniranje koje je distribuirano (po državama). Primenom doobijenih modela dobija se gornja i donja granica predikcije, kao i kriva koja predstavlja predviđeni napredak pandemije.
 
 ![alt text](docs/screenshots/cases_time_analysis_09.png "")
+
 ![alt text](docs/screenshots/cases_time_analysis_10.png "")
 
 

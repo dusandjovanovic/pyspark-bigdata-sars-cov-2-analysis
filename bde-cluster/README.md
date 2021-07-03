@@ -1,8 +1,10 @@
 ## Izvršavanje na klasteru računara `Big-data Europe`
 
-#### Pokretanje infrastrukture i kontejnera
+#### Pokretanje infrastrukture i kontejnera za izdavanje poslova
 
-Infrastruktura je opisana u odvojenoj konfiguracionoj datoteci i sadrži više kontejnera poput `namenode`, `datanote`, `historyserver` itd. Potrebno je podići infrastrukturu, a zatim postaviti dataset na HDFs. Nakon ovih priprema, može se pokrenuti kontejner analize.
+Infrastruktura je opisana odvojenom komozicijom i sadrži više servisa, kao na primer `namenode`, `datanote` i `historyserver` *Hadoop* deamone. Potrebno je podići infrastrukturu, a zatim postaviti izvore podataka na HDFS. Nakon ovoga, može se pokrenuti kontejner za izdavanje poslova koji će *spark-submit* API-em proslediti Python modul.
+
+Neophodno je da svi definisani `infrastructure`/`submit` kontejneri imaju pristup deljenoj mreži, u ovom slučaju mreža je `bde`.
 
 * `$ docker network create bde`
 * `$ cd infrastructure && ./infra_start.sh && ./infra_upload_to_hdfs.sh`
@@ -56,11 +58,11 @@ networks:
 
 #### "Submit" kontejner
 
-Osnovni imidž koji se proširava je `bde2020/spark-submit`.
+Osnovni *image* je `bde2020/spark-submit`.
 
-Odavde se poziva *spark-submit* komanda i python izvršna datoteka šalje ka klasteru. Na početku je potrebno dodati zavisnosti i alate za kompajliranje .c slojeva biblioteka (poput `gcc` kompajlera). U ovom slučaju, analize se zbog algoritama mašinskog učenja oslanjaju na `numpy` biblioteku.
+Odavde se poziva *spark-submit* komanda i Python izvršni modul šalje ka klasteru. Na početku je potrebno dodati zavisnosti i alate za kompajliranje .c slojeva biblioteka (poput `gcc` kompajlera). U ovom slučaju, analize se zbog algoritama mašinskog učenja oslanjaju na `numpy` biblioteku.
 
-Zatim se na osnovu niza zavisnosti pribavljaju potrebni izvori i razrešavaju zavisnosti. Na kraju, poziva se *submit* naredba izvršnog programa `/app/app.py`. Ukoliko je neophodno mogu se definisati promenljive okruženja poput `HDFS_ROOT` i `HDFS_DATASET_PATH`.
+Zatim se na osnovu niza zavisnosti pribavljaju potrebni izvori i razrešavaju zavisnosti. Na kraju, poziva se *submit* naredba sa modulom `/app/app.py`. Ukoliko je neophodno mogu se definisati promenljive okruženja poput `HDFS_ROOT` i `HDFS_DATASET_PATH`.
 
 ```Dockerfile
 FROM bde2020/spark-submit:3.1.1-hadoop3.2
@@ -86,7 +88,7 @@ ENV HDFS_DATASET_PATH /data/data/
 CMD ["/bin/bash", "/start_app.sh"]
 ```
 
-Na osnovu Dockerfile-a se izgradjuje kontejner. Potrebno je da svi kontejneri definisani u `infrastructure`/`submit` imaju pristup isto deljenoj mreži, u ovom slučaju nazvanoj `bde`.
+Na osnovu Dockerfile-a se izgradjuje kontejner.
 
 ```yml
 version: "3"

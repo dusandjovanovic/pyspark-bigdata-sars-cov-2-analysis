@@ -193,7 +193,7 @@ networks:
       name: bde
 ```
 
-#### "Submit" kontejner
+#### Kontejner za predavanje poslova
 
 Osnovni *image* je `bde2020/spark-submit`.
 

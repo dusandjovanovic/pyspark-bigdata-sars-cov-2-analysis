@@ -135,7 +135,7 @@ def main():
 
 Analize se mogu izvršavati na klasteru računara koji je realizovan *Docker* kontejnerima.
 
-Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`. Klaster se može simulirati lokalno gde se pokreće infrastruktura čvorova nad HDFS-om. Tehnički, poziva se `spark-submit` komanda i spark-master čvory šalju analize za izvršenje. Procedura slanja analize je pritom uopštena docker kontejnerom u kome se izvršava.
+Korišćeni su `bde-spark` imidži - više o njima može se videti [ovde](https://github.com/big-data-europe/docker-spark). Više o postavci kontejnera i klasteru je u direktorijumu `/bde-cluster`. Klaster se može simulirati lokalno gde se pokreće infrastruktura čvorova nad HDFS-om. Tehnički, poziva se `spark-submit` komanda i spark-master čvoru šalju analize za izvršenje. Procedura slanja analize je pritom uopštena docker kontejnerom u kome se izvršava.
 
 #### Pokretanje infrastrukture i kontejnera za izdavanje poslova
 
